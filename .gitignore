@@ -1,0 +1,81 @@
+# Shadow repo for the Meta AI hackathon submission: only work created during the hack.
+# Everything is ignored by default; whitelist hack-created paths below.
+# Plastic SCM remains the source of truth for the full project.
+
+/*
+!/.gitignore
+!/README.md
+
+!/Assets/
+/Assets/*
+!/Assets/_*/
+!/Assets/_*.meta
+
+.DS_Store
+
+# Pre-hack baseline: existing files in whitelisted folders that are not hack work
+/Assets/_Audio.meta
+/Assets/_Audio/MainMixer.mixer
+/Assets/_Audio/MainMixer.mixer.meta
+/Assets/_Prefabs.meta
+/Assets/_Prefabs/GroKitMeta\ \[BB\]\ Camera\ Rig.prefab
+/Assets/_Prefabs/GroKitMeta\ \[BB\]\ Camera\ Rig.prefab.meta
+/Assets/_Prefabs/NPCs.meta
+/Assets/_Prefabs/NPCs/Barbarian_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/Barbarian_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/Druid_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/Druid_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/Engineer_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/Engineer_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/Knight_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/Knight_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/Mage_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/Mage_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/NPC_base.prefab
+/Assets/_Prefabs/NPCs/NPC_base.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Aerin_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Aerin_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Asterion_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Asterion_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Benik_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Benik_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Cetus_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Cetus_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Engir_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Engir_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Fernglen_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Fernglen_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Ferrax_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Ferrax_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Garreth_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Garreth_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Hakuzo_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Hakuzo_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Harald_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Harald_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Percival_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Percival_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/RaidHealer/Shen_NPC.prefab
+/Assets/_Prefabs/NPCs/RaidHealer/Shen_NPC.prefab.meta
+/Assets/_Prefabs/NPCs/Ranger_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/Ranger_NPC\ Variant.prefab.meta
+/Assets/_Prefabs/NPCs/Rogue_NPC\ Variant.prefab
+/Assets/_Prefabs/NPCs/Rogue_NPC\ Variant.prefab.meta
+/Assets/_Scenes.meta
+/Assets/_Scenes/BaseScene.unity
+/Assets/_Scenes/BaseScene.unity.meta
+/Assets/_Scripts.meta
+/Assets/_Transcripts.meta
+/Assets/_Transcripts/Ferrax.meta
+/Assets/_Transcripts/Ferrax/Greetings.meta
+/Assets/_Transcripts/Ferrax/Greetings/Ferrax\ -\ Greeting\ 1.asset
+/Assets/_Transcripts/Ferrax/Greetings/Ferrax\ -\ Greeting\ 1.asset.meta
+/Assets/_Transcripts/Ferrax/Greetings/Ferrax\ -\ Greeting\ 2.asset
+/Assets/_Transcripts/Ferrax/Greetings/Ferrax\ -\ Greeting\ 2.asset.meta
+/Assets/_Transcripts/Ferrax/Greetings/Ferrax\ -\ Greeting\ 3.asset
+/Assets/_Transcripts/Ferrax/Greetings/Ferrax\ -\ Greeting\ 3.asset.meta
+/Assets/_Transcripts/Ferrax/Greetings/Ferrax\ -\ Greeting\ 4.asset
+/Assets/_Transcripts/Ferrax/Greetings/Ferrax\ -\ Greeting\ 4.asset.meta
+/Assets/_Transcripts/Ferrax/Greetings/Ferrax\ -\ Greeting\ 5.asset
+/Assets/_Transcripts/Ferrax/Greetings/Ferrax\ -\ Greeting\ 5.asset.meta
