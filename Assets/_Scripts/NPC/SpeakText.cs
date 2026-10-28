@@ -14,20 +14,20 @@ public partial class SpeakText : Unity.Behavior.Action
     [SerializeReference] public BlackboardVariable<string> SpeechResult;
     [SerializeReference] public BlackboardVariable<string> SpeechError;
     private BaseAI_TextToSpeech speech;
-    private UI_TextDisplay captions;
+    private NpcSpeechOutput output;
     private bool started;
 
     protected override Status OnStart()
     {
         started = false;
         speech = Speaker.Value ? Speaker.Value.GetComponent<BaseAI_TextToSpeech>() : null;
-        captions = Speaker.Value ? Speaker.Value.GetComponent<UI_TextDisplay>() : null;
+        output = Speaker.Value ? Speaker.Value.GetComponent<NpcSpeechOutput>() : null;
         SpeechResult.Value = "Pending"; SpeechError.Value = null;
         if (!speech || string.IsNullOrWhiteSpace(Text.Value))
         { SpeechResult.Value = "Failed"; SpeechError.Value = "invalid_speech"; return Status.Failure; }
         started = true;
         speech._Speak(Text.Value);
-        if (captions) captions._SetText(Text.Value);
+        if (output) output.SetText(Text.Value);
         return Status.Running;
     }
 
@@ -47,6 +47,6 @@ public partial class SpeakText : Unity.Behavior.Action
             speech._StopAudio();
             SpeechResult.Value = speech.Outcome.ToString(); SpeechError.Value = speech.SpeechError;
         }
-        if (captions) captions._HideText();
+        if (output) output.Clear();
     }
 }

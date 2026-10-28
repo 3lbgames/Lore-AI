@@ -6,7 +6,7 @@ The Barbarian prefab starts an interaction when the player enters `NpcProximityT
 
 `SpeakText` accepts a speaker and arbitrary text. It uses `BaseAI_TextToSpeech` for playback, activity, and cancellation. The current prefab uses Wit; the graph node has no Wit dependency or greeting-specific behavior. Playback uses the original Wit UnityAudioPlayer and its default readiness threshold. Greeting playback requires Wit access. Answering a question additionally requires the Node service and model access.
 
-When the speaker has a `UI_TextDisplay`, `SpeakText` shows the spoken text in that display and hides it when speech completes or is cancelled.
+When the speaker has an `NpcSpeechOutput`, `SpeakText` publishes the spoken text there and clears it when speech completes or is cancelled. The separate `NpcSpeechCaptionView` renders that state through the existing `UI_TextDisplay`.
 
 The graphs use Unity Behavior 1.0.16 and can be edited in Unity's Behavior window.
 
@@ -22,7 +22,7 @@ The Conversation graph opens an interaction, selects the NPC when no other NPC i
 
 `NPC/Set Up Profile Conversation` repairs missing references while preserving authored graphs and values. Edit behavior in Unity’s Behavior window; use source control for rollback.
 
-The scene's `NPC Speech Input` uses the current Wit SDK through `NpcWitTranscription`. In the Editor, enter Play Mode, approach the Barbarian, wait for its greeting, click **Talk to NPC**, and ask “Where can I get lodging for the night?”. Click **Finish speaking** or let Wit finalize the utterance. On Quest, hold the right index trigger to record and release to finish; the controller and `InputXR` button are configurable on `NpcSpeechInput`. One NPC owns the active conversation until departure; gameplay may explicitly call `SelectForConversation` to choose another nearby NPC. A recording captures its recipient and interaction at its start, and late transcripts are discarded after departure or selection change.
+The scene's `NPC Speech Input` uses the current Wit SDK through `NpcWitTranscription`. In the Editor, enter Play Mode, approach the Barbarian, wait for its greeting, click **Talk to NPC**, and ask “Where can I get lodging for the night?”. Click **Finish speaking** or let Wit finalize the utterance. On Quest, hold the right index trigger to record and release to finish; the controller and `InputXR` button are configurable on `NpcSpeechControls`. One NPC owns the active conversation until departure; gameplay may explicitly call `SelectForConversation` to choose another nearby NPC. A recording captures its recipient and interaction at its start, and late transcripts are discarded after departure or selection change.
 
 Start the local service using [the service instructions](../../../../Server/npc-service/README.md). Provider credentials belong only in `Server/npc-service/.env`. Editor connection settings live in ignored `UserSettings/NpcService.local.json`; player builds use Meta Platform user proof instead.
 
@@ -31,3 +31,11 @@ Start the local service using [the service instructions](../../../../Server/npc-
 The headset displays recording and processing status below the center of view, with partial recognized words during capture. The Wit configuration disables unused intent-attribute dispatch to avoid an assembly scan during Quest startup. For USB testing without a Meta Platform app, use the development-only setup in `Server/npc-service/README.md`.
 
 The recording display is the nested `Assets/_Prefabs/NpcSpeechStatus.prefab`. Edit its Canvas/TMP layout and `NpcSpeechStatusView` fields for wording, colors, camera offset, and failure-display duration. `NpcSpeechInput` only routes capture and exposes provider-neutral status; `NpcWitTranscription` implements `INpcSpeechCaptureStatus`. Red RECORDING follows the provider's actual recording state.
+
+## Reskinning controls and speech output
+
+- **Mic controls:** replace or disable `NpcSpeechControls` on `NpcSpeechInput.prefab` and the standalone `NPC Speech Input` object in `BaseScene`. A UI button, gesture, or controller adapter calls `NpcSpeechInput.BeginListening()` and `EndListening()`. Read `CanBeginListening`, `HasRecipient`, and `IsListening` to enable and label controls. The input component retains recipient/turn checks, timeout, and cancellation; custom controls must not call the transcription provider directly. Disabling the default controls while its XR button is held finishes that capture.
+- **Mic status:** replace `NpcSpeechStatusView` and its nested prefab independently. Read the input's recording, starting, processing (`IsListening` after capture), partial-transcript, and failure state. Recording indicators must reflect `IsRecording`, not button-down state.
+- **NPC output:** keep `NpcSpeechOutput` on the graph's speaker GameObject. Replace or disable `NpcSpeechCaptionView` to change the renderer or location. A custom view reads `output.Text` when enabled, subscribes to `output.Changed`, and unsubscribes when disabled. A null text means clear the display. Hiding a view does not cancel audio or erase the output state; re-enabling it restores the current text. Keep the view outside any panel it hides.
+
+The current caption view references `UI_TextDisplay`; a replacement can render TMP text, a speech bubble, or a HUD without changing `SpeakText`. Output text becomes available when speech is requested, just as captions did before; it is not proof that audio has started or completed. The graph and speech adapter remain responsible for playback results and cancellation. `NpcCharacterDirector`, the conversation graphs, transcript routing, and the service request contract do not need to change for a reskin.

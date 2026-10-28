@@ -394,6 +394,12 @@ PrefabInstance:
       propertyPath: m_Center.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6377765830298848626, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: m_Text
+      value: 'An exact reply.
+
+        Second line.'
+      objectReference: {fileID: 0}
     - target: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       propertyPath: m_Name
       value: Barbarian_NPC Variant
@@ -420,6 +426,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 256722755474975332, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8364453640329657362}
+    - targetCorrespondingSourceObject: {fileID: 256722755474975332, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3517095437238096931}
+    - targetCorrespondingSourceObject: {fileID: 256722755474975332, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5748872266455093639}
   m_SourcePrefab: {fileID: 100100000, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
 --- !u!1 &3846277744125631185 stripped
 GameObject:
@@ -541,6 +553,17 @@ MonoBehaviour:
   campaignId: local-campaign
   situation: The player is nearby and speaking to this character.
   speech: {fileID: 8877408205886043071}
+--- !u!114 &4757402468474862718 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2191284809205327948, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+  m_PrefabInstance: {fileID: 6659893362828907570}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6916612336409017942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 653ed3cab637b9244924cff20fa8b797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6916612336409017942 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 256722755474975332, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
@@ -559,6 +582,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcWitVoiceBinding
   profile: {fileID: 11400000, guid: 47f3e709f230a42db9b2ce6fe1e86269, type: 2}
+--- !u!114 &3517095437238096931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6916612336409017942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ef5b5913b352480eb365315eccb7b77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcSpeechOutput
+--- !u!114 &5748872266455093639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6916612336409017942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1030a18178bfb4440b29796f757dd52c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcSpeechCaptionView
+  output: {fileID: 3517095437238096931}
+  display: {fileID: 4757402468474862718}
 --- !u!4 &8221114640743323231 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3349540742646383213, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
