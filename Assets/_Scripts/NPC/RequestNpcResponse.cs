@@ -22,7 +22,10 @@ public partial class RequestNpcResponse : Unity.Behavior.Action
         if (!director || !director.profile || !proxy || string.IsNullOrWhiteSpace(Transcript.Value)) return Fail("invalid_request");
         if (NpcCharacterDirector.Selected != director) return Fail("cancelled");
         turnRevision = director.TurnRevision;
-        proxy.Submit(director.CreateRequest(Transcript.Value)); return Status.Running;
+        var request = director.Memory.CurrentTurn;
+        if (!director.Memory.Loaded || request == null || request.input != Transcript.Value) return Fail("input_not_committed");
+        request.expectedRevision = director.Memory.Revision;
+        proxy.Submit(request); return Status.Running;
     }
     protected override Status OnUpdate()
     {

@@ -22,3 +22,5 @@ MonoBehaviour:
   - Do not invent world facts. Say when you do not know.
   - You do not know royal secrets.
   unavailableReply: I cannot talk right now. Try me again in a moment.
+  returningGreeting: Good to see you again. What is on your mind?
+  memoryUnavailableGreeting: Hello there. Give me a moment to gather my thoughts.

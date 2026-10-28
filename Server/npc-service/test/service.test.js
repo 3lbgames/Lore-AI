@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createService, ServiceError } from '../src/service.js';
 
 const request = () => ({
-  version: 1, sessionId: 'session-1', interactionId: 'interaction-1', turnId: 'turn-1',
+  version: 1, writerId: 'writer', expectedRevision: 1, sessionId: 'session-1', interactionId: 'interaction-1', turnId: 'turn-1',
   worldId: 'local-world', campaignId: 'local-campaign', npcId: 'barbarian',
   input: 'Where can I get lodging for the night?',
   profile: { npcId: 'barbarian', personality: 'A blunt but helpful warrior.', voice: 'existing',
@@ -13,19 +13,20 @@ const request = () => ({
 async function fixture(t, generate = async () => 'Try the Oak Inn beside the east gate.', options = {}) {
   const server = createService({ authMode: 'local', localToken: 'test-token',
     grants: [{ playerId: 'local-player', worldId: 'local-world', campaignId: 'local-campaign', npcIds: ['barbarian'] }],
-    timeoutMs: 50, generate, ...options });
+    timeoutMs: 50, generate, memoryStore: { load: async () => ({ revision: 1, history: [{kind: 'player_input',turnId:'turn-1',text: fixtureInput,delivery:'completed'}] }) }, ...options });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   t.after(() => { server.closeAllConnections(); server.close(); });
-  return async (body, token = 'test-token') => fetch(`http://127.0.0.1:${server.address().port}/v1/responses`, {
+  let fixtureInput;
+  return async (body, token = 'test-token') => { fixtureInput = body.input; return fetch(`http://127.0.0.1:${server.address().port}/v1/responses`, {
     method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify(body)
-  });
+  }); };
 }
 test('returns a complete response with correlation IDs and preserves exact input', async t => {
   const body = request(); body.input = '  Where is "the inn"?\n';
   const post = await fixture(t, async value => { assert.equal(value.input, body.input); return 'Beside the east gate.'; });
   const response = await post(body); assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), { version: 1, sessionId: body.sessionId, interactionId: body.interactionId,
-    turnId: body.turnId, status: 'completed', text: 'Beside the east gate.' });
+    turnId: body.turnId, status: 'completed', text: 'Beside the east gate.', revision: 1 });
 });
 test('rejects missing credentials before generation', async t => {
   const post = await fixture(t, () => assert.fail('unauthorized generation'));

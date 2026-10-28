@@ -132,6 +132,72 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b242ab5d7c3a6e9429fdebd4c97536a4, type: 3}
   m_PrefabInstance: {fileID: 792019880875551588}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4646988253719373407
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 8221114640743323231}
+    m_Modifications:
+    - target: {fileID: 2955107197922530263, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: m_Name
+      value: NpcCampaignStatus
+      objectReference: {fileID: 0}
+    - target: {fileID: 5844990655068353559, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: controls
+      value: 
+      objectReference: {fileID: 8003696232742138139}
+    - target: {fileID: 9084893879220682730, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9084893879220682730, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9084893879220682730, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9084893879220682730, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9084893879220682730, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9084893879220682730, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9084893879220682730, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9084893879220682730, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9084893879220682730, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9084893879220682730, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+--- !u!4 &4497246560186964405 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9084893879220682730, guid: 9c22d37b3142f4a859c8fb8cf09598f3, type: 3}
+  m_PrefabInstance: {fileID: 4646988253719373407}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5739069111939171527
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -410,6 +476,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3349540742646383213, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5201654881771873068}
+    - targetCorrespondingSourceObject: {fileID: 3349540742646383213, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4497246560186964405}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       insertIndex: -1
@@ -423,6 +492,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 107158488689147929}
+    - targetCorrespondingSourceObject: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6949802895421264865}
+    - targetCorrespondingSourceObject: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1364766150417040290}
+    - targetCorrespondingSourceObject: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8003696232742138139}
     - targetCorrespondingSourceObject: {fileID: 256722755474975332, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8364453640329657362}
@@ -529,7 +607,7 @@ MonoBehaviour:
   textOutput: 
   addToPromptStart: 
   debugEcho: 0
-  AIConversation: {fileID: 0}
+  AIConversation: {fileID: 6949802895421264865}
   systemPrompt: You are a helpful assistant
   testPrompt: Tell me a fact about cats
   testImagePrompt: What is this?
@@ -553,6 +631,59 @@ MonoBehaviour:
   campaignId: local-campaign
   situation: The player is nearby and speaking to this character.
   speech: {fileID: 8877408205886043071}
+--- !u!114 &6949802895421264865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3846277744125631185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0866e6b22125d814ca9484acb514c658, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core3lb.BaseAI_Conversation
+  overrideSystemPrompt: 0
+  systemPromptOverride: You are a helpful Assistant
+  maxHistory: 15
+  systemConversationList: []
+  conversationList: []
+  acknowledgedHistory: []
+--- !u!114 &1364766150417040290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3846277744125631185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88089f29c53a849739f2016cdf2cc823, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcMemory
+--- !u!114 &8003696232742138139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3846277744125631185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51639a11813f944fba6ba2ae4cb58d0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcCampaignControls
+  character: {fileID: 107158488689147929}
+  buttonRect:
+    serializedVersion: 2
+    x: 20
+    y: 75
+    width: 200
+    height: 40
+  resetText: Reset campaign
+  resetController: 0
+  resetButton: 2
+  holdSeconds: 2
 --- !u!114 &4757402468474862718 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2191284809205327948, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
