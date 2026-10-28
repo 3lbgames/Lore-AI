@@ -1,0 +1,229 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &129744758767084564
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6847119920567247910}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.085999966
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+      propertyPath: m_Name
+      value: potion_large_blue
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+--- !u!4 &452131648817497087 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e804a52b1535cd74cb096d69ee7514db, type: 3}
+  m_PrefabInstance: {fileID: 129744758767084564}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3978951992070829423
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2285921423209073607, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.113
+      objectReference: {fileID: 0}
+    - target: {fileID: 2285921423209073607, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.035
+      objectReference: {fileID: 0}
+    - target: {fileID: 2285921423209073607, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 4.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2285921423209073607, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2285921423209073607, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2285921423209073607, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2285921423209073607, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2285921423209073607, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2285921423209073607, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2285921423209073607, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7229075299188979456, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_Size.x
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7229075299188979456, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_Size.z
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8136756213449813463, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_Name
+      value: GroKitGrabObject ItemID Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 8375525043208701066, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7511380253493662025, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 452131648817497087}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8136756213449813463, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1170582300100478665}
+    - targetCorrespondingSourceObject: {fileID: 8136756213449813463, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5916435055025138599}
+  m_SourcePrefab: {fileID: 100100000, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+--- !u!114 &2301472182909265414 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2938716408144008041, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+  m_PrefabInstance: {fileID: 3978951992070829423}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5175624892616677560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c90db9b5fca504a4a945db5489a48f1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &5175624892616677560 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8136756213449813463, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+  m_PrefabInstance: {fileID: 3978951992070829423}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1170582300100478665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5175624892616677560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c42773c608a8d844d9d9b2de81816e74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core3lb.ItemID
+  DisplayName: Blue Potion
+  Description: 
+  useStrings: 0
+  itemIDEnum: 3
+  groupIDEnum: 2
+  itemIDString: ANY
+  groupIDString: ANY
+--- !u!114 &5916435055025138599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5175624892616677560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2033eeced48d4194cac4c033596eccdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core3lb.TriggerReaction
+  notes: 
+  triggerRight:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2301472182909265414}
+        m_TargetAssemblyTypeName: Core3lb.GroKitGrabObject, Assembly-CSharp
+        m_MethodName: ForceDrop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5175624892616677560}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  triggerWrong:
+    m_PersistentCalls:
+      m_Calls: []
+  alwaysRunOnExit: 0
+  onExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!4 &6847119920567247910 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7511380253493662025, guid: 7a97da630536add4b98a1667e406f066, type: 3}
+  m_PrefabInstance: {fileID: 3978951992070829423}
+  m_PrefabAsset: {fileID: 0}
