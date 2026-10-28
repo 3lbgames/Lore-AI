@@ -206,8 +206,39 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 56b4a0ca8daa0154387f58eb3154ab99, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1094786028860480441}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 56b4a0ca8daa0154387f58eb3154ab99, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5745986881355088598}
   m_SourcePrefab: {fileID: 100100000, guid: 56b4a0ca8daa0154387f58eb3154ab99, type: 3}
+--- !u!1 &4856055925124905366 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 56b4a0ca8daa0154387f58eb3154ab99, type: 3}
+  m_PrefabInstance: {fileID: 5739069111939171527}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5745986881355088598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4856055925124905366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2f69eb38ad98f548b8c1be55032e1ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Facing
+  faceTo: {fileID: 0}
+  snapOnEnable: 0
+  alwaysSnap: 0
+  facePlayer: 0
+  isFacing: 0
+  axisConstraint: 4
+  lookTime: 1
+  scaleToDistance: 0
+  scaleMultiplier: 0.5
+  scaleMultiMax: 5
+  scaleTransformOverride: {fileID: 0}
 --- !u!4 &5201654881771873068 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 56b4a0ca8daa0154387f58eb3154ab99, type: 3}
@@ -287,6 +318,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2922850329193132121, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: isFacing
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3349540742646383213, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -331,6 +366,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3988508101560307292, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: OnPlayerEnter.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4797932211770069400, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       propertyPath: m_LocalScale.y
       value: 1
@@ -338,6 +377,14 @@ PrefabInstance:
     - target: {fileID: 4797932211770069400, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       propertyPath: m_LocalPosition.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5403955160077986408, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: theEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5623529458267274868, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: onEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6048261583601756956, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       propertyPath: m_Height
@@ -357,8 +404,87 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3349540742646383213, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5201654881771873068}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7833137883007689549}
+    - targetCorrespondingSourceObject: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8701586367570658040}
   m_SourcePrefab: {fileID: 100100000, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+--- !u!1 &3846277744125631185 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+  m_PrefabInstance: {fileID: 6659893362828907570}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7833137883007689549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3846277744125631185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraphAgent
+  m_Graph: {fileID: 632946916111067676, guid: 8b6769ee4415e46a79e0cf98f3a914b1, type: 2}
+  m_BlackboardVariableOverridesList:
+  - rid: 4954066882073722922
+  - rid: 4954066882073722923
+  - rid: 4954066882073722924
+  m_OriginalGraph: {fileID: 632946916111067676, guid: 8b6769ee4415e46a79e0cf98f3a914b1, type: 2}
+  m_IsInitialised: 0
+  m_IsStarted: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 4954066882073722922
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        m_Value: {fileID: 3846277744125631185}
+    - rid: 4954066882073722923
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 4101354959723814362
+          m_Value1: 11771442843572073706
+        Name: FacingObject
+        m_Value: {fileID: 4856055925124905366}
+    - rid: 4954066882073722924
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 4555092033754309897
+          m_Value1: 10918422640668468707
+        Name: Speaker
+        m_Value: {fileID: 6916612336409017942}
+--- !u!114 &8701586367570658040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3846277744125631185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a620ae548c7624c068f96d6bb31be80c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VillagerInteraction
+  interactionRadius: 4
+  departureGraceSeconds: 1
+  playerOverride: {fileID: 0}
+  interactionChannel: {fileID: 11400000, guid: 5b644a4a5f6d3477fa745a85698364ca, type: 2}
+--- !u!1 &6916612336409017942 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 256722755474975332, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+  m_PrefabInstance: {fileID: 6659893362828907570}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8221114640743323231 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3349540742646383213, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}

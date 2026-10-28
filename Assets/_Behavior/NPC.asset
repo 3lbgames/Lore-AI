@@ -1,0 +1,869 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6032998050720056637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b27bb6d9a2c8d540a10dff10acc543e, type: 3}
+  m_Name: NPC Debug Info
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraphDebugInfo
+  m_CodeBreakPointsList: []
+--- !u!114 &-1817157486290257774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c02bb70996b49eba31d0c206e28da24, type: 3}
+  m_Name: NPC Blackboard
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.RuntimeBlackboardAsset
+  VersionTimestamp: 639287440825079750
+  AssetID:
+    m_Value0: 0
+    m_Value1: 0
+  m_Blackboard:
+    m_Variables:
+    - rid: 4954066881400800188
+    - rid: 4954066881400800225
+    - rid: 4954066881400800226
+    - rid: 4954066881400800227
+    - rid: 4954066881400800228
+    - rid: 4954066881400800229
+    - rid: 4954066881400800230
+  m_SharedBlackboardVariableGuids: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4954066881400800188
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800225
+      type: {class: 'BlackboardVariable`1[[NpcInteractionChannel, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 14544892953242457607
+          m_Value1: 10510407304410321758
+        Name: Interaction
+        m_Value: {fileID: 11400000, guid: 5b644a4a5f6d3477fa745a85698364ca, type: 2}
+    - rid: 4954066881400800226
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 3333889977221129004
+          m_Value1: 653168554086872991
+        Name: Player
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800227
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 4383985312402243193
+          m_Value1: 1856975029833539505
+        Name: InteractionActive
+        m_Value: 0
+    - rid: 4954066881400800228
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 4101354959723814362
+          m_Value1: 11771442843572073706
+        Name: FacingObject
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800229
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 4555092033754309897
+          m_Value1: 10918422640668468707
+        Name: Speaker
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800230
+      type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 9316398404925759957
+          m_Value1: 275122027578553842
+        Name: SpeechText
+        m_Value: Hello, traveler. What brings you here?
+--- !u!114 &-755100129244983882
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dd922ae02c94c87a66e46a10a7319b9, type: 3}
+  m_Name: NPC Blackboard
+  m_EditorClassIdentifier: Unity.Behavior.Authoring::Unity.Behavior.BehaviorBlackboardAuthoringAsset
+  AssetID:
+    m_Value0: 7702304648512235403
+    m_Value1: 12760010507953365113
+  m_Variables:
+  - rid: 4954066881400800189
+  - rid: 4954066881400800202
+  - rid: 4954066881400800203
+  - rid: 4954066881400800204
+  - rid: 4954066881400800205
+  - rid: 4954066881400800206
+  - rid: 4954066881400800207
+  m_VersionTimestamp: 639287440825079750
+  m_CommandBuffer:
+    m_Commands: []
+  m_RuntimeBlackboardAsset: {fileID: -1817157486290257774}
+  references:
+    version: 2
+    RefIds:
+    - rid: 4954066881400800189
+      type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800202
+      type: {class: 'TypedVariableModel`1[[NpcInteractionChannel, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 14544892953242457607
+          m_Value1: 10510407304410321758
+        Name: Interaction
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 11400000, guid: 5b644a4a5f6d3477fa745a85698364ca, type: 2}
+    - rid: 4954066881400800203
+      type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 3333889977221129004
+          m_Value1: 653168554086872991
+        Name: Player
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800204
+      type: {class: 'TypedVariableModel`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 4383985312402243193
+          m_Value1: 1856975029833539505
+        Name: InteractionActive
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 0
+    - rid: 4954066881400800205
+      type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 4101354959723814362
+          m_Value1: 11771442843572073706
+        Name: FacingObject
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800206
+      type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 4555092033754309897
+          m_Value1: 10918422640668468707
+        Name: Speaker
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800207
+      type: {class: 'TypedVariableModel`1[[System.String, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 9316398404925759957
+          m_Value1: 275122027578553842
+        Name: SpeechText
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: Hello, traveler. What brings you here?
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bad8f2220607dac4db5082ff333fafb8, type: 3}
+  m_Name: NPC
+  m_EditorClassIdentifier: Unity.Behavior.Authoring::Unity.Behavior.BehaviorAuthoringGraph
+  Blackboard: {fileID: -755100129244983882}
+  m_Description: 
+  m_Nodes:
+  - rid: 4954066881400800208
+  - rid: 4954066881400800209
+  m_VersionTimestamp: 639287466672447470
+  m_SerializedVersion: 3
+  m_DebugInfo: {fileID: -6032998050720056637}
+  m_RuntimeGraph: {fileID: 632946916111067676}
+  AssetID:
+    m_Value0: 7702304648512235403
+    m_Value1: 12760010507953365113
+  Story:
+    Story: 
+    StoryVariableNames: []
+    Variables: []
+  m_NodeModelsInfo:
+  - Name: Start On Event Message
+    Story: 'When a message is received on [ChannelVariable]'
+    RuntimeTypeString: Unity.Behavior.StartOnEvent, Unity.Behavior, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    RuntimeTypeID:
+      m_Value0: 3356300611230043817
+      m_Value1: 5497005381991559097
+    Variables:
+    - Name: ChannelVariable
+      Type:
+        m_SerializableType: Unity.Behavior.BlackboardVariable, Unity.Behavior, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      Tooltip: 
+    NamedChildren: []
+    IsPlaceholder: 0
+  - Name: Run Subgraph
+    Story: 
+    RuntimeTypeString: Unity.Behavior.RunSubgraph, Unity.Behavior, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    RuntimeTypeID:
+      m_Value0: 9965463903622711961
+      m_Value1: 5344335246744595133
+    Variables: []
+    NamedChildren: []
+    IsPlaceholder: 0
+  m_Blackboards: []
+  m_MainBlackboardAuthoringAsset: {fileID: -755100129244983882}
+  m_CommandBuffer:
+    m_Commands: []
+  m_SubgraphsInfo:
+  - Asset: {fileID: 11400000, guid: 0f698144dadcc480a84be59257f4c490, type: 2}
+    Timestamp: 639287457074535680
+  m_BlackboardMissingManagedRef: 0
+  m_GraphMissingManagedRef: 0
+  m_HasMissingTypeInManagedRef: 0
+  m_EnumDependencyCache:
+    Entries: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4954066881400800208
+      type: {class: StartOnEventModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        Position: {x: 0, y: 0.8}
+        ID:
+          m_Value0: 16635395833500818282
+          m_Value1: 17825204685006197677
+        Parents: []
+        PortModels:
+        - rid: 4954066881400800210
+        NodeType:
+          m_SerializableType: Unity.Behavior.StartOnEvent, Unity.Behavior, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        NodeTypeID:
+          m_Value0: 3356300611230043817
+          m_Value1: 5497005381991559097
+        m_FieldValues:
+        - rid: 4954066881400800211
+        TriggerBehavior: 1
+    - rid: 4954066881400800209
+      type: {class: SubgraphNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        Position: {x: 0, y: 150}
+        ID:
+          m_Value0: 836443185099634078
+          m_Value1: 973311594501158800
+        Parents: []
+        PortModels:
+        - rid: 4954066881400800212
+        - rid: 4954066881400800213
+        NodeType:
+          m_SerializableType: Unity.Behavior.RunSubgraph, Unity.Behavior, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        NodeTypeID:
+          m_Value0: 9965463903622711961
+          m_Value1: 5344335246744595133
+        m_FieldValues:
+        - rid: 4954066881400800214
+        - rid: 4954066881400800215
+        - rid: 4954066881400800231
+        - rid: 4954066881400800232
+        - rid: 4954066881400800233
+        - rid: 4954066881400800234
+        - rid: 4954066881400800235
+        - rid: 4954066882073723166
+        m_OveriddenblackboardVariableGuids: []
+        m_SubgraphAssetId:
+          m_Value0: 0
+          m_Value1: 0
+        m_SubgraphAuthoringAsset: {fileID: 0}
+        m_IsDynamic: 0
+        m_ShowStaticSubgraphRepresentation: 1
+        m_StoryFields: []
+    - rid: 4954066881400800210
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: OutputPort
+        m_PortDataFlowType: 1
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 4954066881400800208
+        m_Connections:
+        - rid: 4954066881400800212
+    - rid: 4954066881400800211
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: ChannelVariable
+        Type:
+          m_SerializableType: NpcInteractionChannel, Assembly-CSharp, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 4954066881400800216
+        LinkedVariable:
+          rid: 4954066881400800217
+    - rid: 4954066881400800212
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: InputPort
+        m_PortDataFlowType: 0
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 4954066881400800209
+        m_Connections:
+        - rid: 4954066881400800210
+    - rid: 4954066881400800213
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: OutputPort
+        m_PortDataFlowType: 1
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 4954066881400800209
+        m_Connections: []
+    - rid: 4954066881400800214
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Subgraph
+        Type:
+          m_SerializableType: Unity.Behavior.BehaviorGraph, Unity.Behavior, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 4954066881400800218
+        LinkedVariable:
+          rid: 4954066881400800236
+    - rid: 4954066881400800215
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Blackboard
+        Type:
+          m_SerializableType: Unity.Behavior.BehaviorBlackboardAuthoringAsset, Unity.Behavior.Authoring,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 4954066881400800219
+        LinkedVariable:
+          rid: -2
+    - rid: 4954066881400800216
+      type: {class: 'BlackboardVariable`1[[NpcInteractionChannel, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800217
+      type: {class: 'TypedVariableModel`1[[NpcInteractionChannel, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 14544892953242457607
+          m_Value1: 10510407304410321758
+        Name: Interaction
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 11400000, guid: 5b644a4a5f6d3477fa745a85698364ca, type: 2}
+    - rid: 4954066881400800218
+      type: {class: 'BlackboardVariable`1[[Unity.Behavior.BehaviorGraph, Unity.Behavior]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800219
+      type: {class: 'BlackboardVariable`1[[Unity.Behavior.BehaviorBlackboardAuthoringAsset, Unity.Behavior.Authoring]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800231
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: FacingObject
+        Type:
+          m_SerializableType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 4954066881400800237
+        LinkedVariable:
+          rid: 4954066881400800238
+    - rid: 4954066881400800232
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Player
+        Type:
+          m_SerializableType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 4954066881400800239
+        LinkedVariable:
+          rid: 4954066881400800240
+    - rid: 4954066881400800233
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: InteractionActive
+        Type:
+          m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        LocalValue:
+          rid: 4954066881400800241
+        LinkedVariable:
+          rid: 4954066881400800242
+    - rid: 4954066881400800234
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Speaker
+        Type:
+          m_SerializableType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 4954066881400800243
+        LinkedVariable:
+          rid: 4954066881400800244
+    - rid: 4954066881400800235
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: SpeechText
+        Type:
+          m_SerializableType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        LocalValue:
+          rid: 4954066881400800245
+        LinkedVariable:
+          rid: 4954066881400800246
+    - rid: 4954066881400800236
+      type: {class: 'TypedVariableModel`1[[Unity.Behavior.BehaviorGraph, Unity.Behavior]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 16754937426438506621
+          m_Value1: 11583277949706389988
+        Name: 
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: -2617743047794854576, guid: 0f698144dadcc480a84be59257f4c490, type: 2}
+    - rid: 4954066881400800237
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800238
+      type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 4101354959723814362
+          m_Value1: 11771442843572073706
+        Name: FacingObject
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800239
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800240
+      type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 3333889977221129004
+          m_Value1: 653168554086872991
+        Name: Player
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800241
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 0
+    - rid: 4954066881400800242
+      type: {class: 'TypedVariableModel`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 4383985312402243193
+          m_Value1: 1856975029833539505
+        Name: InteractionActive
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 0
+    - rid: 4954066881400800243
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800244
+      type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 4555092033754309897
+          m_Value1: 10918422640668468707
+        Name: Speaker
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: {fileID: 0}
+    - rid: 4954066881400800245
+      type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 
+    - rid: 4954066881400800246
+      type: {class: 'TypedVariableModel`1[[System.String, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 9316398404925759957
+          m_Value1: 275122027578553842
+        Name: SpeechText
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: Hello, traveler. What brings you here?
+    - rid: 4954066882073723166
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Self
+        Type:
+          m_SerializableType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 4954066882073723167
+        LinkedVariable:
+          rid: -2
+    - rid: 4954066882073723167
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 10290091533781743691
+          m_Value1: 4681941096847995968
+        Name: Self
+        m_Value: {fileID: 0}
+--- !u!114 &632946916111067676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db920e62f70f420bb33c771449926fa4, type: 3}
+  m_Name: NPC
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraph
+  Graphs:
+  - rid: 4954066881400800192
+  - rid: 4954066882073723228
+  m_DebugInfo: {fileID: -6032998050720056637}
+  m_WasCompileWithPlaceholderNode: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4954066881400800192
+      type: {class: BehaviorGraphModule, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        AuthoringAssetID:
+          m_Value0: 7702304648512235403
+          m_Value1: 12760010507953365113
+        m_DebugInfo: {fileID: -6032998050720056637}
+        BlackboardReference:
+          rid: 4954066881400800193
+        BlackboardGroupReferences: []
+        Root:
+          rid: 4954066882073723229
+        m_VersionTimestamp: 639287466672447470
+    - rid: 4954066881400800193
+      type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        m_Blackboard:
+          rid: 4954066881400800195
+        m_Source: {fileID: -1817157486290257774}
+    - rid: 4954066881400800195
+      type: {class: Blackboard, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        m_Variables:
+        - rid: 4954066882073723236
+        - rid: 4954066882073723233
+        - rid: 4954066882073723237
+        - rid: 4954066882073723238
+        - rid: 4954066882073723239
+        - rid: 4954066882073723240
+        - rid: 4954066882073723241
+    - rid: 4954066882073723203
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 10290091533781743691
+          m_Value1: 4681941096847995968
+        Name: Self
+        m_Value: {fileID: 0}
+    - rid: 4954066882073723228
+      type: {class: BehaviorGraphModule, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        AuthoringAssetID:
+          m_Value0: 9278783962300377359
+          m_Value1: 10431731293860744104
+        m_DebugInfo: {fileID: -6032998050720056637}
+        BlackboardReference:
+          rid: 4954066882073723230
+        BlackboardGroupReferences: []
+        Root:
+          rid: 4954066882073723231
+        m_VersionTimestamp: 639287457074535680
+    - rid: 4954066882073723229
+      type: {class: StartOnEvent, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 16635395833500818282
+          m_Value1: 17825204685006197677
+        Graph:
+          rid: 4954066881400800192
+        m_Parent:
+          rid: -2
+        m_Child:
+          rid: 4954066882073723232
+        ChannelVariable:
+          rid: 4954066882073723233
+        MessageVariables:
+        - rid: -2
+        - rid: -2
+        - rid: -2
+        - rid: -2
+        Mode: 1
+    - rid: 4954066882073723230
+      type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        m_Blackboard:
+          rid: 4954066882073723234
+        m_Source: {fileID: -4398850225288040417, guid: 0f698144dadcc480a84be59257f4c490, type: 2}
+    - rid: 4954066882073723231
+      type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 13389810604168530740
+          m_Value1: 15572812228578886371
+        Graph:
+          rid: 4954066882073723228
+        m_Parent:
+          rid: -2
+        m_Child:
+          rid: 4954066882073723235
+        Repeat: 0
+        AllowMultipleRepeatsPerTick: 0
+    - rid: 4954066882073723232
+      type: {class: RunSubgraph, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 836443185099634078
+          m_Value1: 973311594501158800
+        Graph:
+          rid: 4954066881400800192
+        m_Parent:
+          rid: 4954066882073723229
+        Subgraph:
+          rid: 4954066882073723228
+    - rid: 4954066882073723233
+      type: {class: 'BlackboardVariable`1[[NpcInteractionChannel, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 14544892953242457607
+          m_Value1: 10510407304410321758
+        Name: Interaction
+        m_Value: {fileID: 11400000, guid: 5b644a4a5f6d3477fa745a85698364ca, type: 2}
+    - rid: 4954066882073723234
+      type: {class: Blackboard, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        m_Variables:
+        - rid: 4954066882073723239
+        - rid: 4954066882073723237
+        - rid: 4954066882073723238
+        - rid: 4954066882073723240
+        - rid: 4954066882073723241
+        - rid: 4954066882073723203
+    - rid: 4954066882073723235
+      type: {class: FacePlayerDuringInteraction, ns: , asm: Assembly-CSharp}
+      data:
+        ID:
+          m_Value0: 12090681023191249497
+          m_Value1: 14942719940501413723
+        Graph:
+          rid: 4954066882073723228
+        m_Parent:
+          rid: 4954066882073723231
+        m_Child:
+          rid: 4954066882073723242
+        FacingObject:
+          rid: 4954066882073723239
+    - rid: 4954066882073723236
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        m_Value: {fileID: 0}
+    - rid: 4954066882073723237
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 3333889977221129004
+          m_Value1: 653168554086872991
+        Name: Player
+        m_Value: {fileID: 0}
+    - rid: 4954066882073723238
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 4383985312402243193
+          m_Value1: 1856975029833539505
+        Name: InteractionActive
+        m_Value: 0
+    - rid: 4954066882073723239
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 4101354959723814362
+          m_Value1: 11771442843572073706
+        Name: FacingObject
+        m_Value: {fileID: 0}
+    - rid: 4954066882073723240
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 4555092033754309897
+          m_Value1: 10918422640668468707
+        Name: Speaker
+        m_Value: {fileID: 0}
+    - rid: 4954066882073723241
+      type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 9316398404925759957
+          m_Value1: 275122027578553842
+        Name: SpeechText
+        m_Value: Hello, traveler. What brings you here?
+    - rid: 4954066882073723242
+      type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 5147452936885948150
+          m_Value1: 4336827457713868931
+        Graph:
+          rid: 4954066882073723228
+        m_Parent:
+          rid: 4954066882073723235
+        m_Children:
+        - rid: 4954066882073723243
+        - rid: 4954066882073723244
+        m_RegisteredObservers: []
+    - rid: 4954066882073723243
+      type: {class: FaceInteractingPlayer, ns: , asm: Assembly-CSharp}
+      data:
+        ID:
+          m_Value0: 5147452936885948150
+          m_Value1: 4336827457713868931
+        Graph:
+          rid: 4954066882073723228
+        m_Parent:
+          rid: 4954066882073723242
+        Player:
+          rid: 4954066882073723237
+        InteractionActive:
+          rid: 4954066882073723238
+        FacingObject:
+          rid: 4954066882073723239
+    - rid: 4954066882073723244
+      type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 10202818233503537381
+          m_Value1: 6042450250109516011
+        Graph:
+          rid: 4954066882073723228
+        m_Parent:
+          rid: 4954066882073723242
+        m_Children:
+        - rid: 4954066882073723245
+        - rid: 4954066882073723246
+        m_RegisteredObservers: []
+    - rid: 4954066882073723245
+      type: {class: SpeakText, ns: , asm: Assembly-CSharp}
+      data:
+        ID:
+          m_Value0: 10202818233503537381
+          m_Value1: 6042450250109516011
+        Graph:
+          rid: 4954066882073723228
+        m_Parent:
+          rid: 4954066882073723244
+        Speaker:
+          rid: 4954066882073723240
+        Text:
+          rid: 4954066882073723241
+    - rid: 4954066882073723246
+      type: {class: WaitForInteractionEnd, ns: , asm: Assembly-CSharp}
+      data:
+        ID:
+          m_Value0: 873459576334952675
+          m_Value1: 2160880092150580792
+        Graph:
+          rid: 4954066882073723228
+        m_Parent:
+          rid: 4954066882073723244
+        InteractionActive:
+          rid: 4954066882073723238
