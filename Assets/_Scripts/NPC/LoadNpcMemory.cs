@@ -8,16 +8,23 @@ using UnityEngine;
 public partial class LoadNpcMemory : Unity.Behavior.Action
 {
     [SerializeReference] public BlackboardVariable<GameObject> Character;
+    [SerializeReference] public BlackboardVariable<bool> MemoryLoaded = new BlackboardVariable<bool>();
+    [SerializeReference] public BlackboardVariable<bool> HasSpoken = new BlackboardVariable<bool>();
+    [SerializeReference] public BlackboardVariable<string> MemoryError = new BlackboardVariable<string>();
     NpcCharacterDirector director;
     protected override Status OnStart()
     {
+        MemoryLoaded.Value = false; HasSpoken.Value = false; MemoryError.Value = null;
         director = Character.Value ? Character.Value.GetComponent<NpcCharacterDirector>() : null;
-        if (!director || !director.profile) return Status.Failure;
+        if (!director || !director.profile) { MemoryError.Value = "invalid_character"; return Status.Failure; }
         director.Memory.Load(); return Status.Running;
     }
     protected override Status OnUpdate()
     {
         if (director.Memory.IsBusy) return Status.Running;
+        MemoryLoaded.Value = director.Memory.Loaded;
+        HasSpoken.Value = director.Memory.HasSpoken;
+        MemoryError.Value = director.Memory.Error;
         return Status.Success;
     }
 }

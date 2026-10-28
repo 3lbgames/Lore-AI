@@ -8,7 +8,6 @@ public class NpcCharacterDirector : MonoBehaviour
 {
     public NpcProfile profile;
     public string worldId = "local-world", campaignId = "local-campaign";
-    [TextArea] public string situation = "The player is nearby and speaking to this character.";
     public BaseAI_TextToSpeech speech;
     public static NpcCharacterDirector Selected { get; private set; }
     public string InteractionId { get; private set; }
@@ -45,7 +44,7 @@ public class NpcCharacterDirector : MonoBehaviour
     public void SelectForConversation()
     {
         if (!InteractionOpen || Selected == this) return;
-        if (Selected) Selected.CancelTurn();
+        if (Selected && Selected.Memory.CurrentTurn?.npcInitiated != true) Selected.CancelTurn();
         Selected = this;
     }
     public bool SubmitTranscript(string exactTranscript)
@@ -59,7 +58,7 @@ public class NpcCharacterDirector : MonoBehaviour
     {
         sessionId = SessionId, interactionId = InteractionId, turnId = Guid.NewGuid().ToString("N"),
         worldId = worldId, campaignId = campaignId, npcId = profile.npcId, profile = profile.ToData(),
-        input = transcript, situation = situation, writerId = NpcCampaign.WriterId, expectedRevision = Memory.Revision
+        input = transcript, situation = "", writerId = NpcCampaign.WriterId, expectedRevision = Memory.Revision
     };
     public void CancelTurn() { if (Memory) Memory.CancelTurn(); TurnRevision++; pendingTranscript = null; AcceptingTranscript = false; }
     public void EndInteraction() { CancelTurn(); if (Selected == this) Selected = null; InteractionId = null; }

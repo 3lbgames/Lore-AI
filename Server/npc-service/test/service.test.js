@@ -42,6 +42,22 @@ test('rejects actions and incompatible protocol versions', async t => {
   assert.equal((await post({ ...request(), actions: ['give-gold'] })).status, 400);
   assert.equal((await post({ ...request(), version: 2 })).status, 400);
 });
+
+test('NPC-initiated dialogue uses scoped memory without inventing player input', async t => {
+  const history = [{kind:'action_outcome',text:'The patrol was interrupted.',delivery:'interrupted'}];
+  const post = await fixture(t, async value => {
+    assert.deepEqual(value.history, history);
+    assert.equal(value.intent, 'Comment on our last encounter');
+    assert.equal(value.input, '');
+    return 'We meet again.';
+  }, { memoryStore: { load: async () => ({revision:1,history}) } });
+  const body = {...request(), npcInitiated:true, input:'', intent:'Comment on our last encounter'};
+  assert.equal((await post(body)).status, 200);
+  assert.equal((await post({...body, intent:''})).status, 400);
+  assert.equal((await post({...body, input:'fabricated speech'})).status, 400);
+  assert.equal((await post({...body, expectedRevision:0})).status, 409);
+  assert.equal((await post({...request(), npcInitiated:false})).status, 409);
+});
 test('times out and remains usable', async t => {
   let first = true;
   const post = await fixture(t, async () => { if (first) { first = false; await new Promise(resolve => setTimeout(resolve, 100)); } return 'Hello'; });

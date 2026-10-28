@@ -12,13 +12,18 @@ function validate(body, route) {
   if (!Number.isSafeInteger(body.expectedRevision) || body.expectedRevision < 0) reject(400, 'invalid_revision');
   if (route === '/v1/memory/commit') {
     const e = body.event;
-    if (!e || !text(e.eventId) || e.turnId !== body.turnId || !['player_input','npc_speech'].includes(e.kind) ||
+    if (!e || !text(e.eventId) || e.turnId !== body.turnId || !['player_input','npc_speech','action_outcome'].includes(e.kind) ||
         !['completed','interrupted','failed'].includes(e.delivery) || typeof e.text !== 'string' || e.text.length > 12000 ||
         (e.delivery === 'completed' && !text(e.text, e.kind === 'player_input' ? 8000 : 12000)) ||
-        (e.kind === 'player_input' && e.delivery !== 'completed') || (e.delivery !== 'completed' && e.text !== '')) reject(400, 'invalid_event');
+        (e.kind === 'player_input' && e.delivery !== 'completed') ||
+        (e.kind === 'action_outcome' && !text(e.text, 12000)) ||
+        (e.kind === 'npc_speech' && e.delivery !== 'completed' && e.text !== '')) reject(400, 'invalid_event');
     return;
   }
-  if (!text(body.input, 8000) || typeof body.situation !== 'string' || body.situation.length > 8000 ||
+  if ((body.npcInitiated !== undefined && typeof body.npcInitiated !== 'boolean') ||
+      (body.npcInitiated ? body.input !== '' || !text(body.intent, 8000) : !text(body.input, 8000)) ||
+      (body.intent != null && (typeof body.intent !== 'string' || body.intent.length > 8000)) ||
+      typeof body.situation !== 'string' || body.situation.length > 8000 ||
       !Array.isArray(body.actions) || body.actions.length !== 0) reject(400, 'invalid_request');
   const p = body.profile;
   if (!p || !text(p.personality, 8000) || !text(p.voice, 256) ||
@@ -64,8 +69,8 @@ export function createService({ authMode, localToken, grants, generate, verifyId
         abort.signal.throwIfAborted();
         if (req.url === '/v1/memory/load') return state;
         if (state.revision !== body.expectedRevision) reject(409, 'revision_conflict');
-        if (!state.history.some(e => e.kind === 'player_input' && e.turnId === body.turnId && e.text === body.input)) reject(409, 'input_not_committed');
-        const history = state.history.filter(e => e.delivery === 'completed');
+        if (!body.npcInitiated && !state.history.some(e => e.kind === 'player_input' && e.turnId === body.turnId && e.text === body.input)) reject(409, 'input_not_committed');
+        const history = state.history.filter(e => e.delivery === 'completed' || e.kind === 'action_outcome');
         const reply = await generate({ ...body, history }, abort.signal);
         abort.signal.throwIfAborted();
         const after = await memoryStore.load(scope, { includeHistory: false });

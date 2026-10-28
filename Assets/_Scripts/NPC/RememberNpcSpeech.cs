@@ -16,9 +16,12 @@ public partial class RememberNpcSpeech : Modifier
     bool recorded;
     protected override Status OnStart()
     {
+        turn = null; recorded = false;
         memory = Character.Value ? Character.Value.GetComponent<NpcMemory>() : null;
         if (!memory || Child == null) return Status.Failure;
-        turn = memory.CurrentTurn; text = Text.Value; recorded = false;
+        var director = Character.Value.GetComponent<NpcCharacterDirector>();
+        if (!director || !director.profile || !director.InteractionOpen) return Status.Failure;
+        turn = memory.CurrentTurn ?? director.CreateRequest(""); text = Text.Value; recorded = false;
         StartNode(Child); return Status.Running;
     }
     protected override Status OnUpdate()

@@ -9,11 +9,6 @@ public class NpcProfile : ScriptableObject
     public string voice;
     [TextArea] public string[] facts = Array.Empty<string>();
     [TextArea] public string[] restrictions = Array.Empty<string>();
-    [TextArea] public string unavailableReply = "I cannot talk right now. Try me again in a moment.";
-
-    [TextArea] public string returningGreeting = "Good to see you again. What is on your mind?";
-    [TextArea] public string memoryUnavailableGreeting = "Hello there. Give me a moment to gather my thoughts.";
-
     public NpcProfileData ToData() => new NpcProfileData
     { npcId = npcId, personality = personality, voice = voice, facts = facts, restrictions = restrictions };
 }
@@ -34,7 +29,8 @@ public class NpcServiceRequest
 [Serializable]
 public class NpcResponseRequest : NpcServiceRequest
 {
-    public string input, situation;
+    public string input, situation, intent;
+    public bool npcInitiated;
     public NpcProfileData profile;
     public string[] actions = Array.Empty<string>();
 }

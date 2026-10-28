@@ -27,6 +27,36 @@ public class NpcMemoryTests
     }
 
     [Test]
+    public void SelectingAnotherNpcDoesNotCancelNpcInitiatedDialogue()
+    {
+        var first = new GameObject("Autonomous NPC");
+        var second = new GameObject("Conversation NPC");
+        first.SetActive(false); second.SetActive(false);
+        try
+        {
+            var directorType = Type.GetType("NpcCharacterDirector, Assembly-CSharp", true);
+            var firstDirector = first.AddComponent(directorType);
+            var secondDirector = second.AddComponent(directorType);
+            directorType.GetMethod("BeginInteraction").Invoke(firstDirector, null);
+            directorType.GetMethod("SelectForConversation").Invoke(firstDirector, null);
+            var turnType = Type.GetType("NpcResponseRequest, Assembly-CSharp", true);
+            var turn = Activator.CreateInstance(turnType);
+            turnType.GetField("npcInitiated").SetValue(turn, true);
+            var memory = first.GetComponent("NpcMemory");
+            memory.GetType().GetMethod("BeginDialogue").Invoke(memory, new[] { turn });
+            var revision = directorType.GetProperty("TurnRevision").GetValue(firstDirector);
+            directorType.GetMethod("BeginInteraction").Invoke(secondDirector, null);
+            directorType.GetMethod("SelectForConversation").Invoke(secondDirector, null);
+            Assert.That(directorType.GetProperty("TurnRevision").GetValue(firstDirector), Is.EqualTo(revision));
+            Assert.That(memory.GetType().GetProperty("CurrentTurn").GetValue(memory), Is.SameAs(turn));
+            directorType.GetMethod("EndInteraction").Invoke(firstDirector, null);
+            Assert.That(memory.GetType().GetProperty("CurrentTurn").GetValue(memory), Is.Null);
+            directorType.GetMethod("EndInteraction").Invoke(secondDirector, null);
+        }
+        finally { UnityEngine.Object.DestroyImmediate(first); UnityEngine.Object.DestroyImmediate(second); }
+    }
+
+    [Test]
     public void HistoryBufferKeepsGeneratedSpeechSeparateFromAcknowledgedDelivery()
     {
         var go = new GameObject("History buffer test");

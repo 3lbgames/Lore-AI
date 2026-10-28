@@ -629,7 +629,6 @@ MonoBehaviour:
   profile: {fileID: 11400000, guid: 47f3e709f230a42db9b2ce6fe1e86269, type: 2}
   worldId: local-world
   campaignId: local-campaign
-  situation: The player is nearby and speaking to this character.
   speech: {fileID: 8877408205886043071}
 --- !u!114 &6949802895421264865
 MonoBehaviour:

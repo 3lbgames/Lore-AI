@@ -41,7 +41,9 @@ Set `NpcProxyClient.serviceUrl` to the development computer's LAN address on por
 - `worldId`, `campaignId`, `npcId`: exact granted scope
 - `writerId`: persistent installation ID, unchanged on application restart
 - `expectedRevision`: acknowledged stream revision
-- `input`: unchanged finalized transcript, already committed for this turn
+- `npcInitiated`: `false` (default) for a player reply; `true` for graph-initiated speech
+- `input`: unchanged committed transcript for a reply; empty string for NPC-initiated speech
+- `intent`: graph-authored dialogue instruction (required for NPC-initiated speech, up to 8000 characters)
 - `profile`: `npcId`, `personality`, `voice`, `facts` and `restrictions` string arrays
 - `situation`: currently permitted observation text
 - `actions: []`: dialogue only
@@ -65,12 +67,14 @@ History is ordered by commit revision. `hasSpoken` means an acknowledged finaliz
 player input exists; greetings alone do not count.
 
 `POST /v1/memory/commit` additionally takes `expectedRevision` and
-`event: {eventId,turnId,kind,text,delivery}`. `kind` is `player_input` or
-`npc_speech`; `delivery` is `completed`, `interrupted`, or `failed`.
+`event: {eventId,turnId,kind,text,delivery}`. `kind` is `player_input`,
+`npc_speech`, or `action_outcome`; `delivery` is `completed`, `interrupted`, or `failed`.
 Player input must be completed (up to 8000 characters). Completed NPC speech is
 up to 12000 characters. Interrupted/failed speech records metadata with empty
 text, because the current speech adapter cannot confirm the spoken portion.
-Queued/generated speech must not be committed as completed. A successful commit
+Action outcomes retain a nonempty observed description (up to 12000 characters)
+for all three statuses. Record what actually happened, not a requested action or
+a model prediction. Queued/generated speech must not be committed as completed. A successful commit
 returns the immutable receipt revision. Retry the identical event ID and payload
 following a lost acknowledgement: it returns its original receipt even if the
 expected revision is stale. Changed payloads return `event_conflict` (409).
@@ -83,13 +87,16 @@ Per-character revisions reject stale new commits (`revision_conflict`, 409).
 Both the event and deduplication receipt commit in one transaction. Missing or
 unavailable storage fails explicitly; there is no in-memory runtime fallback.
 
-Unity loads before greetings, commits finalized input before generation, and
-commits speech only after delivery. Responses require the current revision and
-matching committed turn input (`input_not_committed`, 409). Node sends all
-completed history with user/assistant roles, including the current input exactly
-once. Interrupted/failed speech metadata is excluded. Generation never commits
-speech. Provider context overflow returns `context_limit` (422); history is never
-silently trimmed. A failed generation leaves the committed input intact.
+Unity graphs load memory before generating dialogue, commit finalized player input
+before replying to it, and commit speech after delivery. All responses require
+the current revision. Player replies additionally require matching committed turn
+input (`input_not_committed`, 409); NPC-initiated requests require an intent and
+empty input, and never manufacture a player utterance. Node sends completed
+dialogue with user/assistant roles, including each input once. Action outcomes
+are separate context records with their actual status, including failed and
+interrupted actions. Undelivered speech text is excluded. Generation never
+commits speech. Provider context overflow returns `context_limit` (422); history
+is never silently trimmed. A failed generation leaves committed events intact.
 Player statements remain dialogue, not witnessed facts.
 
 Reset campaign generates a new UUID and loads that separate history. Prior

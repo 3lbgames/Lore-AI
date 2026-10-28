@@ -38,7 +38,7 @@ public class NpcMemory : MonoBehaviour
     };
     public void Load()
     {
-        if (isActiveAndEnabled && !IsBusy) StartCoroutine(Restore(epoch));
+        if (gameObject.activeInHierarchy && isActiveAndEnabled && !IsBusy) StartCoroutine(Restore(epoch));
     }
     IEnumerator Restore(int expected)
     {
@@ -75,15 +75,25 @@ public class NpcMemory : MonoBehaviour
         Load();
     }
     public void CancelTurn() { CurrentTurn = null; }
+    public void BeginDialogue(NpcResponseRequest turn) { CurrentTurn = turn; }
     public void RecordSpeech(NpcResponseRequest turn, string text, string outcome)
     {
         if (turn == null || turn.campaignId != director.campaignId) return;
         if (CurrentTurn == turn) CurrentTurn = null;
         var request = Request(turn.turnId);
         request.campaignId = turn.campaignId;
+        request.interactionId = turn.interactionId;
         request.@event = new ConversationEvent { eventId = turn.turnId + ":speech", turnId = turn.turnId,
             kind = "npc_speech", text = outcome == "Completed" ? text : "",
             delivery = outcome == "Completed" ? "completed" : outcome == "Cancelled" ? "interrupted" : "failed" };
+        Enqueue(request);
+        Load();
+    }
+    public void RecordActionOutcome(string description, string outcome)
+    {
+        var request = Request();
+        request.@event = new ConversationEvent { eventId = request.turnId + ":action", turnId = request.turnId,
+            kind = "action_outcome", text = description, delivery = outcome };
         Enqueue(request);
         Load();
     }

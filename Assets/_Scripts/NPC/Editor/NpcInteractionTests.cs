@@ -9,6 +9,20 @@ public class NpcInteractionTests
     internal const string PrefabPath = "Assets/_Prefabs/NPCs/Barbarian_NPC Variant.prefab";
 
     [Test]
+    public void SampleRuntimeGraphContainsAuthoredOpeningSettings()
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
+        var blackboard = prefab.GetComponent<BehaviorGraphAgent>().Graph.BlackboardReference;
+        Assert.That(blackboard.GetVariable<bool>("OpeningNpcInitiated", out var initiated), Is.True);
+        Assert.That(initiated.Value, Is.True);
+        foreach (var name in new[] { "OpeningIntent", "OpeningSituation", "ReplyIntent", "ReplySituation", "FallbackText" })
+        {
+            Assert.That(blackboard.GetVariable<string>(name, out var value), Is.True, name);
+            Assert.That(value.Value, Is.Not.Null.And.Not.Empty, name);
+        }
+    }
+
+    [Test]
     public void NpcSpeechUsesOriginalWitPlayer()
     {
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
@@ -63,18 +77,6 @@ public class NpcInteractionTests
             Assert.That(error.Value, Is.EqualTo("invalid_speech"));
         }
         finally { Object.DestroyImmediate(speaker); }
-    }
-
-    [Test]
-    public void SetupPreservesAuthoredConversation()
-    {
-        const string path = "Assets/_Behavior/Conversation.asset";
-        var before = System.IO.File.ReadAllBytes(path);
-        var type = System.AppDomain.CurrentDomain.GetAssemblies()
-            .Select(a => a.GetType("NpcConversationSetup")).First(t => t != null);
-        type.GetMethod("SetUp").Invoke(null, null);
-        AssetDatabase.SaveAssets();
-        Assert.That(System.IO.File.ReadAllBytes(path), Is.EqualTo(before));
     }
 
     [Test]

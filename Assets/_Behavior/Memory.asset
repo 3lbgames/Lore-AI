@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Memory
   m_EditorClassIdentifier: Unity.Behavior.Authoring::Unity.Behavior.BehaviorAuthoringGraph
   Blackboard: {fileID: 4729114315072372028}
-  m_Description: 
+  m_Description: Load acknowledged character memory and expose loaded, prior-player-speech,
+    and error state to the calling graph.
   m_Nodes:
   - rid: 4954066883961684952
   - rid: 4954066883961684961
-  m_VersionTimestamp: 639287937690086140
+  m_VersionTimestamp: 639288037896302740
   m_SerializedVersion: 3
   m_DebugInfo: {fileID: 3167586619650514736}
   m_RuntimeGraph: {fileID: 1392172745011912185}
@@ -25,7 +26,7 @@ MonoBehaviour:
     m_Value0: 8143787127441193389
     m_Value1: 4486532481542535448
   Story:
-    Story: 
+    Story: Load NPC memory
     StoryVariableNames: []
     Variables: []
   m_NodeModelsInfo:
@@ -51,6 +52,21 @@ MonoBehaviour:
       Type:
         m_SerializableType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
+      Tooltip: 
+    - Name: MemoryLoaded
+      Type:
+        m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      Tooltip: 
+    - Name: HasSpoken
+      Type:
+        m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      Tooltip: 
+    - Name: MemoryError
+      Type:
+        m_SerializableType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
       Tooltip: 
     NamedChildren: []
     IsPlaceholder: 0
@@ -99,7 +115,7 @@ MonoBehaviour:
     - rid: 4954066883961684961
       type: {class: ActionNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
-        Position: {x: 0, y: 180}
+        Position: {x: 0, y: 118.45}
         ID:
           m_Value0: 17669523167164809898
           m_Value1: 13801403405404880500
@@ -115,6 +131,9 @@ MonoBehaviour:
           m_Value1: 5893994026391333552
         m_FieldValues:
         - rid: 4954066883961684964
+        - rid: 4954066895098872109
+        - rid: 4954066895098872110
+        - rid: 4954066895098872111
     - rid: 4954066883961684962
       type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
@@ -163,6 +182,93 @@ MonoBehaviour:
         IsExposed: 1
         m_IsShared: 0
         m_Value: {fileID: 0}
+    - rid: 4954066895098872109
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: MemoryLoaded
+        Type:
+          m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        LocalValue:
+          rid: 4954066895098872112
+        LinkedVariable:
+          rid: 4954066897315824625
+    - rid: 4954066895098872110
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: HasSpoken
+        Type:
+          m_SerializableType: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        LocalValue:
+          rid: 4954066895098872114
+        LinkedVariable:
+          rid: 4954066897315824626
+    - rid: 4954066895098872111
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: MemoryError
+        Type:
+          m_SerializableType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        LocalValue:
+          rid: 4954066895098872116
+        LinkedVariable:
+          rid: 4954066897315824627
+    - rid: 4954066895098872112
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 0
+    - rid: 4954066895098872114
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 0
+    - rid: 4954066895098872116
+      type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 
+    - rid: 4954066897315824625
+      type: {class: 'TypedVariableModel`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 2990314707008669224
+          m_Value1: 7721808311627194312
+        Name: MemoryLoaded
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 0
+    - rid: 4954066897315824626
+      type: {class: 'TypedVariableModel`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 13691797302123161111
+          m_Value1: 7180957504341614283
+        Name: HasSpoken
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 0
+    - rid: 4954066897315824627
+      type: {class: 'TypedVariableModel`1[[System.String, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 17476291116885761975
+          m_Value1: 4361317159402498261
+        Name: MemoryError
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 
 --- !u!114 &1392172745011912185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,8 +301,8 @@ MonoBehaviour:
           rid: 4954066883961684955
         BlackboardGroupReferences: []
         Root:
-          rid: 4954066894929003242
-        m_VersionTimestamp: 639287937690086140
+          rid: 4954066897724768257
+        m_VersionTimestamp: 639288037896302740
     - rid: 4954066883961684955
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -207,8 +313,11 @@ MonoBehaviour:
       type: {class: Blackboard, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         m_Variables:
-        - rid: 4954066883961684958
-    - rid: 4954066883961684958
+        - rid: 4954066897315824630
+        - rid: 4954066897315824631
+        - rid: 4954066897315824632
+        - rid: 4954066897315824633
+    - rid: 4954066897315824630
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -216,7 +325,31 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 0}
-    - rid: 4954066894929003242
+    - rid: 4954066897315824631
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 2990314707008669224
+          m_Value1: 7721808311627194312
+        Name: MemoryLoaded
+        m_Value: 0
+    - rid: 4954066897315824632
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 13691797302123161111
+          m_Value1: 7180957504341614283
+        Name: HasSpoken
+        m_Value: 0
+    - rid: 4954066897315824633
+      type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 17476291116885761975
+          m_Value1: 4361317159402498261
+        Name: MemoryError
+        m_Value: 
+    - rid: 4954066897724768257
       type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -227,10 +360,10 @@ MonoBehaviour:
         m_Parent:
           rid: -2
         m_Child:
-          rid: 4954066894929003243
+          rid: 4954066897724768258
         Repeat: 0
         AllowMultipleRepeatsPerTick: 0
-    - rid: 4954066894929003243
+    - rid: 4954066897724768258
       type: {class: LoadNpcMemory, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -239,9 +372,15 @@ MonoBehaviour:
         Graph:
           rid: 4954066883961684954
         m_Parent:
-          rid: 4954066894929003242
+          rid: 4954066897724768257
         Character:
-          rid: 4954066883961684958
+          rid: 4954066897315824630
+        MemoryLoaded:
+          rid: 4954066897315824631
+        HasSpoken:
+          rid: 4954066897315824632
+        MemoryError:
+          rid: 4954066897315824633
 --- !u!114 &3167586619650514736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,7 +411,10 @@ MonoBehaviour:
     m_Value1: 4486532481542535448
   m_Variables:
   - rid: 4954066883961684959
-  m_VersionTimestamp: 639287937687447620
+  - rid: 4954066895098872123
+  - rid: 4954066895098872124
+  - rid: 4954066895098872125
+  m_VersionTimestamp: 639288037858268690
   m_CommandBuffer:
     m_Commands: []
   m_RuntimeBlackboardAsset: {fileID: 7274651957930957257}
@@ -289,6 +431,36 @@ MonoBehaviour:
         IsExposed: 1
         m_IsShared: 0
         m_Value: {fileID: 0}
+    - rid: 4954066895098872123
+      type: {class: 'TypedVariableModel`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 2990314707008669224
+          m_Value1: 7721808311627194312
+        Name: MemoryLoaded
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 0
+    - rid: 4954066895098872124
+      type: {class: 'TypedVariableModel`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 13691797302123161111
+          m_Value1: 7180957504341614283
+        Name: HasSpoken
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 0
+    - rid: 4954066895098872125
+      type: {class: 'TypedVariableModel`1[[System.String, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 17476291116885761975
+          m_Value1: 4361317159402498261
+        Name: MemoryError
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 
 --- !u!114 &7274651957930957257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,13 +473,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c02bb70996b49eba31d0c206e28da24, type: 3}
   m_Name: Memory Blackboard
   m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.RuntimeBlackboardAsset
-  VersionTimestamp: 639287937687447620
+  VersionTimestamp: 639288037858268690
   AssetID:
     m_Value0: 8143787127441193389
     m_Value1: 4486532481542535448
   m_Blackboard:
     m_Variables:
     - rid: 4954066883961684960
+    - rid: 4954066895098872126
+    - rid: 4954066895098872127
+    - rid: 4954066895098872128
   m_SharedBlackboardVariableGuids: []
   references:
     version: 2
@@ -320,3 +495,27 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 0}
+    - rid: 4954066895098872126
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 2990314707008669224
+          m_Value1: 7721808311627194312
+        Name: MemoryLoaded
+        m_Value: 0
+    - rid: 4954066895098872127
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 13691797302123161111
+          m_Value1: 7180957504341614283
+        Name: HasSpoken
+        m_Value: 0
+    - rid: 4954066895098872128
+      type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 17476291116885761975
+          m_Value1: 4361317159402498261
+        Name: MemoryError
+        m_Value: 
