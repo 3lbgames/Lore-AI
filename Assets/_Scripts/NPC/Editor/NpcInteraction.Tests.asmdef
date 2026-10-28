@@ -1,6 +1,6 @@
 {
   "name": "NpcInteraction.Tests",
-  "references": ["Unity.Behavior", "Unity.Behavior.SerializableGUID", "Meta.WitAi.TTS"],
+  "references": ["Unity.Behavior", "Unity.Behavior.SerializableGUID", "Meta.WitAi.TTS", "Meta.WitAi", "Meta.WitAi.Lib"],
   "includePlatforms": ["Editor"],
   "optionalUnityReferences": ["TestAssemblies"]
 }

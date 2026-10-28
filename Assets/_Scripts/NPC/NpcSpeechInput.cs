@@ -1,7 +1,5 @@
 using Core3lb;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 
 public class NpcSpeechInput : MonoBehaviour
 {
@@ -14,9 +12,13 @@ public class NpcSpeechInput : MonoBehaviour
     private int turnRevision;
     private bool listening;
     private bool recording;
-    private GameObject statusPanel;
-    private TextMeshProUGUI statusText;
-    private float failureUntil;
+    public float captureTimeout = 40;
+    public bool IsListening => listening;
+    public bool IsCaptureStatusUnavailable => recording && !(transcription is INpcSpeechCaptureStatus);
+    public bool IsRecording => recording && (transcription as INpcSpeechCaptureStatus)?.IsRecording == true;
+    public bool IsStarting => recording && transcription is INpcSpeechCaptureStatus && !IsRecording && (transcription as INpcSpeechCaptureStatus)?.IsProcessing != true;
+    public string PartialTranscript => (transcription as INpcSpeechCaptureStatus)?.PartialTranscript;
+    public float LastFailureTime { get; private set; } = float.NegativeInfinity;
     private float deadline;
     private void OnEnable()
     {
@@ -26,7 +28,6 @@ public class NpcSpeechInput : MonoBehaviour
     {
         if (transcription) { transcription.aiCompleted.RemoveListener(OnTranscript); transcription.aiFailed.RemoveListener(OnFailure); transcription._CancelListening(); }
         recipient = null; listening = false; recording = false; microphonePressed = false;
-        if (statusPanel) statusPanel.SetActive(false);
     }
     public void BeginListening()
     {
@@ -36,8 +37,8 @@ public class NpcSpeechInput : MonoBehaviour
         turnRevision = recipient.TurnRevision;
         listening = true;
         recording = true;
-        failureUntil = 0;
-        deadline = Time.realtimeSinceStartup + 40;
+        LastFailureTime = float.NegativeInfinity;
+        deadline = Time.realtimeSinceStartup + captureTimeout;
         transcription._StartListening();
     }
     public void EndListening()
@@ -54,7 +55,7 @@ public class NpcSpeechInput : MonoBehaviour
         recipient = null;
     }
     private void OnFailure(string reason)
-    { recipient = null; listening = false; recording = false; failureUntil = Time.realtimeSinceStartup + 5; }
+    { recipient = null; listening = false; recording = false; LastFailureTime = Time.realtimeSinceStartup; }
     private void Update()
     {
         var pressed = InputXR.instance && InputXR.instance.GetButton(microphoneButton, microphoneController, true);
@@ -63,44 +64,7 @@ public class NpcSpeechInput : MonoBehaviour
         microphonePressed = pressed;
         if (listening && (Time.realtimeSinceStartup > deadline || !recipient || recipient != NpcCharacterDirector.Selected || recipient.InteractionId != interactionId || recipient.TurnRevision != turnRevision))
         { transcription._CancelListening(); OnFailure("capture_cancelled"); }
-        UpdateStatus();
     }
-    private void UpdateStatus()
-    {
-        var selected = NpcCharacterDirector.Selected;
-        var camera = Camera.main;
-        if (!selected || !camera) { if (statusPanel) statusPanel.SetActive(false); return; }
-        if (!statusPanel)
-        {
-            statusPanel = new GameObject("NPC Microphone Status", typeof(RectTransform), typeof(Canvas), typeof(Image));
-            statusPanel.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
-            var panel = statusPanel.GetComponent<Image>();
-            panel.color = new Color(0.02f, 0.02f, 0.02f, 0.85f); panel.raycastTarget = false;
-            statusPanel.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 80);
-            var label = new GameObject("Status", typeof(RectTransform), typeof(TextMeshProUGUI));
-            label.transform.SetParent(statusPanel.transform, false);
-            statusText = label.GetComponent<TextMeshProUGUI>();
-            statusText.rectTransform.sizeDelta = new Vector2(580, 76);
-            statusText.fontSize = 26; statusText.alignment = TextAlignmentOptions.Center;
-            statusText.raycastTarget = false;
-            statusText.richText = false;
-        }
-        if (statusPanel.transform.parent != camera.transform) statusPanel.transform.SetParent(camera.transform, false);
-        statusPanel.transform.localPosition = new Vector3(0, -0.18f, 0.7f);
-        statusPanel.transform.localRotation = Quaternion.identity;
-        statusPanel.transform.localScale = Vector3.one * 0.001f;
-        statusPanel.SetActive(true);
-        var wit = transcription as NpcWitTranscription;
-        bool capturing = recording && (!wit || wit.IsRecording);
-        statusText.color = capturing ? new Color(1, 0.35f, 0.35f) : Color.white;
-        statusText.text = capturing ? "RECORDING\nRelease right trigger to send" :
-            recording && (!wit || !wit.IsProcessing) ? "Starting microphone..." : listening ? "Processing speech..." :
-            Time.realtimeSinceStartup < failureUntil ? "Speech not received. Try again." :
-            selected.AcceptingTranscript ? "Hold right trigger to speak" : "Please wait...";
-        if (listening && wit && !string.IsNullOrEmpty(wit.PartialTranscript))
-            statusText.text = (capturing ? "RECORDING" : "Processing speech...") + "\n" + wit.PartialTranscript;
-    }
-    private void OnDestroy() { if (statusPanel) Destroy(statusPanel); }
 #if UNITY_EDITOR || UNITY_STANDALONE
     private void OnGUI()
     {

@@ -17,6 +17,7 @@ Run `npm test` for service and adapter tests. `GET /health` reports service avai
 For local headset testing without a registered Meta Platform app:
 
 1. Build and install an Android **Development Build**. Permit HTTP downloads for development in Player Settings.
+   Keep **Development Build** checked in Unity when using Build And Run again. A release rebuild excludes the local connection code and attempts Meta Platform authentication, even if Node is running and USB forwarding is active.
 2. Keep Node running with the same local configuration used by the Editor.
 3. Connect the headset by USB and allow USB debugging.
 4. From this directory run `python3 scripts/connect-quest.py`.
