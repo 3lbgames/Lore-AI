@@ -58,7 +58,7 @@ public class NpcSpeechInput : MonoBehaviour
     { recipient = null; listening = false; recording = false; LastFailureTime = Time.realtimeSinceStartup; }
     private void Update()
     {
-        var pressed = InputXR.instance && InputXR.instance.GetButton(microphoneButton, microphoneController, true);
+        var pressed = InputXR.instance && InputXR.instance.GetButton(microphoneButton, microphoneController);
         if (pressed && !microphonePressed) BeginListening();
         if (!pressed && microphonePressed) EndListening();
         microphonePressed = pressed;
