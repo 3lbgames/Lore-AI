@@ -411,6 +411,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8701586367570658040}
+    - targetCorrespondingSourceObject: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8293413484924946132}
+    - targetCorrespondingSourceObject: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 107158488689147929}
+    - targetCorrespondingSourceObject: {fileID: 256722755474975332, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8364453640329657362}
   m_SourcePrefab: {fileID: 100100000, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
 --- !u!1 &3846277744125631185 stripped
 GameObject:
@@ -480,16 +489,92 @@ MonoBehaviour:
   departureGraceSeconds: 1
   playerOverride: {fileID: 0}
   interactionChannel: {fileID: 11400000, guid: 5b644a4a5f6d3477fa745a85698364ca, type: 2}
+--- !u!114 &8293413484924946132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3846277744125631185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30d69138afff246008091d72c7414870, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcProxyClient
+  useStringAPIKey: 0
+  apiKeySO: {fileID: 0}
+  apiKeyString: 
+  aiStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  aiCompleted:
+    m_PersistentCalls:
+      m_Calls: []
+  aiFailed:
+    m_PersistentCalls:
+      m_Calls: []
+  showDebugs: 0
+  textOutput: 
+  addToPromptStart: 
+  debugEcho: 0
+  AIConversation: {fileID: 0}
+  systemPrompt: You are a helpful assistant
+  testPrompt: Tell me a fact about cats
+  testImagePrompt: What is this?
+  testImage: {fileID: 0}
+  serviceUrl: http://127.0.0.1:8787
+  timeoutSeconds: 40
+--- !u!114 &107158488689147929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3846277744125631185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebdfb9cf5954f47ccbc2e114138b88d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcCharacterDirector
+  profile: {fileID: 11400000, guid: 47f3e709f230a42db9b2ce6fe1e86269, type: 2}
+  worldId: local-world
+  campaignId: local-campaign
+  situation: The player is nearby and speaking to this character.
+  speech: {fileID: 8877408205886043071}
 --- !u!1 &6916612336409017942 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 256722755474975332, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
   m_PrefabInstance: {fileID: 6659893362828907570}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8364453640329657362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6916612336409017942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c92b41af04ed241d78a24fc0e0706647, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcWitVoiceBinding
+  profile: {fileID: 11400000, guid: 47f3e709f230a42db9b2ce6fe1e86269, type: 2}
 --- !u!4 &8221114640743323231 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3349540742646383213, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
   m_PrefabInstance: {fileID: 6659893362828907570}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8877408205886043071 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2836794978877810573, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+  m_PrefabInstance: {fileID: 6659893362828907570}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6916612336409017942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19f730236be1cb54284f2666199167d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8598934975459868817
 PrefabInstance:
   m_ObjectHideFlags: 0
