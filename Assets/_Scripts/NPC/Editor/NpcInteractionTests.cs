@@ -79,10 +79,10 @@ public class NpcInteractionTests
         finally { Object.DestroyImmediate(speaker); }
     }
 
-    [Test]
-    public void BaseSceneSpeechInputsHaveConnectedRecordingIndicators()
+    [TestCase("Assets/_Scenes/BaseScene.unity")]
+    [TestCase("Assets/_Scenes/VillageScene.unity")]
+    public void SceneSpeechInputsHaveConnectedRecordingIndicators(string path)
     {
-        const string path = "Assets/_Scenes/BaseScene.unity";
         var scene = UnityEngine.SceneManagement.SceneManager.GetSceneByPath(path);
         bool opened = !scene.isLoaded;
         if (opened) scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(path, UnityEditor.SceneManagement.OpenSceneMode.Additive);
@@ -90,7 +90,7 @@ public class NpcInteractionTests
         {
             var inputs = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<MonoBehaviour>(true))
                 .Where(c => c && c.GetType().Name == "NpcSpeechInput").ToArray();
-            Assert.That(inputs, Is.Not.Empty, "BaseScene must contain speech input");
+            Assert.That(inputs, Is.Not.Empty, path + " must contain speech input");
             foreach (var input in inputs)
             {
                 var controls = input.GetComponent("NpcSpeechControls");
@@ -115,7 +115,8 @@ public class NpcInteractionTests
         Assert.That(PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(view.gameObject),
             Is.EqualTo("Assets/_Prefabs/NpcSpeechStatus.prefab"));
         Assert.That(view.GetType().GetField("input").GetValue(view), Is.Not.Null);
-        Assert.That(view.GetType().GetField("label").GetValue(view), Is.Not.Null);
+        Assert.That(view.GetType().GetField("textUI").GetValue(view), Is.Not.Null);
+        Assert.That(view.GetType().GetField("imageUI").GetValue(view), Is.Not.Null);
     }
 
     [Test]

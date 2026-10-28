@@ -1,11 +1,14 @@
-using TMPro;
+//using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NpcSpeechStatusView : MonoBehaviour
 {
     public NpcSpeechInput input;
     public GameObject panel;
-    public TMP_Text label;
+    //public TMP_Text label;
+    public Text textUI;
+    public Image imageUI;
     public Vector3 cameraOffset = new Vector3(0, -0.18f, 0.7f);
     public Color recordingColor = new Color(1, 0.35f, 0.35f);
     public Color normalColor = Color.white;
@@ -27,7 +30,8 @@ public class NpcSpeechStatusView : MonoBehaviour
         panel.SetActive(visible);
         if (!visible) return;
         transform.SetPositionAndRotation(camera.transform.TransformPoint(cameraOffset), camera.transform.rotation);
-        label.color = input.IsRecording ? recordingColor : normalColor;
+        textUI.color = input.IsRecording ? recordingColor : normalColor;
+        imageUI.color = input.IsRecording ? recordingColor : normalColor;
         string status;
         if (input.IsListening && !string.IsNullOrEmpty(input.PartialTranscript))
             status = (input.IsRecording ? recordingText : processingText) + "\n" + input.PartialTranscript;
@@ -37,7 +41,7 @@ public class NpcSpeechStatusView : MonoBehaviour
         else if (input.IsListening) status = processingText;
         else if (Time.realtimeSinceStartup - input.LastFailureTime < failureDuration) status = failureText;
         else status = selected.AcceptingTranscript ? readyText : waitingText;
-        label.text = status;
+        textUI.text = status;
     }
     private void OnDisable() { if (panel) panel.SetActive(false); }
 }

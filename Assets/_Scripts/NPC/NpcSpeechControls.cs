@@ -14,7 +14,7 @@ public class NpcSpeechControls : MonoBehaviour
     private void Update()
     {
         if (!input || !input.isActiveAndEnabled) { microphonePressed = false; return; }
-        bool pressed = InputXR.instance && InputXR.instance.GetButton(microphoneButton, microphoneController, true);
+        bool pressed = InputXR.instance && InputXR.instance.GetButton(microphoneButton, microphoneController);
         if (pressed && !microphonePressed) input.BeginListening();
         if (!pressed && microphonePressed) input.EndListening();
         microphonePressed = pressed;
