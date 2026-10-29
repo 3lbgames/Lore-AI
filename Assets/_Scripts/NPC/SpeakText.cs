@@ -23,7 +23,9 @@ public partial class SpeakText : Unity.Behavior.Action
         speech = Speaker.Value ? Speaker.Value.GetComponent<BaseAI_TextToSpeech>() : null;
         output = Speaker.Value ? Speaker.Value.GetComponent<NpcSpeechOutput>() : null;
         SpeechResult.Value = "Pending"; SpeechError.Value = null;
-        if (!speech || string.IsNullOrWhiteSpace(Text.Value))
+        if (string.IsNullOrWhiteSpace(Text.Value))
+        { SpeechResult.Value = "Skipped"; return Status.Success; }
+        if (!speech)
         { SpeechResult.Value = "Failed"; SpeechError.Value = "invalid_speech"; return Status.Failure; }
         started = true;
         speech._Speak(Text.Value);

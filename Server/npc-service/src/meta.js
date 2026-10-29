@@ -53,14 +53,18 @@ export function metaGenerator(options) {
   const complete = metaCompletion(options);
   return async (request, signal) => {
     const rules = request.eligibleRules ?? [];
-    const schema = {type:'object',properties:{speech:{type:'string'},relationshipProposal:{type:'object',properties:{ruleId:{type:['string','null'],enum:[...rules.map(r=>r.id),null]},evidence:{type:['string','null']}},required:['ruleId','evidence'],additionalProperties:false},actionProposal:{type:'null'}},required:['speech','relationshipProposal','actionProposal'],additionalProperties:false};
+    const actions = request.actions ?? [];
+    const actionSchema = actions.length ? {anyOf:[{type:'null'},{type:'object',properties:{
+      actionId:{type:'string',enum:actions.map(a=>a.id)}, targetId:{type:'string',enum:[...new Set(actions.map(a=>a.targetId))]}
+    },required:['actionId','targetId'],additionalProperties:false}]} : {type:'null'};
+    const schema = {type:'object',properties:{speech:{type:'string'},relationshipProposal:{type:'object',properties:{ruleId:{type:['string','null'],enum:[...rules.map(r=>r.id),null]},evidence:{type:['string','null']}},required:['ruleId','evidence'],additionalProperties:false},actionProposal:actionSchema},required:['speech','relationshipProposal','actionProposal'],additionalProperties:false};
     const output = await complete(instructions,[
-      {role:'developer',content:JSON.stringify({profile:dialogueProfile(request.profile),situation:request.situation,intent:request.intent,npcInitiated:request.npcInitiated===true,actions:[],relationship:{categories:(request.profile.relationship?.categories ?? []).map(({id,description,expression,initial,min,max})=>({id,description,expression,initial,min,max})),values:request.relationship?.values ?? [],experiences:request.relationship?.experiences ?? []},rules:rules.map(({id,condition})=>({id,condition}))})},
+      {role:'developer',content:JSON.stringify({profile:dialogueProfile(request.profile),situation:request.situation,intent:request.intent,npcInitiated:request.npcInitiated===true,actions,relationship:{categories:(request.profile.relationship?.categories ?? []).map(({id,description,expression,initial,min,max})=>({id,description,expression,initial,min,max})),values:request.relationship?.values ?? [],experiences:request.relationship?.experiences ?? []},rules:rules.map(({id,condition})=>({id,condition}))})},
       ...dialogueHistory(request)
     ],schema,signal);
     let reply;
     try { reply=JSON.parse(output); } catch { throw new ServiceError(502,'invalid_model_response'); }
-    validateModelReply(reply,request.input,rules);
+    validateModelReply(reply,request.input,rules,actions);
     return reply;
   };
 }

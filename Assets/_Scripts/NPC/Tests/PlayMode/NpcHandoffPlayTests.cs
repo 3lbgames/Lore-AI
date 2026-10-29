@@ -152,7 +152,7 @@ public class NpcHandoffPlayTests
         Give();
         yield return WaitFor(() => (string)Field(speech, "LastText") == "Thank you. That's just what I needed." && Accepting(), 8, "handoff replaces speech");
         Assert.That((int)Field(speech, "Cancellations"), Is.EqualTo(cancellations + 1));
-        Assert.That(History().events.Any(e => e.kind == "npc_speech" && e.delivery == "interrupted" && string.IsNullOrEmpty(e.text)), Is.True);
+        Assert.That(History().events.Any(e => e.kind == "npc_speech" && e.delivery == "interrupted" && e.text == "The inn is east of here."), Is.True);
         Assert.That(History().events.Count(e => e.kind == "action_outcome" && e.delivery == "completed"), Is.EqualTo(1));
     }
     HistoryData History()
