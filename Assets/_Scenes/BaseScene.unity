@@ -398,8 +398,8 @@ MonoBehaviour:
   destination: {fileID: 1456624543}
   facing: {fileID: 30679681}
   animator: {fileID: 30679680}
-  walkState: Walk
-  idleState: Idle
+  walkState: ActionWalk
+  idleState: MoveBlend
   timeoutSeconds: 30
 --- !u!114 &30679686
 MonoBehaviour:
@@ -417,8 +417,8 @@ MonoBehaviour:
   destination: {fileID: 1282366369}
   facing: {fileID: 30679681}
   animator: {fileID: 30679680}
-  walkState: Walk
-  idleState: Idle
+  walkState: ActionWalk
+  idleState: MoveBlend
   timeoutSeconds: 30
 --- !u!114 &30679688
 MonoBehaviour:
@@ -433,8 +433,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcAnimationEffect
   animator: {fileID: 30679680}
-  state: Cheer
-  returnState: Idle
+  state: ActionCheer
+  returnState: MoveBlend
   timeoutSeconds: 10
 --- !u!114 &30679689
 MonoBehaviour:
@@ -449,8 +449,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcAnimationEffect
   animator: {fileID: 30679680}
-  state: Wave
-  returnState: Idle
+  state: ActionWave
+  returnState: MoveBlend
   timeoutSeconds: 10
 --- !u!114 &30679690
 MonoBehaviour:
@@ -666,8 +666,8 @@ MonoBehaviour:
   destination: {fileID: 1472839122}
   facing: {fileID: 391014691}
   animator: {fileID: 391014690}
-  walkState: Walk
-  idleState: Idle
+  walkState: ActionWalk
+  idleState: MoveBlend
   timeoutSeconds: 30
 --- !u!114 &391014696
 MonoBehaviour:
@@ -685,8 +685,8 @@ MonoBehaviour:
   destination: {fileID: 1100980562}
   facing: {fileID: 391014691}
   animator: {fileID: 391014690}
-  walkState: Walk
-  idleState: Idle
+  walkState: ActionWalk
+  idleState: MoveBlend
   timeoutSeconds: 30
 --- !u!114 &391014697
 MonoBehaviour:
@@ -704,8 +704,8 @@ MonoBehaviour:
   destination: {fileID: 1410079388}
   facing: {fileID: 391014691}
   animator: {fileID: 391014690}
-  walkState: Walk
-  idleState: Idle
+  walkState: ActionWalk
+  idleState: MoveBlend
   timeoutSeconds: 30
 --- !u!114 &391014698
 MonoBehaviour:
@@ -720,8 +720,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcAnimationEffect
   animator: {fileID: 391014690}
-  state: Cheer
-  returnState: Idle
+  state: ActionCheer
+  returnState: MoveBlend
   timeoutSeconds: 10
 --- !u!114 &391014699
 MonoBehaviour:
@@ -736,8 +736,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcAnimationEffect
   animator: {fileID: 391014690}
-  state: Wave
-  returnState: Idle
+  state: ActionWave
+  returnState: MoveBlend
   timeoutSeconds: 10
 --- !u!114 &391014700
 MonoBehaviour:
