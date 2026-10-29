@@ -90,11 +90,10 @@ public class NpcInteractionTests
         var speaker = new GameObject("Invalid speech test");
         try
         {
-            speaker.AddComponent(System.Type.GetType("Core3lb.BaseAI_TextToSpeech, Assembly-CSharp", true));
             var type = System.Type.GetType("SpeakText, Assembly-CSharp", true);
             var node = System.Activator.CreateInstance(type);
             type.GetField("Speaker").SetValue(node, new BlackboardVariable<GameObject> { Value = speaker });
-            type.GetField("Text").SetValue(node, new BlackboardVariable<string> { Value = " " });
+            type.GetField("Text").SetValue(node, new BlackboardVariable<string> { Value = "Hello" });
             var result = new BlackboardVariable<string>();
             var error = new BlackboardVariable<string>();
             type.GetField("SpeechResult").SetValue(node, result);

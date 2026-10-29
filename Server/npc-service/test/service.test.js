@@ -26,7 +26,7 @@ test('returns a complete response with correlation IDs and preserves exact input
   const post = await fixture(t, async value => { assert.equal(value.input, body.input); return {speech:'Beside the east gate.',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null}; });
   const response = await post(body); assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), { version: 1, sessionId: body.sessionId, interactionId: body.interactionId,
-    turnId: body.turnId, status: 'completed', text: 'Beside the east gate.', revision: 1 });
+    turnId: body.turnId, status: 'completed', text: 'Beside the east gate.', actionProposal: null, revision: 1 });
 });
 test('rejects missing credentials before generation', async t => {
   const post = await fixture(t, () => assert.fail('unauthorized generation'));
@@ -133,3 +133,11 @@ test('service independently rejects action proposals and stale responses before 
   const response=await post(body);assert.equal(response.status,stale?409:502);assert.equal((await response.json()).error,stale?'revision_conflict':'invalid_action_proposal');
  }
 });
+
+for (const delivery of ['interrupted', 'failed']) {
+ test(`captioned speech with ${delivery} audio remains in model history`, async t => {
+  const history=[{kind:'npc_speech',text:'The inn is east.',delivery}];
+  const post=await fixture(t,async value=>{assert.deepEqual(value.history,history);return {speech:'As I mentioned, east.',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null};},{memoryStore:{load:async()=>({revision:1,history})}});
+  assert.equal((await post({...request(),npcInitiated:true,input:'',intent:'Continue our conversation'})).status,200);
+ });
+}

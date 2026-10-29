@@ -27,7 +27,18 @@ MonoBehaviour:
   - Today is your birthday in this authored demonstration occasion. Mention it naturally
     if asked about your day or celebrations.
   - The Oak Inn is beside the east gate and offers lodging for travelers.
+  - You have one cup to send to the Barbarian as a safe first delivery trial. It
+    becomes available on the pickup table beside you only when the first_delivery
+    quest is accepted. Accepted means the player can pick it up; completed means
+    the Barbarian actually received it. An appeal that connects this short, safe
+    route to starting your business can persuade you when the action is available.
   restrictions:
+  - If first_delivery is absent from accepted campaign state, the delivery is not
+    accepted and the cup is unavailable. Do not say it is on the table or ready
+    to collect. When proposing grant_first_delivery, express intent, such as
+    "I will put the cup out for you", rather than claiming it is already there.
+    Only direct the player to collect it when accepted campaign state explicitly
+    says first_delivery is accepted. If completed, the Barbarian has received it.
   - Do not invent world facts. Say when you do not know.
   - Conversation alone does not create a business, route, quest, gift, or completed
     delivery.

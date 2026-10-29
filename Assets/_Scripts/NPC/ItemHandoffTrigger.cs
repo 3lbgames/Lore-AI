@@ -19,7 +19,7 @@ namespace Core3lb
             string name = item.DisplayName, id = item.itemID, group = item.groupID;
             base.TriggerEnterSuccess(collision);
             if (grab.isGrabbed || item.gameObject.activeSelf) return;
-            LastReceipt = new ItemHandoff(Guid.NewGuid().ToString("N"), id, group, name, giver, recipient ? recipient : gameObject);
+            LastReceipt = new ItemHandoff(Guid.NewGuid().ToString("N"), id, group, name, giver, recipient ? recipient : gameObject, item.gameObject);
             Transferred?.Invoke(LastReceipt);
         }
     }
@@ -27,11 +27,12 @@ namespace Core3lb
     public sealed class ItemHandoff
     {
         public readonly string eventId, itemId, groupId, itemName;
-        public readonly GameObject giver, recipient;
-        public ItemHandoff(string eventId, string itemId, string groupId, string itemName, GameObject giver, GameObject recipient)
+        public readonly GameObject giver, recipient, item;
+        public ItemHandoff(string eventId, string itemId, string groupId, string itemName, GameObject giver, GameObject recipient, GameObject item = null)
         {
             this.eventId = eventId; this.itemId = itemId; this.groupId = groupId; this.itemName = itemName;
             this.giver = giver; this.recipient = recipient;
+            this.item = item;
         }
     }
 }

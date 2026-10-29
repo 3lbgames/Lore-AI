@@ -35,7 +35,7 @@ public class NpcResponseRequest : NpcServiceRequest
     public string input, situation, intent;
     public bool npcInitiated;
     public NpcProfileData profile;
-    public string[] actions = Array.Empty<string>();
+    public NpcActionOption[] actions = Array.Empty<NpcActionOption>();
 }
 [Serializable]
 public class NpcIdentity { public string userId, nonce; }
@@ -46,6 +46,8 @@ public class NpcResponse
     public bool hasSpoken;
     public Core3lb.ConversationEvent[] history;
     public NpcRelationshipState relationship;
+    public NpcActionProposal actionProposal;
+    public NpcGameStateData gameState;
     public string sessionId, interactionId, turnId, status, text, error;
 }
 

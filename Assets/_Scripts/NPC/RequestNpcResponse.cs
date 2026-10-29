@@ -11,6 +11,7 @@ public partial class RequestNpcResponse : Unity.Behavior.Action
     [SerializeReference] public BlackboardVariable<string> Transcript;
     [SerializeReference] public BlackboardVariable<string> Response;
     [SerializeReference] public BlackboardVariable<string> RequestError;
+    [SerializeReference] public BlackboardVariable<string> ActionProposal = new BlackboardVariable<string>();
     [SerializeReference] public BlackboardVariable<bool> NpcInitiated = new BlackboardVariable<bool>();
     [SerializeReference] public BlackboardVariable<string> Intent = new BlackboardVariable<string>();
     [SerializeReference] public BlackboardVariable<string> Situation = new BlackboardVariable<string>();
@@ -22,7 +23,7 @@ public partial class RequestNpcResponse : Unity.Behavior.Action
     {
         director = Character.Value ? Character.Value.GetComponent<NpcCharacterDirector>() : null;
         proxy = Character.Value ? Character.Value.GetComponent<NpcProxyClient>() : null;
-        Response.Value = null; RequestError.Value = null;
+        Response.Value = null; RequestError.Value = null; ActionProposal.Value = "";
         if (!director || !director.profile || !proxy || !director.InteractionOpen) return Fail("invalid_request");
         if (!director.Memory.Loaded || director.Memory.IsBusy || director.Memory.Error != null) return Fail("memory_unavailable");
         turnRevision = director.TurnRevision;
@@ -43,6 +44,10 @@ public partial class RequestNpcResponse : Unity.Behavior.Action
         request.intent = Intent.Value ?? "";
         request.situation = Situation.Value ?? "";
         request.expectedRevision = director.Memory.Revision;
+        var catalog = Character.Value.GetComponent<NpcActionCatalog>();
+        request.actions = catalog ? catalog.Available(director) : Array.Empty<NpcActionOption>();
+        if (catalog && catalog.gameState && catalog.gameState.Loaded)
+            request.situation += "\nAccepted campaign state: " + JsonUtility.ToJson(catalog.gameState.Data);
         proxy.Submit(request); return Status.Running;
     }
     protected override Status OnUpdate()
@@ -52,7 +57,8 @@ public partial class RequestNpcResponse : Unity.Behavior.Action
         if (proxy.IsPending) return Status.Running;
         Response.Value = proxy.Response?.text;
         if (!string.IsNullOrEmpty(proxy.Error)) return Fail(proxy.Error);
-        if (string.IsNullOrWhiteSpace(Response.Value)) return Fail("empty_response");
+        if (proxy.Response == null || Response.Value == null) return Fail("invalid_response");
+        ActionProposal.Value = proxy.Response.actionProposal == null ? "" : JsonUtility.ToJson(proxy.Response.actionProposal);
         director.Memory.ApplyAcceptedState(proxy.Response);
         return Status.Success;
     }

@@ -102,7 +102,7 @@ public class NpcMemory : MonoBehaviour
         request.campaignId = turn.campaignId;
         request.interactionId = turn.interactionId;
         request.@event = new ConversationEvent { eventId = turn.turnId + ":speech", turnId = turn.turnId,
-            kind = "npc_speech", text = outcome == "Completed" ? text : "",
+            kind = "npc_speech", text = text,
             delivery = outcome == "Completed" ? "completed" : outcome == "Cancelled" ? "interrupted" : "failed" };
         Enqueue(request);
         Load();

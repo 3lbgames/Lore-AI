@@ -88,6 +88,8 @@ internal sealed class NpcTestService : IDisposable
     readonly Dictionary<string, List<MemoryEvent>> histories = new Dictionary<string, List<MemoryEvent>>();
     readonly Task worker;
     public volatile bool HoldPlayerResponses;
+    public string PlayerReply = "The inn is east of here.";
+    public string ActionId, ActionTarget;
     public readonly string Url;
     public NpcTestService()
     {
@@ -129,7 +131,12 @@ internal sealed class NpcTestService : IDisposable
                 }
                 body.revision = history.Count; body.history = history.ToArray();
                 body.hasSpoken = history.Exists(e => e.kind == "player_input");
-                if (route == "/v1/responses") body.text = body.npcInitiated ? "Hello, traveler." : "The inn is east of here.";
+                if (route == "/v1/responses")
+                {
+                    body.text = body.npcInitiated ? "Hello, traveler." : PlayerReply;
+                    if (!body.npcInitiated && ActionId != null)
+                        body.actionProposal = new ActionProposal { actionId = ActionId, targetId = ActionTarget };
+                }
                 byte[] bytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(body));
                 context.Response.ContentType = "application/json";
                 context.Response.ContentLength64 = bytes.Length;
@@ -148,6 +155,7 @@ internal sealed class NpcTestService : IDisposable
         Assert.That(worker.Wait(TimeSpan.FromSeconds(2)), Is.True, "Fake service shuts down without leaking requests");
     }
     [Serializable] class MemoryEvent { public string eventId, turnId, kind, text, delivery; }
+    [Serializable] class ActionProposal { public string actionId, targetId; }
     [Serializable] class Envelope
     {
         public int version = 1, revision, expectedRevision;
@@ -155,6 +163,7 @@ internal sealed class NpcTestService : IDisposable
         public bool hasSpoken, npcInitiated;
         public MemoryEvent @event;
         public MemoryEvent[] history;
+        public ActionProposal actionProposal;
     }
 }
 #endif

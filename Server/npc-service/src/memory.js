@@ -30,6 +30,14 @@ export class PostgresMemoryStore {
     finally { client.release(); }
   }
   async transaction(scope, operation, signal) {
+    return this.campaignTransaction(scope, async (client, branch) => {
+      const key = [...branch, scope.npcId];
+      await client.query('INSERT INTO conversation_streams(player_id,world_id,campaign_id,npc_id) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING', key);
+      const { rows: [stream] } = await client.query('SELECT revision,relationship FROM conversation_streams WHERE player_id=$1 AND world_id=$2 AND campaign_id=$3 AND npc_id=$4 FOR UPDATE', key);
+      return operation(client, key, stream.revision, stream.relationship);
+    }, signal);
+  }
+  async campaignTransaction(scope, operation, signal) {
     let client;
     try {
       client = await this.pool.connect();
@@ -39,10 +47,7 @@ export class PostgresMemoryStore {
         ON CONFLICT (player_id,world_id,campaign_id) DO UPDATE SET writer_id=$4,lease_until=clock_timestamp()+interval '120 seconds'
         WHERE campaign_writers.writer_id=$4 OR campaign_writers.lease_until<=clock_timestamp() RETURNING writer_id`, [...branch, scope.writerId]);
       if (!lease.rowCount) throw new ServiceError(409, 'writer_conflict');
-      const key = [...branch, scope.npcId];
-      await client.query('INSERT INTO conversation_streams(player_id,world_id,campaign_id,npc_id) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING', key);
-      const { rows: [stream] } = await client.query('SELECT revision,relationship FROM conversation_streams WHERE player_id=$1 AND world_id=$2 AND campaign_id=$3 AND npc_id=$4 FOR UPDATE', key);
-      const result = await operation(client, key, stream.revision, stream.relationship);
+      const result = await operation(client, branch);
       signal?.throwIfAborted();
       await client.query('COMMIT');
       return result;
@@ -50,6 +55,35 @@ export class PostgresMemoryStore {
       if (client) await client.query('ROLLBACK').catch(() => {});
       throw error instanceof ServiceError ? error : new ServiceError(503, 'storage_unavailable');
     } finally { client?.release(); }
+  }
+  async gameTransaction(scope, operation, signal) {
+    return this.campaignTransaction(scope, async (client, key) => {
+      await client.query('INSERT INTO campaign_game_states(player_id,world_id,campaign_id) VALUES($1,$2,$3) ON CONFLICT DO NOTHING', key);
+      const {rows:[state]} = await client.query('SELECT revision,state_values AS "values" FROM campaign_game_states WHERE player_id=$1 AND world_id=$2 AND campaign_id=$3 FOR UPDATE', key);
+      return operation(client, key, state);
+    }, signal);
+  }
+  loadGame(scope) {
+    return this.gameTransaction(scope, async (_client, _key, state) => state);
+  }
+  commitGame(scope, expectedRevision, mutation, signal) {
+    return this.gameTransaction(scope, async (client, key, state) => {
+      const {rows:[existing]} = await client.query('SELECT payload FROM campaign_game_events WHERE player_id=$1 AND world_id=$2 AND campaign_id=$3 AND event_id=$4', [...key,mutation.eventId]);
+      if (existing) {
+        if (!isDeepStrictEqual(existing.payload,mutation)) throw new ServiceError(409,'event_conflict');
+        return state;
+      }
+      if (state.revision !== expectedRevision) throw new ServiceError(409,'revision_conflict');
+      const entry = state.values.find(entry => entry.key === mutation.key);
+      if ((entry?.value ?? '') !== mutation.expected) throw new ServiceError(409,'state_conflict');
+      const values = state.values.filter(entry => entry.key !== mutation.key);
+      values.push({key:mutation.key,value:mutation.value});
+      values.sort((a,b) => a.key.localeCompare(b.key));
+      const next = {revision:state.revision+1,values};
+      await client.query('INSERT INTO campaign_game_events(player_id,world_id,campaign_id,event_id,payload) VALUES($1,$2,$3,$4,$5)', [...key,mutation.eventId,mutation]);
+      await client.query('UPDATE campaign_game_states SET revision=$4,state_values=$5 WHERE player_id=$1 AND world_id=$2 AND campaign_id=$3', [...key,next.revision,JSON.stringify(values)]);
+      return next;
+    }, signal);
   }
   load(scope, { includeHistory = true } = {}) {
     return this.transaction(scope, async (client, key, revision, relationship) => {

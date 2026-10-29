@@ -8,7 +8,6 @@ using UnityEngine;
 public class ItemHandoffTests
 {
     [TestCase("Barbarian_NPC Variant")]
-    [TestCase("Mira_NPC")]
     public void BaseSceneKeepsItsConfiguredTransferAndNpcRecipient(string npcName)
     {
         var scene = EditorSceneManager.OpenPreviewScene("Assets/_Scenes/BaseScene.unity");
@@ -18,11 +17,18 @@ public class ItemHandoffTests
             var components = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<MonoBehaviour>(true)).Where(c => c).ToArray();
             var source = components.Single(c => c.GetType().FullName == "Core3lb.ItemHandoffTrigger"
                 && ((GameObject)c.GetType().GetField("recipient").GetValue(c)).name == npcName);
+            var objective = components.Single(c => c.GetType().Name == "NpcObjectiveView");
+            Assert.That(objective.gameObject.activeInHierarchy, Is.True, "objective updates must remain active");
             var recipient = (GameObject)source.GetType().GetField("recipient").GetValue(source);
             Assert.That(recipient.GetComponent("NpcCharacterDirector"), Is.Not.Null);
             var inbox = recipient.GetComponent("NpcHandoffInbox");
             Assert.That(((Array)inbox.GetType().GetField("sources").GetValue(inbox)).Cast<object>(), Does.Contain(source));
             var cup = components.Single(c => c.GetType().Name == "GroKitGrabObject" && c.gameObject.name == "GroKitGrabObject - mug");
+            Assert.That(cup.gameObject.activeSelf, Is.False, "quest cup waits for acceptance");
+            cup.gameObject.SetActive(true);
+            var giverSource = components.Single(c => c.GetType().FullName == "Core3lb.ItemHandoffTrigger"
+                && ((GameObject)c.GetType().GetField("recipient").GetValue(c)).name == "Mira_NPC");
+            Assert.That(giverSource.gameObject.activeInHierarchy, Is.False, "the giver cannot consume the delivery cup");
             var enter = (UnityEngine.Events.UnityEvent)source.GetType().GetField("enterEvent").GetValue(source);
             var replacement = (GameObject)enter.GetPersistentTarget(0);
             Assert.That(replacement.activeSelf, Is.False);

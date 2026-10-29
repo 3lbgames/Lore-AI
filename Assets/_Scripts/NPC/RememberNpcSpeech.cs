@@ -21,7 +21,7 @@ public partial class RememberNpcSpeech : Modifier
         if (!memory || Child == null) return Status.Failure;
         var director = Character.Value.GetComponent<NpcCharacterDirector>();
         if (!director || !director.profile || !director.InteractionOpen) return Status.Failure;
-        turn = memory.CurrentTurn ?? director.CreateRequest(""); text = Text.Value; recorded = false;
+        turn = memory.CurrentTurn ?? director.CreateRequest(""); text = Text.Value;
         StartNode(Child); return Status.Running;
     }
     protected override Status OnUpdate()
@@ -34,6 +34,11 @@ public partial class RememberNpcSpeech : Modifier
     {
         if (recorded) return;
         recorded = true;
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            if (memory && memory.CurrentTurn == turn) memory.CancelTurn();
+            return;
+        }
         if (memory) memory.RecordSpeech(turn, text, SpeechResult.Value);
     }
     // Unity Behavior ends children before their parent's OnEnd.
