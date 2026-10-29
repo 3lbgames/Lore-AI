@@ -109,10 +109,22 @@ public class NpcMemory : MonoBehaviour
                 request.expectedRevision = Revision;
                 commit.Attempted = true;
             }
-            // A pending receipt keeps its identity and expected revision across retries.
+            // Keep the event identity across retries so an acknowledged-but-lost response is safe.
             NpcResponse result = null;
             yield return proxy.Exchange("/v1/memory/commit", request, value => result = value);
             if (expected != epoch) yield break;
+            if (result.error == "revision_conflict")
+            {
+                // The server rejected this event before appending it. Restore its current
+                // revision before retrying, including when startup could not load history.
+                yield return proxy.Exchange("/v1/memory/load", Request(), value => result = value);
+                if (expected != epoch) yield break;
+                if (result.status != "completed") { Loaded = false; Error = result.error; yield break; }
+                Apply(result);
+                request.expectedRevision = Revision;
+                yield return proxy.Exchange("/v1/memory/commit", request, value => result = value);
+                if (expected != epoch) yield break;
+            }
             if (result.status != "completed") { Loaded = false; Error = result.error; yield break; }
             Revision = Math.Max(Revision, result.revision);
             pending.Dequeue();

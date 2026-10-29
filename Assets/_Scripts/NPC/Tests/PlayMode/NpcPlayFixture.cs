@@ -113,7 +113,15 @@ internal sealed class NpcTestService : IDisposable
                 { lock (held) held.Add(context); continue; }
                 string key = body.worldId + "/" + body.campaignId + "/" + body.npcId;
                 if (!histories.TryGetValue(key, out var history)) histories[key] = history = new List<MemoryEvent>();
-                if (route == "/v1/memory/commit" && !history.Exists(e => e.eventId == body.@event.eventId)) history.Add(body.@event);
+                if (route == "/v1/memory/commit" && !history.Exists(e => e.eventId == body.@event.eventId))
+                {
+                    if (body.expectedRevision != history.Count)
+                    {
+                        context.Response.StatusCode = 409;
+                        body.status = "failed"; body.error = "revision_conflict";
+                    }
+                    else history.Add(body.@event);
+                }
                 body.revision = history.Count; body.history = history.ToArray();
                 body.hasSpoken = history.Exists(e => e.kind == "player_input");
                 if (route == "/v1/responses") body.text = body.npcInitiated ? "Hello, traveler." : "The inn is east of here.";
@@ -137,8 +145,8 @@ internal sealed class NpcTestService : IDisposable
     [Serializable] class MemoryEvent { public string eventId, turnId, kind, text, delivery; }
     [Serializable] class Envelope
     {
-        public int version = 1, revision;
-        public string sessionId, interactionId, turnId, worldId, campaignId, npcId, text, status = "completed";
+        public int version = 1, revision, expectedRevision;
+        public string sessionId, interactionId, turnId, worldId, campaignId, npcId, text, error, status = "completed";
         public bool hasSpoken, npcInitiated;
         public MemoryEvent @event;
         public MemoryEvent[] history;

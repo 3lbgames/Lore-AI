@@ -31,6 +31,48 @@ public class NpcConversationPlayTests
         Application.runInBackground = true;
     }
     [UnityTest, Category("NpcRoutine")]
+    public IEnumerator ArrivalUsesAuthoredGreetingWithoutModelRequest()
+    {
+        var npc = GameObject.Find("ConversationNpc");
+        var director = npc.GetComponent("NpcCharacterDirector");
+        yield return WaitFor(() => Accepting(director), 5, "authored greeting completes");
+        var speech = npc.GetComponentInChildren(Type.GetType("NpcTestSpeech, Assembly-CSharp"));
+        Assert.That(speech.GetType().GetField("LastText").GetValue(speech), Is.EqualTo("Hello, traveler. What brings you here?"));
+        var proxy = npc.GetComponent("NpcProxyClient");
+        Assert.That((string)proxy.GetType().GetField("textOutput").GetValue(proxy), Is.Null.Or.Empty);
+        Invoke(director, "SelectForConversation");
+        Assert.That((bool)director.GetType().GetMethod("SubmitTranscript").Invoke(director, new object[] { "Where is the inn?" }), Is.True);
+        yield return WaitFor(() => (string)speech.GetType().GetField("LastText").GetValue(speech) == "The inn is east of here." && Accepting(director), 5, "player reply completes");
+        var player = GameObject.Find("Player");
+        player.transform.position = new Vector3(100, 0, 0);
+        yield return WaitFor(() => !(bool)director.GetType().GetProperty("InteractionOpen").GetValue(director), 5, "leave interaction");
+        player.transform.position = new Vector3(2, 1.7f, 0);
+        yield return WaitFor(() => (string)speech.GetType().GetField("LastText").GetValue(speech) == "Good to see you again. What is on your mind?" && Accepting(director), 5, "authored returning greeting");
+        Assert.That((string)proxy.GetType().GetField("textOutput").GetValue(proxy), Is.EqualTo("The inn is east of here."), "returning greeting does not request another model response");
+    }
+
+    [UnityTest, Category("NpcRoutine")]
+    public IEnumerator QueuedReceiptWithStaleRevisionRecoversWithoutRestart()
+    {
+        var npc = GameObject.Find("ConversationNpc");
+        var director = npc.GetComponent("NpcCharacterDirector");
+        yield return WaitFor(() => Accepting(director), 5, "initial greeting saved");
+        var memory = npc.GetComponent("NpcMemory");
+        int previous = (int)memory.GetType().GetProperty("Revision").GetValue(memory);
+        Assert.That(previous, Is.GreaterThan(0));
+        // Simulate startup with existing server history and no successful local restore.
+        Invoke(memory, "ClearForCampaign");
+        Invoke(memory, "RecordActionOutcome", "Observed recovery test action", "completed");
+        yield return WaitFor(() => !(bool)memory.GetType().GetProperty("IsBusy").GetValue(memory), 5, "receipt attempt finishes");
+        Assert.That((bool)memory.GetType().GetProperty("Loaded").GetValue(memory), Is.True, "revision conflict must reload history and retry the queued receipt");
+        Assert.That(memory.GetType().GetProperty("Error").GetValue(memory), Is.Null);
+        Assert.That((int)memory.GetType().GetProperty("Revision").GetValue(memory), Is.EqualTo(previous + 1));
+        Invoke(memory, "Load");
+        yield return WaitFor(() => !(bool)memory.GetType().GetProperty("IsBusy").GetValue(memory), 5, "next restore finishes");
+        Assert.That((int)memory.GetType().GetProperty("Revision").GetValue(memory), Is.EqualTo(previous + 1), "receipt must not be duplicated");
+    }
+
+    [UnityTest, Category("NpcRoutine")]
     public IEnumerator StalledSpeechTimesOutWithoutReplayAndNextUtteranceWorks()
     {
         var npc = GameObject.Find("ConversationNpc");
@@ -90,7 +132,7 @@ public class NpcConversationPlayTests
             Assert.That(requestError.Value, Is.EqualTo("invalid_or_failed_response"));
             Assert.That(npc.GetComponent("NpcMemory").GetType().GetProperty("Error").GetValue(npc.GetComponent("NpcMemory")), Is.EqualTo(requestError.Value));
             yield return WaitFor(() => (bool)director.GetType().GetProperty("AcceptingTranscript").GetValue(director), 5, "failure returns to listening");
-            Assert.That((string)other.GetComponent("NpcProxyClient").GetType().GetField("textOutput").GetValue(other.GetComponent("NpcProxyClient")), Is.EqualTo("Hello, traveler."), "Unselected NPC keeps only its opening response");
+            Assert.That((string)other.GetComponent("NpcProxyClient").GetType().GetField("textOutput").GetValue(other.GetComponent("NpcProxyClient")), Is.Null.Or.Empty, "Authored greetings do not call the model");
         }
         finally { other.SetActive(false); UnityEngine.Object.Destroy(other); }
     }

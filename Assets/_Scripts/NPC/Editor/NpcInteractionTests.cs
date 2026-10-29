@@ -13,9 +13,8 @@ public class NpcInteractionTests
     {
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
         var blackboard = prefab.GetComponent<BehaviorGraphAgent>().Graph.BlackboardReference;
-        Assert.That(blackboard.GetVariable<bool>("OpeningNpcInitiated", out var initiated), Is.True);
-        Assert.That(initiated.Value, Is.True);
-        foreach (var name in new[] { "OpeningIntent", "OpeningSituation", "ReplyIntent", "ReplySituation", "FallbackText" })
+        Assert.That(blackboard.GetVariable<bool>("OpeningNpcInitiated", out _), Is.False);
+        foreach (var name in new[] { "FirstGreeting", "ReturningGreeting", "MemoryUnavailableGreeting", "ReplyIntent", "ReplySituation", "FallbackText" })
         {
             Assert.That(blackboard.GetVariable<string>(name, out var value), Is.True, name);
             Assert.That(value.Value, Is.Not.Null.And.Not.Empty, name);
