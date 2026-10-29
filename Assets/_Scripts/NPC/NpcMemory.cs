@@ -90,9 +90,11 @@ public class NpcMemory : MonoBehaviour
         Load();
     }
     public void RecordActionOutcome(string description, string outcome)
+        => RecordObservedOutcome(Guid.NewGuid().ToString("N"), description, outcome);
+    public void RecordObservedOutcome(string eventId, string description, string outcome)
     {
-        var request = Request();
-        request.@event = new ConversationEvent { eventId = request.turnId + ":action", turnId = request.turnId,
+        var request = Request(eventId);
+        request.@event = new ConversationEvent { eventId = eventId + ":action", turnId = request.turnId,
             kind = "action_outcome", text = description, delivery = outcome };
         Enqueue(request);
         Load();
