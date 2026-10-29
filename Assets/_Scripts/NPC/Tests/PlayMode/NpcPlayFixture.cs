@@ -69,6 +69,11 @@ internal sealed class NpcPlayFixture
     public IEnumerator Dispose()
     {
         foreach (var root in scene.GetRootGameObjects()) root.SetActive(false);
+        // Graph shutdown can start return-to-idle tweens; retire them before destroying their targets.
+        var kill = Type.GetType("DG.Tweening.DOTween, DOTween", true).GetMethod("Kill", new[] { typeof(object), typeof(bool) });
+        foreach (var root in scene.GetRootGameObjects())
+            foreach (var target in root.GetComponentsInChildren<Transform>(true))
+                kill.Invoke(null, new object[] { target, false });
         Service?.Dispose();
         SceneManager.SetActiveScene(previousScene);
         yield return SceneManager.UnloadSceneAsync(scene);
