@@ -163,6 +163,10 @@ PrefabInstance:
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 2922382103335399639, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3846277744125631185, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: m_Name
       value: Barbarian_NPC Variant
@@ -414,7 +418,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 223228188}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -690,6 +694,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ranger_NPC Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 8741794303253440271, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -931,6 +939,10 @@ PrefabInstance:
     - target: {fileID: 4778120994823564161, guid: c588951c232160b4bb506ce52cfeedb6, type: 3}
       propertyPath: m_Name
       value: Mage_NPC Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 6890948928474300807, guid: c588951c232160b4bb506ce52cfeedb6, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1677,6 +1689,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Engineer_NPC Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 6127106474060150398, guid: 08a34c09a344cd94586f0c57aa8c93fb, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1733,6 +1749,10 @@ PrefabInstance:
     - target: {fileID: 5464509668933867589, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
       propertyPath: m_Name
       value: Druid_NPC Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 6213574025258938947, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2527,6 +2547,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 314801944086380064, guid: abc2373571c82b34c8af80b519ba88d4, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1851186719999939622, guid: abc2373571c82b34c8af80b519ba88d4, type: 3}
       propertyPath: m_Name
       value: Rogue_NPC Variant
