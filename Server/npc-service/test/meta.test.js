@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+const reply = speech => ({speech,relationshipProposal:{ruleId:null,evidence:null},actionProposal:null});
 import { metaGenerator, metaIdentityVerifier } from '../src/meta.js';
 
 test('Meta adapter sends exact text and permitted context, and extracts only speech', async () => {
@@ -12,9 +13,9 @@ test('Meta adapter sends exact text and permitted context, and extracts only spe
     assert.deepEqual(JSON.parse(body.input[0].content).profile.facts, ['The inn is east.']);
     assert.equal(body.previous_response_id, undefined);
     return Response.json({ status: 'completed', output: [{ type: 'reasoning', content: [{ type: 'output_text', text: 'hidden' }] },
-      { type: 'message', role: 'assistant', content: [{ type: 'output_text', text: 'Hello.' }] }] });
+      { type: 'message', role: 'assistant', content: [{ type: 'output_text', text: JSON.stringify(reply('Hello.')) }] }] });
   } });
-  assert.equal(await generate({ input: '  Hello "friend"\n', profile: { facts: ['The inn is east.'] }, situation: 'Nearby' }), 'Hello.');
+  assert.deepEqual(await generate({ input: '  Hello "friend"\n', profile: { facts: ['The inn is east.'] }, situation: 'Nearby' }), reply('Hello.'));
 });
 test('incomplete generation and rate limits are explicit failures', async () => {
   for (const [response, code] of [[Response.json({ status: 'incomplete' }), 'model_incomplete'], [new Response('', { status: 429 }), 'model_rate_limited']]) {
@@ -41,7 +42,7 @@ test('all acknowledged dialogue is sent once, with roles preserved', async () =>
   const generate=metaGenerator({apiKey:'secret',fetchImpl:async (_url, options)=>{
     const input=JSON.parse(options.body).input;
     assert.deepEqual(input.slice(1),[{role:'user',content:'Earlier input'},{role:'assistant',content:'Earlier answer'},{role:'user',content:'Current input'}]);
-    return Response.json({status:'completed',output:[{type:'message',role:'assistant',content:[{type:'output_text',text:'Reply'}]}]});
+    return Response.json({status:'completed',output:[{type:'message',role:'assistant',content:[{type:'output_text',text:JSON.stringify(reply('Reply'))}]}]});
   }});
   await generate({history,input:'Current input',profile:{}});
 });
@@ -56,7 +57,7 @@ test('action outcomes are context, never assistant speech, including failed acti
     const body = JSON.parse(options.body);
     assert.equal(JSON.parse(body.input[0].content).intent, 'Explain what happened');
     assert.deepEqual(body.input.slice(1), [{role:'developer',content:JSON.stringify(event)}]);
-    return Response.json({status:'completed',output:[{type:'message',role:'assistant',content:[{type:'output_text',text:'It is stuck.'}]}]});
+    return Response.json({status:'completed',output:[{type:'message',role:'assistant',content:[{type:'output_text',text:JSON.stringify(reply('It is stuck.'))}]}]});
   }});
   await generate({npcInitiated:true,intent:'Explain what happened',input:'',history:[event],profile:{}});
 });

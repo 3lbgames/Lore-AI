@@ -10,7 +10,7 @@ const request = () => ({
     facts: ['The Oak Inn is beside the east gate.'], restrictions: ['Do not invent world facts.'] },
   situation: 'The player is nearby.', actions: []
 });
-async function fixture(t, generate = async () => 'Try the Oak Inn beside the east gate.', options = {}) {
+async function fixture(t, generate = async () => ({speech:'Try the Oak Inn beside the east gate.',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null}), options = {}) {
   const server = createService({ authMode: 'local', localToken: 'test-token',
     grants: [{ playerId: 'local-player', worldId: 'local-world', campaignId: 'local-campaign', npcIds: ['barbarian'] }],
     timeoutMs: 50, generate, memoryStore: { load: async () => ({ revision: 1, history: [{kind: 'player_input',turnId:'turn-1',text: fixtureInput,delivery:'completed'}] }) }, ...options });
@@ -23,7 +23,7 @@ async function fixture(t, generate = async () => 'Try the Oak Inn beside the eas
 }
 test('returns a complete response with correlation IDs and preserves exact input', async t => {
   const body = request(); body.input = '  Where is "the inn"?\n';
-  const post = await fixture(t, async value => { assert.equal(value.input, body.input); return 'Beside the east gate.'; });
+  const post = await fixture(t, async value => { assert.equal(value.input, body.input); return {speech:'Beside the east gate.',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null}; });
   const response = await post(body); assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), { version: 1, sessionId: body.sessionId, interactionId: body.interactionId,
     turnId: body.turnId, status: 'completed', text: 'Beside the east gate.', revision: 1 });
@@ -49,7 +49,7 @@ test('NPC-initiated dialogue uses scoped memory without inventing player input',
     assert.deepEqual(value.history, history);
     assert.equal(value.intent, 'Comment on our last encounter');
     assert.equal(value.input, '');
-    return 'We meet again.';
+    return {speech:'We meet again.',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null};
   }, { memoryStore: { load: async () => ({revision:1,history}) } });
   const body = {...request(), npcInitiated:true, input:'', intent:'Comment on our last encounter'};
   assert.equal((await post(body)).status, 200);
@@ -60,8 +60,13 @@ test('NPC-initiated dialogue uses scoped memory without inventing player input',
 });
 test('times out and remains usable', async t => {
   let first = true;
-  const post = await fixture(t, async () => { if (first) { first = false; await new Promise(resolve => setTimeout(resolve, 100)); } return 'Hello'; });
+  let release;
+  const pending = new Promise(resolve => { release = resolve; });
+  const post = await fixture(t, async () => { if (first) { first = false; await pending; } return {speech:'Hello',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null}; });
   assert.equal((await post(request())).status, 504);
+  assert.equal((await post(request())).status, 429);
+  release();
+  await new Promise(resolve => setImmediate(resolve));
   assert.equal((await post(request())).status, 200);
 });
 
@@ -73,7 +78,7 @@ test('rejects an ungranted NPC even when the request and profile identities matc
 
 test('Meta proof must resolve to the granted player before generation', async t => {
   let generations = 0;
-  const post = await fixture(t, async () => { generations++; return 'Hello'; }, {
+  const post = await fixture(t, async () => { generations++; return {speech:'Hello',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null}; }, {
     authMode: 'meta',
     verifyIdentity: async identity => {
       if (identity?.nonce !== 'valid-proof') throw new ServiceError(401, 'invalid_identity');
@@ -89,7 +94,7 @@ test('Meta proof must resolve to the granted player before generation', async t 
 
 test('timed out identity verification cannot generate later or block the next turn', async t => {
   let first = true, generations = 0;
-  const post = await fixture(t, async () => { generations++; return 'Hello'; }, {
+  const post = await fixture(t, async () => { generations++; return {speech:'Hello',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null}; }, {
     authMode: 'meta',
     verifyIdentity: async () => {
       if (first) { first = false; await new Promise(resolve => setTimeout(resolve, 100)); }
@@ -100,4 +105,31 @@ test('timed out identity verification cannot generate later or block the next tu
   assert.equal((await post(request())).status, 200);
   await new Promise(resolve => setTimeout(resolve, 100));
   assert.equal(generations, 1);
+});
+
+test('single generation sees preturn values, then commits proposal and retry receives no rules',async t=>{
+ const config={categories:[{id:'trust',description:'Trust',expression:'Open',initial:0,min:0,max:10}],rules:[{id:'support',source:'dialogue',condition:'Support',meaning:'Supported',effects:[{category:'trust',delta:2}]}]};
+ const {assessRelationship}=await import('../src/relationships.js');
+ const body=request();body.profile.relationship=config;
+ const event={eventId:'input',kind:'player_input',turnId:body.turnId,text:body.input,delivery:'completed'};
+ let state={revision:1,history:[event]},calls=0,assessments=0;
+ const post=await fixture(t,async value=>{
+  calls++;assert.equal(value.relationship.values[0].value,calls===1?0:2);
+  assert.equal(value.eligibleRules.length,calls===1?1:0);
+  return {speech:'Thanks',relationshipProposal:calls===1?{ruleId:'support',evidence:body.input}:{ruleId:null,evidence:null},actionProposal:null};
+ },{memoryStore:{load:async()=>structuredClone(state),assess:async(_,revision,id,c,p)=>{
+  assessments++;assert.equal(revision,state.revision);assert.equal(id,event.eventId);
+  if(!state.relationship?.evaluatedEventIds.includes(id)) state={...state,revision:state.revision+1,relationship:assessRelationship(c,state.relationship,event,p)};
+  return state;
+ }}});
+ const first=await(await post(body)).json();assert.equal(first.text,'Thanks');assert.equal(first.relationship.values[0].value,2);
+ const retry=await(await post({...body,expectedRevision:first.revision})).json();assert.deepEqual(retry.relationship,first.relationship);assert.equal(calls,2);assert.equal(assessments,2);
+});
+test('service independently rejects action proposals and stale responses before relationship commit',async t=>{
+ for(const stale of [false,true]) {
+  const body=request();body.profile.relationship={categories:[{id:'trust',description:'Trust',expression:'Open',initial:0,min:0,max:10}],rules:[]};
+  let loads=0;
+  const post=await fixture(t,async()=>({speech:'Hello',relationshipProposal:{ruleId:null,evidence:null},actionProposal:stale?null:{id:'open'}}),{memoryStore:{load:async()=>({revision:stale&&++loads>1?2:1,history:[{eventId:'input',kind:'player_input',turnId:body.turnId,text:body.input,delivery:'completed'}]}),assess:()=>assert.fail('invalid output committed')}});
+  const response=await post(body);assert.equal(response.status,stale?409:502);assert.equal((await response.json()).error,stale?'revision_conflict':'invalid_action_proposal');
+ }
 });

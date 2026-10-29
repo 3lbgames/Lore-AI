@@ -18,7 +18,7 @@ MonoBehaviour:
   m_Nodes:
   - rid: 4954066883961684952
   - rid: 4954066883961684961
-  m_VersionTimestamp: 639288037896302740
+  m_VersionTimestamp: 639288746583239710
   m_SerializedVersion: 3
   m_DebugInfo: {fileID: 3167586619650514736}
   m_RuntimeGraph: {fileID: 1392172745011912185}
@@ -68,6 +68,11 @@ MonoBehaviour:
         m_SerializableType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
       Tooltip: 
+    - Name: RelationshipState
+      Type:
+        m_SerializableType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      Tooltip: 
     NamedChildren: []
     IsPlaceholder: 0
   m_Blackboards: []
@@ -83,6 +88,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 4954066883961684952
       type: {class: StartNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -134,6 +141,7 @@ MonoBehaviour:
         - rid: 4954066895098872109
         - rid: 4954066895098872110
         - rid: 4954066895098872111
+        - rid: 4954066902360523673
     - rid: 4954066883961684962
       type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
@@ -269,6 +277,25 @@ MonoBehaviour:
         IsExposed: 1
         m_IsShared: 0
         m_Value: 
+    - rid: 4954066902360523673
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: RelationshipState
+        Type:
+          m_SerializableType: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        LocalValue:
+          rid: 4954066902360523674
+        LinkedVariable:
+          rid: -2
+    - rid: 4954066902360523674
+      type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 
 --- !u!114 &1392172745011912185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,8 +328,8 @@ MonoBehaviour:
           rid: 4954066883961684955
         BlackboardGroupReferences: []
         Root:
-          rid: 4954066897724768257
-        m_VersionTimestamp: 639288037896302740
+          rid: 4954066916303175741
+        m_VersionTimestamp: 639288746583239710
     - rid: 4954066883961684955
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -349,7 +376,15 @@ MonoBehaviour:
           m_Value1: 4361317159402498261
         Name: MemoryError
         m_Value: 
-    - rid: 4954066897724768257
+    - rid: 4954066902360523677
+      type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 
+    - rid: 4954066916303175741
       type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -360,10 +395,10 @@ MonoBehaviour:
         m_Parent:
           rid: -2
         m_Child:
-          rid: 4954066897724768258
+          rid: 4954066916303175742
         Repeat: 0
         AllowMultipleRepeatsPerTick: 0
-    - rid: 4954066897724768258
+    - rid: 4954066916303175742
       type: {class: LoadNpcMemory, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -372,7 +407,7 @@ MonoBehaviour:
         Graph:
           rid: 4954066883961684954
         m_Parent:
-          rid: 4954066897724768257
+          rid: 4954066916303175741
         Character:
           rid: 4954066897315824630
         MemoryLoaded:
@@ -381,6 +416,8 @@ MonoBehaviour:
           rid: 4954066897315824632
         MemoryError:
           rid: 4954066897315824633
+        RelationshipState:
+          rid: 4954066902360523677
 --- !u!114 &3167586619650514736
 MonoBehaviour:
   m_ObjectHideFlags: 0

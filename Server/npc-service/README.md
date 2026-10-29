@@ -55,7 +55,7 @@ Unity must reject obsolete correlation IDs and cancel playback on departure. Gen
 
 ## Provider reference
 
-The adapter uses `muse-spark-1.3`, nonstreaming complete replies, and `store: false`. It sends no previous response ID, tool definitions, or speculative generation settings. See Meta's [Responses endpoint](https://dev.meta.ai/docs/api-reference/responses/create-response), [schemas](https://dev.meta.ai/docs/api-reference/responses/schemas), and [user proof verification](https://developers.meta.com/vr/documentation/native/ps-ownership/).
+The adapter uses `muse-spark-1.3`, strict JSON Schema, `reasoning.effort: minimal`, `stream: false`, and `store: false`. One call returns speech, a relationship proposal and a null action proposal. `NPC_MODEL_REASONING` overrides effort; there is no second interpretation call. Game logic validates and commits category effects before returning speech. Generic instructions live in `src/prompts/interaction.txt`; character criteria and category expression guidance arrive in authored profile configuration. See [US-05 configuration and boundaries](../../docs/US05Implementation.md), Meta's [Responses endpoint](https://dev.meta.ai/docs/api-reference/responses/create-response), [schemas](https://dev.meta.ai/docs/api-reference/responses/schemas), and [user proof verification](https://developers.meta.com/vr/documentation/native/ps-ownership/).
 
 
 ## Persistent memory contract (US-03)

@@ -34,6 +34,7 @@ public class NpcMemoryRestartTests
         Assert.That(Npc.GetComponent<BehaviorGraphAgent>().GetVariable<string>("Greeting", out var value), Is.True, "Greeting must be exposed on the root Blackboard");
         return value.Value;
     }
+    static int Trust(object state) => ((IEnumerable)Get(state, "values")).Cast<object>().Where(v => (string)Get(v, "category") == "trust").Select(v => (int)Get(v, "value")).Single();
     static Array History => ((IEnumerable)Get(Get(Memory, "Buffer"), "acknowledgedHistory")).Cast<object>().ToArray();
 
     [UnitySetUp]
@@ -109,6 +110,34 @@ public class NpcMemoryRestartTests
         yield return new ExitPlayMode();
         yield return new EnterPlayMode();
         Assert.That(Get(Director, "campaignId"), Is.EqualTo(SessionState.GetString(Prefix + "ResetCampaign", "")), "reset ID persists too");
+    }
+
+    [UnityTest, Category("US05"), Timeout(300000)]
+    public IEnumerator AcceptedRelationshipRestoresFriendlyGreetingAcrossDomainReload()
+    {
+        GameObject.Find("MemoryPlayer").transform.position = new Vector3(2, 1.7f, 0);
+        yield return Wait(() => Ready, 60, "initial greeting completes");
+        // The physical transfer is covered by RealCupNeedHandoffAndRecall; this
+        // fixture isolates restoration of its accepted outcome across a domain reload.
+        Call(Memory, "RecordObservedOutcome", "restart-help", "The player fulfilled my mug need.", "completed", "need-met");
+        yield return Wait(() => Ready && Get(Memory, "Relationship") != null && Trust(Get(Memory, "Relationship")) == 20, 30, "confirmed help is persisted");
+        SessionState.SetString(Prefix + "TestCampaign", (string)Get(Director, "campaignId"));
+        Npc.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        yield return new ExitPlayMode();
+        yield return new EnterPlayMode();
+        AudioListener.volume = 0; Application.runInBackground = true;
+        Assert.That(Get(Director, "campaignId"), Is.EqualTo(SessionState.GetString(Prefix + "TestCampaign", "")));
+        GameObject.Find("MemoryPlayer").transform.position = new Vector3(2, 1.7f, 0);
+        yield return Wait(() => Ready, 60, "relationship restores before the greeting");
+        var state = Get(Memory, "Relationship");
+        Assert.That(Trust(state), Is.EqualTo(20));
+        Assert.That(((Array)Get(state, "experiences")).Length, Is.EqualTo(1));
+        object[] args = { state, "unexpected fallback", null };
+        string expected = (string)Call(Get(Get(Director, "profile"), "relationship"), "SelectGreeting", args);
+        Assert.That(Greeting(), Is.EqualTo(expected));
+        Assert.That(History.Cast<object>().Count(e => (string)Get(e, "kind") == "action_outcome"), Is.EqualTo(1));
+        Assert.That(History.Cast<object>().Count(e => (string)Get(e, "kind") == "player_input"), Is.Zero);
     }
 
     [UnityTearDown]

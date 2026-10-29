@@ -36,7 +36,7 @@ test('HTTP → PostgreSQL keeps failed-generation input, excludes undelivered sp
   let fail=true, received;
   const server=createService({authMode:'local',localToken:'test',memoryStore:store,
     grants:[{playerId:'local-player',worldId:'test-world',allowNewCampaigns:true,npcIds:['npc']}],
-    generate:async body=>{received=body.history;if(fail) throw new ServiceError(502,'model_unavailable');return 'I remember the blue kite.';}});
+    generate:async body=>{received=body.history;if(fail) throw new ServiceError(502,'model_unavailable');return {speech:'I remember the blue kite.',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null};}});
   await new Promise(r=>server.listen(0,'127.0.0.1',r));
   t.after(async()=>{server.closeAllConnections();server.close();
     for (const id of [campaignId, resetCampaignId]) {

@@ -9,14 +9,17 @@ public class NpcProfile : ScriptableObject
     public string voice;
     [TextArea] public string[] facts = Array.Empty<string>();
     [TextArea] public string[] restrictions = Array.Empty<string>();
+    public NpcRelationshipDefinition relationship;
     public NpcProfileData ToData() => new NpcProfileData
-    { npcId = npcId, personality = personality, voice = voice, facts = facts, restrictions = restrictions };
+    { npcId = npcId, personality = personality, voice = voice, facts = facts, restrictions = restrictions,
+        relationship = relationship ? relationship.rules : null };
 }
 [Serializable]
 public class NpcProfileData
 {
     public string npcId, personality, voice;
     public string[] facts, restrictions;
+    public NpcRelationshipConfig relationship;
 }
 [Serializable]
 public class NpcServiceRequest
@@ -42,6 +45,7 @@ public class NpcResponse
     public int version, revision;
     public bool hasSpoken;
     public Core3lb.ConversationEvent[] history;
+    public NpcRelationshipState relationship;
     public string sessionId, interactionId, turnId, status, text, error;
 }
 
@@ -49,4 +53,5 @@ public class NpcResponse
 public class NpcMemoryRequest : NpcServiceRequest
 {
     public Core3lb.ConversationEvent @event;
+    public NpcRelationshipConfig relationship;
 }
