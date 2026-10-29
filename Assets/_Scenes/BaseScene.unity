@@ -398,8 +398,8 @@ MonoBehaviour:
   destination: {fileID: 1456624543}
   facing: {fileID: 30679681}
   animator: {fileID: 30679680}
-  walkState: ActionWalk
-  idleState: MoveBlend
+  speedParameter: Speed
+  animationSpeedAtMaxVelocity: 0.5
   timeoutSeconds: 30
 --- !u!114 &30679686
 MonoBehaviour:
@@ -417,8 +417,8 @@ MonoBehaviour:
   destination: {fileID: 1282366369}
   facing: {fileID: 30679681}
   animator: {fileID: 30679680}
-  walkState: ActionWalk
-  idleState: MoveBlend
+  speedParameter: Speed
+  animationSpeedAtMaxVelocity: 0.5
   timeoutSeconds: 30
 --- !u!114 &30679688
 MonoBehaviour:
@@ -433,8 +433,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcAnimationEffect
   animator: {fileID: 30679680}
-  state: ActionCheer
-  returnState: MoveBlend
+  trigger: Cheer
+  state: Cheer
+  layers:
+  - layer: Base Layer
+    returnState: MoveBlend
+  - layer: Torso
+    returnState: New State
   timeoutSeconds: 10
 --- !u!114 &30679689
 MonoBehaviour:
@@ -449,8 +454,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcAnimationEffect
   animator: {fileID: 30679680}
-  state: ActionWave
-  returnState: MoveBlend
+  trigger: Wave
+  state: Wave
+  layers:
+  - layer: Base Layer
+    returnState: MoveBlend
+  - layer: Torso
+    returnState: New State
   timeoutSeconds: 10
 --- !u!114 &30679690
 MonoBehaviour:
@@ -666,8 +676,8 @@ MonoBehaviour:
   destination: {fileID: 1472839122}
   facing: {fileID: 391014691}
   animator: {fileID: 391014690}
-  walkState: ActionWalk
-  idleState: MoveBlend
+  speedParameter: Speed
+  animationSpeedAtMaxVelocity: 0.5
   timeoutSeconds: 30
 --- !u!114 &391014696
 MonoBehaviour:
@@ -685,8 +695,8 @@ MonoBehaviour:
   destination: {fileID: 1100980562}
   facing: {fileID: 391014691}
   animator: {fileID: 391014690}
-  walkState: ActionWalk
-  idleState: MoveBlend
+  speedParameter: Speed
+  animationSpeedAtMaxVelocity: 0.5
   timeoutSeconds: 30
 --- !u!114 &391014697
 MonoBehaviour:
@@ -704,8 +714,8 @@ MonoBehaviour:
   destination: {fileID: 1410079388}
   facing: {fileID: 391014691}
   animator: {fileID: 391014690}
-  walkState: ActionWalk
-  idleState: MoveBlend
+  speedParameter: Speed
+  animationSpeedAtMaxVelocity: 0.5
   timeoutSeconds: 30
 --- !u!114 &391014698
 MonoBehaviour:
@@ -720,8 +730,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcAnimationEffect
   animator: {fileID: 391014690}
-  state: ActionCheer
-  returnState: MoveBlend
+  trigger: Cheer
+  state: Cheer
+  layers:
+  - layer: Base Layer
+    returnState: MoveBlend
+  - layer: Torso
+    returnState: New State
   timeoutSeconds: 10
 --- !u!114 &391014699
 MonoBehaviour:
@@ -736,8 +751,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcAnimationEffect
   animator: {fileID: 391014690}
-  state: ActionWave
-  returnState: MoveBlend
+  trigger: Wave
+  state: Wave
+  layers:
+  - layer: Base Layer
+    returnState: MoveBlend
+  - layer: Torso
+    returnState: New State
   timeoutSeconds: 10
 --- !u!114 &391014700
 MonoBehaviour:
