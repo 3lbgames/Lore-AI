@@ -14,11 +14,11 @@ public partial class WaitForNpcTranscript : Unity.Behavior.Action
     {
         director = Character.Value ? Character.Value.GetComponent<NpcCharacterDirector>() : null;
         if (!director) return Status.Failure;
-        Transcript.Value = null; director.AcceptingTranscript = true; return Status.Running;
+        Transcript.Value = null; director.AcceptingTranscript = !director.Memory.IsBusy; return Status.Running;
     }
     protected override Status OnUpdate()
     {
-        if (!director.TakeTranscript(out var text)) { director.AcceptingTranscript = true; return Status.Running; }
+        if (!director.TakeTranscript(out var text)) { director.AcceptingTranscript = !director.Memory.IsBusy; return Status.Running; }
         Transcript.Value = text; return Status.Success;
     }
     protected override void OnEnd() { if (director) director.AcceptingTranscript = false; }

@@ -55,12 +55,23 @@ public class NpcProxyClient : BaseAI_LLM
     public void Cancel()
     {
         generation++;
-        if (activeRequest != null) { activeRequest.Abort(); activeRequest.Dispose(); activeRequest = null; }
+        if (activeRequest != null) { activeRequest.Abort(); activeRequest = null; }
         if (operation != null) StopCoroutine(operation);
         operation = null; IsPending = false; Response = null;
     }
     private void OnDisable() => Cancel();
     private IEnumerator Send(NpcResponseRequest body, int expected)
+    {
+        NpcResponse result = null;
+        yield return Exchange("/v1/responses", body, value => result = value);
+        if (expected != generation) yield break;
+        if (result == null || result.status != "completed" || string.IsNullOrWhiteSpace(result.text))
+        { Fail(result?.error ?? "invalid_or_failed_response"); yield break; }
+        Response = result; IsPending = false; textOutput = result.text;
+    }
+
+    // Independent persistence operations survive cancellation of model generation.
+    public IEnumerator Exchange(string route, NpcServiceRequest body, Action<NpcResponse> complete)
     {
         float deadline = Time.realtimeSinceStartup + timeoutSeconds;
         if (string.IsNullOrEmpty(localToken))
@@ -72,35 +83,37 @@ public class NpcProxyClient : BaseAI_LLM
                 catch (UnityException) { failed = true; done = true; }
             }
             while (!done && Time.realtimeSinceStartup < deadline) yield return null;
-            if (!done || failed) { Fail("platform_initialization_failed"); yield break; }
+            if (!done || failed) { complete(Failure("platform_initialization_failed")); yield break; }
             body.identity = new NpcIdentity(); done = false;
             Users.GetLoggedInUser().OnComplete(m => { failed = m.IsError; if (!failed) body.identity.userId = m.Data.ID.ToString(); done = true; });
             while (!done && Time.realtimeSinceStartup < deadline) yield return null;
-            if (!done || failed) { Fail("platform_user_failed"); yield break; }
+            if (!done || failed) { complete(Failure("platform_user_failed")); yield break; }
             done = false;
             Users.GetUserProof().OnComplete(m => { failed = m.IsError; if (!failed) body.identity.nonce = m.Data.Value; done = true; });
             while (!done && Time.realtimeSinceStartup < deadline) yield return null;
-            if (!done || failed) { Fail("platform_proof_failed"); yield break; }
+            if (!done || failed) { complete(Failure("platform_proof_failed")); yield break; }
         }
-        if (expected != generation) yield break;
-        activeRequest = new UnityWebRequest(serviceUrl.TrimEnd('/') + "/v1/responses", "POST");
-        activeRequest.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JsonUtility.ToJson(body)));
-        activeRequest.downloadHandler = new DownloadHandlerBuffer();
-        activeRequest.SetRequestHeader("Content-Type", "application/json");
-        if (!string.IsNullOrEmpty(localToken)) activeRequest.SetRequestHeader("Authorization", "Bearer " + localToken);
-        activeRequest.timeout = Mathf.Max(1, Mathf.CeilToInt(deadline - Time.realtimeSinceStartup));
-        yield return activeRequest.SendWebRequest();
-        if (expected != generation) yield break;
-        NpcResponse result = null;
-        try { result = JsonUtility.FromJson<NpcResponse>(activeRequest.downloadHandler.text); }
-        catch (ArgumentException) { }
-        bool success = activeRequest.result == UnityWebRequest.Result.Success;
-        activeRequest.Dispose(); activeRequest = null;
-        if (!success || result == null || result.version != 1 || result.status != "completed" ||
-            result.sessionId != body.sessionId || result.interactionId != body.interactionId || result.turnId != body.turnId || string.IsNullOrWhiteSpace(result.text))
-        { Fail(result?.error ?? "invalid_or_failed_response"); yield break; }
-        Response = result; IsPending = false;
-        textOutput = result.text;
+        using (var request = new UnityWebRequest(serviceUrl.TrimEnd('/') + route, "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JsonUtility.ToJson(body)));
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            if (!string.IsNullOrEmpty(localToken)) request.SetRequestHeader("Authorization", "Bearer " + localToken);
+            request.timeout = Mathf.Max(1, Mathf.CeilToInt(deadline - Time.realtimeSinceStartup));
+            // Only response-generation HTTP is owned by Cancel().
+            if (route == "/v1/responses") activeRequest = request;
+            yield return request.SendWebRequest();
+            NpcResponse result = null;
+            try { result = JsonUtility.FromJson<NpcResponse>(request.downloadHandler.text); }
+            catch (ArgumentException) { }
+            if (route == "/v1/responses") activeRequest = null;
+            if (request.result != UnityWebRequest.Result.Success || result == null || result.version != 1 ||
+                result.status != "completed" || result.sessionId != body.sessionId ||
+                result.interactionId != body.interactionId || result.turnId != body.turnId)
+            { complete(Failure(result?.error ?? "invalid_or_failed_response")); yield break; }
+            complete(result);
+        }
     }
+    static NpcResponse Failure(string error) => new NpcResponse { version = 1, status = "failed", error = error };
     private void Fail(string error) { Error = error; IsPending = false; }
 }

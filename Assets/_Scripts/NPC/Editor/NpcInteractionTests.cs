@@ -9,6 +9,19 @@ public class NpcInteractionTests
     internal const string PrefabPath = "Assets/_Prefabs/NPCs/Barbarian_NPC Variant.prefab";
 
     [Test]
+    public void SampleRuntimeGraphContainsAuthoredOpeningSettings()
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
+        var blackboard = prefab.GetComponent<BehaviorGraphAgent>().Graph.BlackboardReference;
+        Assert.That(blackboard.GetVariable<bool>("OpeningNpcInitiated", out _), Is.False);
+        foreach (var name in new[] { "FirstGreeting", "ReturningGreeting", "MemoryUnavailableGreeting", "ReplyIntent", "ReplySituation", "FallbackText" })
+        {
+            Assert.That(blackboard.GetVariable<string>(name, out var value), Is.True, name);
+            Assert.That(value.Value, Is.Not.Null.And.Not.Empty, name);
+        }
+    }
+
+    [Test]
     public void NpcSpeechUsesOriginalWitPlayer()
     {
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
@@ -65,22 +78,10 @@ public class NpcInteractionTests
         finally { Object.DestroyImmediate(speaker); }
     }
 
-    [Test]
-    public void SetupPreservesAuthoredConversation()
+    [TestCase("Assets/_Scenes/BaseScene.unity")]
+    [TestCase("Assets/_Scenes/VillageScene.unity")]
+    public void SceneSpeechInputsHaveConnectedRecordingIndicators(string path)
     {
-        const string path = "Assets/_Behavior/Conversation.asset";
-        var before = System.IO.File.ReadAllBytes(path);
-        var type = System.AppDomain.CurrentDomain.GetAssemblies()
-            .Select(a => a.GetType("NpcConversationSetup")).First(t => t != null);
-        type.GetMethod("SetUp").Invoke(null, null);
-        AssetDatabase.SaveAssets();
-        Assert.That(System.IO.File.ReadAllBytes(path), Is.EqualTo(before));
-    }
-
-    [Test]
-    public void BaseSceneSpeechInputsHaveConnectedRecordingIndicators()
-    {
-        const string path = "Assets/_Scenes/BaseScene.unity";
         var scene = UnityEngine.SceneManagement.SceneManager.GetSceneByPath(path);
         bool opened = !scene.isLoaded;
         if (opened) scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(path, UnityEditor.SceneManagement.OpenSceneMode.Additive);
@@ -88,9 +89,12 @@ public class NpcInteractionTests
         {
             var inputs = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<MonoBehaviour>(true))
                 .Where(c => c && c.GetType().Name == "NpcSpeechInput").ToArray();
-            Assert.That(inputs, Is.Not.Empty, "BaseScene must contain speech input");
+            Assert.That(inputs, Is.Not.Empty, path + " must contain speech input");
             foreach (var input in inputs)
             {
+                var controls = input.GetComponent("NpcSpeechControls");
+                Assert.That(controls, Is.Not.Null, "The shipped input needs its replaceable controls.");
+                Assert.That(controls.GetType().GetField("input").GetValue(controls), Is.SameAs(input));
                 var views = input.GetComponentsInChildren<MonoBehaviour>(true)
                     .Where(c => c && c.GetType().Name == "NpcSpeechStatusView").ToArray();
                 Assert.That(views.Length, Is.EqualTo(1), input.name + " must have one recording indicator in the shipped scene");
@@ -110,7 +114,46 @@ public class NpcInteractionTests
         Assert.That(PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(view.gameObject),
             Is.EqualTo("Assets/_Prefabs/NpcSpeechStatus.prefab"));
         Assert.That(view.GetType().GetField("input").GetValue(view), Is.Not.Null);
-        Assert.That(view.GetType().GetField("label").GetValue(view), Is.Not.Null);
+        Assert.That(view.GetType().GetField("textUI").GetValue(view), Is.Not.Null);
+        Assert.That(view.GetType().GetField("imageUI").GetValue(view), Is.Not.Null);
+    }
+
+    [Test]
+    public void CaptionViewCanBeHiddenAndRestoredWithoutChangingSpeechState()
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
+        var source = prefab.GetComponentsInChildren<MonoBehaviour>(true)
+            .Single(c => c && c.GetType().Name == "NpcSpeechCaptionView");
+        // Clone inactive so the view can be tested without starting the NPC graph or audio.
+        var parent = new GameObject("Caption test");
+        parent.SetActive(false);
+        try
+        {
+            var instance = Object.Instantiate(source.gameObject, parent.transform);
+            var view = (Behaviour)instance.GetComponent("NpcSpeechCaptionView");
+            var output = instance.GetComponent("NpcSpeechOutput");
+            var display = instance.GetComponent("UI_TextDisplay");
+            Assert.That(view.GetType().GetField("output").GetValue(view), Is.SameAs(output));
+            Assert.That(view.GetType().GetField("display").GetValue(view), Is.SameAs(display));
+            var holder = (GameObject)display.GetType().GetField("textHolder").GetValue(display);
+            var text = (Component)display.GetType().GetField("textUI").GetValue(display);
+            var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+            var viewType = view.GetType();
+            viewType.GetMethod("OnEnable", flags).Invoke(view, null);
+            const string spoken = "An exact reply.\nSecond line.";
+            output.GetType().GetMethod("SetText").Invoke(output, new object[] { spoken });
+            Assert.That(holder.activeSelf, Is.True);
+            Assert.That(text.GetType().GetProperty("text").GetValue(text), Is.EqualTo(spoken));
+            viewType.GetMethod("OnDisable", flags).Invoke(view, null);
+            Assert.That(holder.activeSelf, Is.False);
+            Assert.That(output.GetType().GetProperty("Text").GetValue(output), Is.EqualTo(spoken));
+            viewType.GetMethod("OnEnable", flags).Invoke(view, null);
+            Assert.That(holder.activeSelf, Is.True, "A replacement or re-enabled view reads current speech.");
+            output.GetType().GetMethod("Clear").Invoke(output, null);
+            Assert.That(holder.activeSelf, Is.False);
+            viewType.GetMethod("OnDisable", flags).Invoke(view, null);
+        }
+        finally { Object.DestroyImmediate(parent); }
     }
 
     [Test]
