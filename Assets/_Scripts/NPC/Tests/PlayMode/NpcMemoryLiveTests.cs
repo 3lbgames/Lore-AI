@@ -164,11 +164,11 @@ public class NpcMemoryLiveTests
         yield return Wait(() => Ready && (int)Get(Memory, "Revision") == 3, 20, "graph records interrupted speech");
         Assert.That(History.Length, Is.EqualTo(3));
         Assert.That(Get(History.GetValue(2), "delivery"), Is.EqualTo("interrupted"));
-        Assert.That(Get(History.GetValue(2), "text"), Is.EqualTo(""));
+        Assert.That((string)Get(History.GetValue(2), "text"), Is.Not.Empty, "captioned reply survives audio interruption");
         Call(Memory, "Load");
         yield return Wait(() => !(bool)Get(Memory, "IsBusy"), 10, "interrupted outcome restores");
         var delivered = (IList)Get(Get(Memory, "Buffer"), "conversationList");
-        Assert.That(delivered.Count, Is.EqualTo(2), "undelivered reply never enters restored dialogue");
+        Assert.That(delivered.Count, Is.EqualTo(3), "captioned reply enters restored dialogue");
     }
 
     [UnityTest, Category("LiveMemory")]

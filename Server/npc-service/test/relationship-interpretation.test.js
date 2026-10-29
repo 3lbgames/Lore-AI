@@ -23,7 +23,7 @@ test('abstention and null-only eligibility; invalid output never escapes',async(
  const abstain={...reply,relationshipProposal:{ruleId:null,evidence:null}};
  const generate=(value,req=request)=>metaGenerator({apiKey:'secret',fetchImpl:async()=>completion(value)})(req);
  assert.deepEqual(await generate(abstain,{...request,eligibleRules:[]}),abstain);
- for(const value of ['not json',{...reply,extra:1},{...reply,speech:''},{...reply,relationshipProposal:{ruleId:'unknown',evidence:request.input}},{...reply,relationshipProposal:{ruleId:'support',evidence:'invented'}},{...reply,relationshipProposal:{ruleId:null,evidence:'quote'}}]) await assert.rejects(generate(value),{code:'invalid_model_response'});
+ for(const value of ['not json',{...reply,extra:1},{...reply,speech:null},{...reply,relationshipProposal:{ruleId:'unknown',evidence:request.input}},{...reply,relationshipProposal:{ruleId:'support',evidence:'invented'}},{...reply,relationshipProposal:{ruleId:null,evidence:'quote'}}]) await assert.rejects(generate(value),{code:'invalid_model_response'});
  await assert.rejects(generate(reply,{...request,eligibleRules:[]}),{code:'invalid_model_response'});
  await assert.rejects(generate({...reply,actionProposal:{id:'gift'}}),{code:'invalid_action_proposal'});
 });

@@ -57,7 +57,7 @@ public class NpcMemoryTests
     }
 
     [Test]
-    public void HistoryBufferKeepsGeneratedSpeechSeparateFromAcknowledgedDelivery()
+    public void HistoryBufferRestoresCaptionedSpeechWithItsAudioOutcome()
     {
         var go = new GameObject("History buffer test");
         try
@@ -74,14 +74,15 @@ public class NpcMemoryTests
                 eventType.GetField("eventId").SetValue(item, "event-" + i);
                 eventType.GetField("kind").SetValue(item, i == 0 ? "player_input" : "npc_speech");
                 eventType.GetField("delivery").SetValue(item, i == 0 ? "completed" : "interrupted");
-                eventType.GetField("text").SetValue(item, i == 0 ? " Exact input?! " : "Unheard generated speech");
+                eventType.GetField("text").SetValue(item, i == 0 ? " Exact input?! " : "Captioned speech");
                 events.SetValue(item, i);
             }
             method.Invoke(buffer, new object[] { events });
             method.Invoke(buffer, new object[] { events });
             Assert.That(((IList)type.GetField("acknowledgedHistory").GetValue(buffer)).Count, Is.EqualTo(2), "restore replaces rather than appends");
             var conversation = (IList)type.GetField("conversationList").GetValue(buffer);
-            Assert.That(conversation.Count, Is.EqualTo(1), "interrupted output is not remembered as spoken text");
+            Assert.That(conversation.Count, Is.EqualTo(2), "captioned output remains in dialogue despite interrupted audio");
+            Assert.That(conversation[1].GetType().GetField("assistant").GetValue(conversation[1]), Is.EqualTo("Captioned speech"));
             Assert.That(conversation[0].GetType().GetField("user").GetValue(conversation[0]), Is.EqualTo(" Exact input?! "));
             Assert.That(conversation[0].GetType().GetField("assistant").GetValue(conversation[0]), Is.Null);
         }

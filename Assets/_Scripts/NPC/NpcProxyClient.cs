@@ -65,7 +65,7 @@ public class NpcProxyClient : BaseAI_LLM
         NpcResponse result = null;
         yield return Exchange("/v1/responses", body, value => result = value);
         if (expected != generation) yield break;
-        if (result == null || result.status != "completed" || string.IsNullOrWhiteSpace(result.text))
+        if (result == null || result.status != "completed" || result.text == null)
         { Fail(result?.error ?? "invalid_or_failed_response"); yield break; }
         Response = result; IsPending = false; textOutput = result.text;
     }
@@ -111,6 +111,9 @@ public class NpcProxyClient : BaseAI_LLM
                 result.status != "completed" || result.sessionId != body.sessionId ||
                 result.interactionId != body.interactionId || result.turnId != body.turnId)
             { complete(Failure(result?.error ?? "invalid_or_failed_response")); yield break; }
+            // JsonUtility materializes a JSON null nested object as an empty instance.
+            if (result.actionProposal != null && string.IsNullOrEmpty(result.actionProposal.actionId) &&
+                string.IsNullOrEmpty(result.actionProposal.targetId)) result.actionProposal = null;
             complete(result);
         }
     }

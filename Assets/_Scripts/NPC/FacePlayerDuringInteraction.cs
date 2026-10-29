@@ -44,6 +44,8 @@ public partial class FacePlayerDuringInteraction : Modifier
     protected override void OnEnd()
     {
         if (!facing) return;
+        var action = facing.GetComponentInParent<NpcActionRunner>();
+        if (action && action.ControlsFacing) return;
         facing.transform.DOKill();
         facing.faceTo = target;
         facing.facePlayer = facePlayer;

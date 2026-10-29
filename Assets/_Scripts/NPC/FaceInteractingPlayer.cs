@@ -17,6 +17,8 @@ public partial class FaceInteractingPlayer : Unity.Behavior.Action
     {
         var facing = FacingObject.Value ? FacingObject.Value.GetComponent<Facing>() : null;
         if (!InteractionActive.Value || !Player.Value || !facing) return Status.Failure;
+        var action = facing.GetComponentInParent<NpcActionRunner>();
+        if (action && action.ControlsFacing) return Status.Success;
         facing.facePlayer = false;
         facing.faceTo = Player.Value.transform;
         facing.isFacing = true;
