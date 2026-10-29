@@ -231,8 +231,16 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3151354979673942760, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 811869812}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3846277744125631185, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1354446493}
   m_SourcePrefab: {fileID: 100100000, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+--- !u!1 &30679679 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3846277744125631185, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+  m_PrefabInstance: {fileID: 30679678}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &41282869
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -496,9 +504,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 223228188}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbb5b25141a4a7b47af963cf9aa4d812, type: 3}
+  m_Script: {fileID: 11500000, guid: bba233dd8c2d64615a6c30fe01bffa1d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Core3lb.ItemIDTrigger_PassFail
+  m_EditorClassIdentifier: Assembly-CSharp::Core3lb.ItemHandoffTrigger
   outwardActivator: {fileID: 0}
   enterEvent:
     m_PersistentCalls:
@@ -533,6 +541,7 @@ MonoBehaviour:
   triggerIncorrectExit:
     m_PersistentCalls:
       m_Calls: []
+  recipient: {fileID: 30679679}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1186,6 +1195,29 @@ Transform:
   - {fileID: 41282870}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &819200644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 819200639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce5a4a912394f4b0185883d37018cb46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcSpeechControls
+  input: {fileID: 819200640}
+  microphoneController: 1
+  microphoneButton: 1
+  desktopButtonRect:
+    serializedVersion: 2
+    x: 20
+    y: 20
+    width: 200
+    height: 45
+  beginText: Talk to NPC
+  finishText: Finish speaking
 --- !u!1001 &829867586
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1505,6 +1537,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8221114640743323231, guid: 091954210a3557f459962cdd51b1527b, type: 3}
   m_PrefabInstance: {fileID: 30679678}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1354446493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30679679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 973faa47da4604f40b394751eb065c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcHandoffInbox
+  sources:
+  - {fileID: 223228195}
+  channelVariable: Interaction
 --- !u!1001 &1369267564
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2396,26 +2443,3 @@ SceneRoots:
   - {fileID: 1369267564}
   - {fileID: 2086803299}
   - {fileID: 1515024300}
---- !u!114 &819200644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 819200639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce5a4a912394f4b0185883d37018cb46, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NpcSpeechControls
-  input: {fileID: 819200640}
-  microphoneController: 1
-  microphoneButton: 1
-  desktopButtonRect:
-    serializedVersion: 2
-    x: 20
-    y: 20
-    width: 200
-    height: 45
-  beginText: Talk to NPC
-  finishText: Finish speaking
