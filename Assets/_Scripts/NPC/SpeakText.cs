@@ -27,7 +27,7 @@ public partial class SpeakText : Unity.Behavior.Action
         { SpeechResult.Value = "Failed"; SpeechError.Value = "invalid_speech"; return Status.Failure; }
         started = true;
         speech._Speak(Text.Value);
-        if (output) output.SetText(Text.Value);
+        if (output) output.SetText(speech.GetCaptionText(Text.Value));
         return Status.Running;
     }
 
