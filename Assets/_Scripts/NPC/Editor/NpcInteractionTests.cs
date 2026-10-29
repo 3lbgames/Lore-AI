@@ -9,6 +9,36 @@ public class NpcInteractionTests
     internal const string PrefabPath = "Assets/_Prefabs/NPCs/Barbarian_NPC Variant.prefab";
 
     [Test]
+    public void BaseScenePreservesDistinctNpcProfilesAndOneCampaignResetOwner()
+    {
+        var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenPreviewScene("Assets/_Scenes/BaseScene.unity");
+        try
+        {
+            var components = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<MonoBehaviour>(true)).Where(c => c).ToArray();
+            var directors = components.Where(c => c.GetType().Name == "NpcCharacterDirector").ToArray();
+            Assert.That(directors.Length, Is.EqualTo(2));
+            var ids = directors.Select(c => new SerializedObject(new SerializedObject(c).FindProperty("profile").objectReferenceValue)
+                .FindProperty("npcId").stringValue).ToArray();
+            Assert.That(ids.Distinct().Count(), Is.EqualTo(2), "NPCs must not share a persistent identity after prefab changes");
+            var mira = directors.Single(c => c.gameObject.name == "Mira_NPC");
+            var profile = new SerializedObject(mira).FindProperty("profile").objectReferenceValue;
+            Assert.That(AssetDatabase.GetAssetPath(profile), Is.EqualTo("Assets/_Behavior/MiraProfile.asset"));
+            var voice = mira.GetComponentsInChildren<MonoBehaviour>(true).Single(c => c.GetType().Name == "NpcWitVoiceBinding");
+            Assert.That(new SerializedObject(voice).FindProperty("profile").objectReferenceValue, Is.EqualTo(profile));
+            var overrides = new SerializedObject(mira.GetComponent<BehaviorGraphAgent>()).FindProperty("m_BlackboardVariableOverridesList");
+            var greetings = Enumerable.Range(0, overrides.arraySize)
+                .Select(i => (BlackboardVariable)overrides.GetArrayElementAtIndex(i).managedReferenceValue).OfType<BlackboardVariable<string>>().ToArray();
+            Assert.That(greetings.Single(v => v.Name == "FirstGreeting").Value, Is.EqualTo("Hello! I'm Mira. Have you got a moment?"));
+            Assert.That(greetings.Single(v => v.Name == "ReturningGreeting").Value, Is.EqualTo("Hello again! How are you?"));
+            var resetOwners = components.Where(c => c.GetType().Name == "NpcCampaignControls" && c.isActiveAndEnabled).ToArray();
+            Assert.That(resetOwners.Length, Is.EqualTo(1));
+            Assert.That(resetOwners[0].gameObject, Is.Not.EqualTo(mira.gameObject));
+            Assert.That(components.Count(c => c.GetType().Name == "NpcSpeechInput"), Is.EqualTo(1));
+        }
+        finally { UnityEditor.SceneManagement.EditorSceneManager.ClosePreviewScene(scene); }
+    }
+
+    [Test]
     public void SampleRuntimeGraphContainsAuthoredOpeningSettings()
     {
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);

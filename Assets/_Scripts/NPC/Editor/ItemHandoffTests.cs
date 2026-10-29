@@ -7,15 +7,17 @@ using UnityEngine;
 
 public class ItemHandoffTests
 {
-    [Test]
-    public void BaseSceneKeepsItsConfiguredTransferAndNpcRecipient()
+    [TestCase("Barbarian_NPC Variant")]
+    [TestCase("Mira_NPC")]
+    public void BaseSceneKeepsItsConfiguredTransferAndNpcRecipient(string npcName)
     {
         var scene = EditorSceneManager.OpenPreviewScene("Assets/_Scenes/BaseScene.unity");
         var hand = new GameObject("Scene handoff test hand");
         try
         {
             var components = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<MonoBehaviour>(true)).Where(c => c).ToArray();
-            var source = components.Single(c => c.GetType().FullName == "Core3lb.ItemHandoffTrigger");
+            var source = components.Single(c => c.GetType().FullName == "Core3lb.ItemHandoffTrigger"
+                && ((GameObject)c.GetType().GetField("recipient").GetValue(c)).name == npcName);
             var recipient = (GameObject)source.GetType().GetField("recipient").GetValue(source);
             Assert.That(recipient.GetComponent("NpcCharacterDirector"), Is.Not.Null);
             var inbox = recipient.GetComponent("NpcHandoffInbox");

@@ -38,7 +38,8 @@ public class NpcHandoffPlayTests
         Set(source, "recipient", npc);
         var field = source.GetType().GetField("itemID"); field.SetValue(source, Enum.ToObject(field.FieldType, 10));
         field = source.GetType().GetField("groupID"); field.SetValue(source, Enum.ToObject(field.FieldType, 2));
-        var inbox = (Behaviour)npc.AddComponent(Type.GetType("NpcHandoffInbox, Assembly-CSharp", true));
+        var inbox = (Behaviour)npc.GetComponent("NpcHandoffInbox");
+        Assert.That(inbox, Is.Not.Null, "The NPC prefab supplies the handoff inbox.");
         inbox.enabled = false;
         var sources = Array.CreateInstance(source.GetType(), 1); sources.SetValue(source, 0); Set(inbox, "sources", sources);
         inbox.enabled = true;
