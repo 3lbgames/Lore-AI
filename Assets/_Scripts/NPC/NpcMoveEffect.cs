@@ -9,7 +9,8 @@ public class NpcMoveEffect : NpcActionEffect
     public Transform destination;
     public Facing facing;
     public Animator animator;
-    public string walkState, idleState;
+    public string speedParameter = "Speed";
+    [Min(0)] public float animationSpeedAtMaxVelocity = .5f;
     [Min(1)] public float timeoutSeconds = 30;
     bool moving, previousFacing, previousRotation;
     public override bool ControlsFacing => true;
@@ -26,7 +27,7 @@ public class NpcMoveEffect : NpcActionEffect
         if (!CanExecute(actor, out var error)) { complete(false, error); yield break; }
         moving = true; previousRotation = agent.updateRotation; agent.updateRotation = true;
         if (facing) { previousFacing = facing.isFacing; facing.isFacing = false; DG.Tweening.DOTween.Kill(facing.transform); }
-        if (animator && !string.IsNullOrEmpty(walkState) && animator.HasState(0, Animator.StringToHash(walkState))) animator.CrossFade(walkState, .15f);
+        SetAnimationSpeed(0);
         agent.isStopped = false;
         if (!agent.SetDestination(destination.position)) { ResetExecution(); complete(false, "destination_unreachable"); yield break; }
         float deadline = Time.realtimeSinceStartup + timeoutSeconds;
@@ -34,6 +35,7 @@ public class NpcMoveEffect : NpcActionEffect
         yield return null;
         while (agent && agent.isActiveAndEnabled && agent.isOnNavMesh && Time.realtimeSinceStartup < deadline)
         {
+            SetAnimationSpeed(agent.speed > 0 ? agent.velocity.magnitude / agent.speed * animationSpeedAtMaxVelocity : 0);
             if (!agent.pathPending)
             {
                 if (agent.pathStatus != NavMeshPathStatus.PathComplete) break;
@@ -44,16 +46,21 @@ public class NpcMoveEffect : NpcActionEffect
         }
         ResetExecution(); complete(false, "movement_failed");
     }
+    void SetAnimationSpeed(float speed)
+    {
+        if (animator && !string.IsNullOrEmpty(speedParameter)) animator.SetFloat(speedParameter, speed);
+    }
+
     public override void ResetExecution()
     {
         if (!moving) return;
         moving = false;
-        if (agent && agent.isActiveAndEnabled && agent.isOnNavMesh) { agent.isStopped = true; agent.ResetPath(); agent.updateRotation = previousRotation; }
+        if (agent && agent.isActiveAndEnabled && agent.isOnNavMesh) { agent.ResetPath(); agent.isStopped = true; agent.updateRotation = previousRotation; }
         if (facing)
         {
             var actor = GetComponentInParent<NpcCharacterDirector>();
             facing.isFacing = previousFacing && actor && actor.InteractionOpen;
         }
-        if (animator && !string.IsNullOrEmpty(idleState) && animator.HasState(0, Animator.StringToHash(idleState))) animator.CrossFade(idleState, .15f);
+        SetAnimationSpeed(0);
     }
 }
