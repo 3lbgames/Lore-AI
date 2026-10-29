@@ -38,7 +38,8 @@ public class NpcHandoffPlayTests
         Set(source, "recipient", npc);
         var field = source.GetType().GetField("itemID"); field.SetValue(source, Enum.ToObject(field.FieldType, 10));
         field = source.GetType().GetField("groupID"); field.SetValue(source, Enum.ToObject(field.FieldType, 2));
-        var inbox = (Behaviour)npc.AddComponent(Type.GetType("NpcHandoffInbox, Assembly-CSharp", true));
+        var inbox = (Behaviour)npc.GetComponent("NpcHandoffInbox");
+        Assert.That(inbox, Is.Not.Null, "The NPC prefab supplies the handoff inbox.");
         inbox.enabled = false;
         var sources = Array.CreateInstance(source.GetType(), 1); sources.SetValue(source, 0); Set(inbox, "sources", sources);
         inbox.enabled = true;
@@ -65,6 +66,7 @@ public class NpcHandoffPlayTests
         speech = live ? (Component)Field(director, "speech") : npc.GetComponentInChildren(Type.GetType("NpcTestSpeech, Assembly-CSharp", true), true);
         fixture.Activate(npc);
     }
+    static int Trust(object state) => ((IEnumerable)Field(state, "values")).Cast<object>().Where(v => (string)Field(v, "category") == "trust").Select(v => (int)Field(v, "value")).Single();
     void Give() => Invoke(source, "OnTriggerEnter", item.GetComponent<Collider>());
     [UnityTest, Explicit("Requires local service, PostgreSQL, Meta generation and Wit playback"), Category("NpcLive")]
     public IEnumerator RealCupNeedHandoffAndRecall()
@@ -78,11 +80,14 @@ public class NpcHandoffPlayTests
         Give(); Give();
         yield return WaitFor(() => lastSpoken == "Thank you. That's just what I needed." && Accepting(), 60, "real Wit thank-you completes");
         Assert.That(History().events.Count(e => e.kind == "action_outcome"), Is.EqualTo(1));
+        var relationship = Get(npc.GetComponent("NpcMemory"), "Relationship");
+        Assert.That(Trust(relationship), Is.EqualTo(20), "the confirmed handoff earns its configured relationship effect");
         string receipt = History().events.Single(e => e.kind == "action_outcome").eventId;
         RetireNpc(); yield return null;
         CreateNpc();
         yield return WaitFor(() => Accepting(), 60, "fresh NPC restores PostgreSQL memory");
         Assert.That(History().events.Count(e => e.eventId == receipt), Is.EqualTo(1));
+        Assert.That(Trust(Get(npc.GetComponent("NpcMemory"), "Relationship")), Is.EqualTo(20), "the gift effect survives a fresh NPC instance");
         lastSpoken = "";
         npc.GetComponentInChildren<TTSSpeaker>(true).Events.OnPlaybackStart.AddListener((s, clip) => lastSpoken = clip.textToSpeak);
         Assert.That(Invoke(director, "SubmitTranscript", "What did I give you earlier? Do you still need it?"), Is.True);
@@ -108,7 +113,7 @@ public class NpcHandoffPlayTests
         Assert.That(history.events.Any(e => e.text == "The inn is east of here."), Is.False, "cancelled generation is not remembered as spoken");
         string eventId = history.events.Single(e => e.kind == "action_outcome").eventId;
         // Replay a confirmed receipt with the same identity, including after a new component session.
-        Invoke(npc.GetComponent("NpcMemory"), "RecordObservedOutcome", eventId.Replace(":action", ""), "The player gave me Mug.", "completed");
+        Invoke(npc.GetComponent("NpcMemory"), "RecordObservedOutcome", eventId.Replace(":action", ""), "The player gave me Mug.", "completed", "need-met");
         yield return WaitFor(() => !(bool)Get(npc.GetComponent("NpcMemory"), "IsBusy"), 5, "duplicate receipt settled");
         RetireNpc(); yield return null;
         CreateNpc();
@@ -167,7 +172,7 @@ public class NpcHandoffPlayTests
     [Serializable] class Event { public string eventId, kind, text, delivery; }
     bool Accepting() => (bool)Get(director, "AcceptingTranscript");
     static object Get(Component c, string name) => c.GetType().GetProperty(name).GetValue(c);
-    static object Field(Component c, string name) => c.GetType().GetField(name).GetValue(c);
+    static object Field(object c, string name) => c.GetType().GetField(name).GetValue(c);
     static void Set(Component c, string name, object value) => c.GetType().GetField(name).SetValue(c, value);
     static object Invoke(Component c, string name, params object[] args) => c.GetType().GetMethod(name).Invoke(c, args);
     static IEnumerator WaitFor(Func<bool> predicate, float seconds, string label)

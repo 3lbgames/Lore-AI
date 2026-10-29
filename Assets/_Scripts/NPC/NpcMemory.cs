@@ -12,6 +12,8 @@ public class NpcMemory : MonoBehaviour
     public bool IsBusy { get; private set; }
     public int Revision { get; private set; }
     public string Error { get; private set; }
+    public NpcRelationshipState Relationship { get; private set; }
+    public event Action<NpcRelationshipState> RelationshipChanged;
     public NpcResponseRequest CurrentTurn { get; private set; }
     public BaseAI_Conversation Buffer { get; private set; }
     NpcCharacterDirector director;
@@ -34,7 +36,8 @@ public class NpcMemory : MonoBehaviour
         sessionId = director.SessionId, interactionId = director.InteractionId ?? "restore",
         turnId = turnId ?? Guid.NewGuid().ToString("N"), worldId = director.worldId,
         campaignId = director.campaignId, npcId = director.profile.npcId,
-        writerId = NpcCampaign.WriterId, expectedRevision = Revision
+        writerId = NpcCampaign.WriterId, expectedRevision = Revision,
+        relationship = director.profile.relationship ? director.profile.relationship.rules : null
     };
     public void Load()
     {
@@ -59,7 +62,21 @@ public class NpcMemory : MonoBehaviour
     void Apply(NpcResponse result)
     {
         Revision = result.revision; HasSpoken = result.hasSpoken; Loaded = true;
+        SetRelationship(result.relationship);
         Buffer.RestoreAcknowledgedHistory(result.history);
+    }
+    // Generation may acknowledge a relationship assessment before speech starts.
+    // Apply only its accepted state; a reply is not acknowledged speech history.
+    public void ApplyAcceptedState(NpcResponse result)
+    {
+        if (result == null || result.status != "completed" || result.revision < Revision) return;
+        Revision = result.revision;
+        SetRelationship(result.relationship);
+    }
+    void SetRelationship(NpcRelationshipState value)
+    {
+        Relationship = value;
+        RelationshipChanged?.Invoke(value);
     }
     public void BeginTurn(NpcResponseRequest turn)
     {
@@ -69,6 +86,7 @@ public class NpcMemory : MonoBehaviour
             sessionId = turn.sessionId, interactionId = turn.interactionId, turnId = turn.turnId,
             worldId = turn.worldId, campaignId = turn.campaignId, npcId = turn.npcId,
             writerId = turn.writerId, expectedRevision = Revision,
+            relationship = turn.profile?.relationship,
             @event = new ConversationEvent { eventId = turn.turnId + ":input", turnId = turn.turnId,
                 kind = "player_input", text = turn.input, delivery = "completed" }
         });
@@ -89,13 +107,13 @@ public class NpcMemory : MonoBehaviour
         Enqueue(request);
         Load();
     }
-    public void RecordActionOutcome(string description, string outcome)
-        => RecordObservedOutcome(Guid.NewGuid().ToString("N"), description, outcome);
-    public void RecordObservedOutcome(string eventId, string description, string outcome)
+    public void RecordActionOutcome(string description, string outcome, string evidenceKey = null)
+        => RecordObservedOutcome(Guid.NewGuid().ToString("N"), description, outcome, evidenceKey);
+    public void RecordObservedOutcome(string eventId, string description, string outcome, string evidenceKey = null)
     {
         var request = Request(eventId);
         request.@event = new ConversationEvent { eventId = eventId + ":action", turnId = request.turnId,
-            kind = "action_outcome", text = description, delivery = outcome };
+            kind = "action_outcome", text = description, delivery = outcome, evidenceKey = evidenceKey };
         Enqueue(request);
         Load();
     }
@@ -128,7 +146,7 @@ public class NpcMemory : MonoBehaviour
                 if (expected != epoch) yield break;
             }
             if (result.status != "completed") { Loaded = false; Error = result.error; yield break; }
-            Revision = Math.Max(Revision, result.revision);
+            ApplyAcceptedState(result);
             pending.Dequeue();
         }
     }
@@ -136,7 +154,8 @@ public class NpcMemory : MonoBehaviour
     {
         epoch++; StopAllCoroutines(); pending.Clear(); CurrentTurn = null;
         IsBusy = false; Loaded = false; HasSpoken = false; Revision = 0; Error = null;
-        Buffer.RestoreAcknowledgedHistory(null);
+        SetRelationship(null);
+        if (Buffer) Buffer.RestoreAcknowledgedHistory(null);
     }
     void OnDisable() { epoch++; StopAllCoroutines(); IsBusy = false; Loaded = false; }
 }

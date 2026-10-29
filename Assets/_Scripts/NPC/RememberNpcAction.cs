@@ -12,6 +12,7 @@ public partial class RememberNpcAction : Unity.Behavior.Action
     [SerializeReference] public BlackboardVariable<string> Outcome;
     [SerializeReference] public BlackboardVariable<string> MemoryError = new BlackboardVariable<string>();
     [SerializeReference] public BlackboardVariable<string> EventId = new BlackboardVariable<string>();
+    [SerializeReference] public BlackboardVariable<string> EvidenceKey = new BlackboardVariable<string>();
     [SerializeReference] public BlackboardVariable<bool> WaitForAcknowledgement = new BlackboardVariable<bool> { Value = true };
     private NpcMemory memory;
     protected override Status OnStart()
@@ -22,8 +23,8 @@ public partial class RememberNpcAction : Unity.Behavior.Action
             (Outcome.Value != "completed" && Outcome.Value != "failed" && Outcome.Value != "interrupted"))
         { MemoryError.Value = "invalid_action_outcome"; return Status.Failure; }
         memory = director.Memory;
-        if (string.IsNullOrEmpty(EventId.Value)) memory.RecordActionOutcome(Description.Value, Outcome.Value);
-        else memory.RecordObservedOutcome(EventId.Value, Description.Value, Outcome.Value);
+        if (string.IsNullOrEmpty(EventId.Value)) memory.RecordActionOutcome(Description.Value, Outcome.Value, EvidenceKey.Value);
+        else memory.RecordObservedOutcome(EventId.Value, Description.Value, Outcome.Value, EvidenceKey.Value);
         return WaitForAcknowledgement.Value ? Status.Running : Status.Success;
     }
     protected override Status OnUpdate()

@@ -36,11 +36,11 @@ internal sealed class NpcPlayFixture
         AudioListener.volume = 0; Application.runInBackground = true;
     }
 
-    public GameObject InstantiateNpc()
+    public GameObject InstantiateNpc(string prefabPath = null)
     {
         var holder = new GameObject("Inactive prefab staging");
         holder.SetActive(false);
-        var npc = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath), holder.transform);
+        var npc = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath ?? PrefabPath), holder.transform);
         npc.SetActive(false); npc.transform.SetParent(null);
         UnityEngine.Object.Destroy(holder);
         if (!live)
@@ -69,6 +69,11 @@ internal sealed class NpcPlayFixture
     public IEnumerator Dispose()
     {
         foreach (var root in scene.GetRootGameObjects()) root.SetActive(false);
+        // Graph shutdown can start return-to-idle tweens; retire them before destroying their targets.
+        var kill = Type.GetType("DG.Tweening.DOTween, DOTween", true).GetMethod("Kill", new[] { typeof(object), typeof(bool) });
+        foreach (var root in scene.GetRootGameObjects())
+            foreach (var target in root.GetComponentsInChildren<Transform>(true))
+                kill.Invoke(null, new object[] { target, false });
         Service?.Dispose();
         SceneManager.SetActiveScene(previousScene);
         yield return SceneManager.UnloadSceneAsync(scene);

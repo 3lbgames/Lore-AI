@@ -52,7 +52,9 @@ public partial class RequestNpcResponse : Unity.Behavior.Action
         if (proxy.IsPending) return Status.Running;
         Response.Value = proxy.Response?.text;
         if (!string.IsNullOrEmpty(proxy.Error)) return Fail(proxy.Error);
-        return string.IsNullOrWhiteSpace(Response.Value) ? Fail("empty_response") : Status.Success;
+        if (string.IsNullOrWhiteSpace(Response.Value)) return Fail("empty_response");
+        director.Memory.ApplyAcceptedState(proxy.Response);
+        return Status.Success;
     }
     private Status Fail(string error) { RequestError.Value = error; return Status.Failure; }
     protected override void OnEnd() { if (proxy) proxy.Cancel(); }

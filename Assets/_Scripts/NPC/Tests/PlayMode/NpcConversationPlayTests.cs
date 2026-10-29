@@ -62,7 +62,7 @@ public class NpcConversationPlayTests
         Assert.That(previous, Is.GreaterThan(0));
         // Simulate startup with existing server history and no successful local restore.
         Invoke(memory, "ClearForCampaign");
-        Invoke(memory, "RecordActionOutcome", "Observed recovery test action", "completed");
+        Invoke(memory, "RecordActionOutcome", "Observed recovery test action", "completed", null);
         yield return WaitFor(() => !(bool)memory.GetType().GetProperty("IsBusy").GetValue(memory), 5, "receipt attempt finishes");
         Assert.That((bool)memory.GetType().GetProperty("Loaded").GetValue(memory), Is.True, "revision conflict must reload history and retry the queued receipt");
         Assert.That(memory.GetType().GetProperty("Error").GetValue(memory), Is.Null);

@@ -1,0 +1,138 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1872e983c284c29afd64669a9b3183e, type: 3}
+  m_Name: BarbarianRelationship
+  m_EditorClassIdentifier: Assembly-CSharp::NpcRelationshipDefinition
+  rules:
+    categories:
+    - id: trust
+      description: "Confidence that this player is dependable and sincere."
+      expression: "With more trust, speak openly and confidently about relying on the player; with less, remain cautious. Do not grant permissions through dialogue."
+      initial: 0
+      min: -100
+      max: 100
+    - id: respect
+      description: "Regard for this player's judgment, competence, and consideration."
+      expression: "With more respect, take their suggestions seriously; with less, question poor judgment without becoming abusive."
+      initial: 0
+      min: -100
+      max: 100
+    - id: affection
+      description: "Personal warmth and fondness toward this player."
+      expression: "With more affection, be warmer and pleased to see them; with less, be more reserved."
+      initial: 0
+      min: -100
+      max: 100
+    - id: fear
+      description: "Apprehension about this player and their behavior."
+      expression: "With more fear, sound guarded and avoid provoking them; low fear alone does not imply trust."
+      initial: 0
+      min: 0
+      max: 100
+    - id: annoyance
+      description: "Current accumulated irritation toward this player."
+      expression: "With more annoyance, be brief and impatient; low annoyance alone does not imply affection."
+      initial: 0
+      min: 0
+      max: 100
+    rules:
+    - id: safe-routes
+      source: dialogue
+      condition: "The player meaningfully supports caring for residents, their homes, or safe delivery routes, or proposes a concrete precaution. Simply mentioning safety, vague encouragement without this context, or claiming a completed deed is not enough."
+      meaning: "The player expressed care for residents and safe deliveries."
+      evidenceKey: ""
+      effects:
+      - category: trust
+        delta: 10
+      - category: respect
+        delta: 5
+      repeat:
+        maxApplications: 10
+        cooldownSeconds: 300
+    - id: reckless-dismissal
+      source: dialogue
+      condition: "The player explicitly dismisses residents or their homes as expendable. Ordinary enthusiasm, respectful disagreement, negated or rejected statements, and quotations they reject are not enough."
+      meaning: "The player expressed disregard for the safety of residents and homes."
+      evidenceKey: ""
+      effects:
+      - category: trust
+        delta: -10
+      - category: annoyance
+        delta: 10
+      repeat:
+        maxApplications: 10
+        cooldownSeconds: 300
+    - id: cup-need
+      source: action
+      condition: "A confirmed handoff meets my configured cup need."
+      meaning: "The player helped by meeting my need for a drinking cup."
+      evidenceKey: "need-met"
+      effects:
+      - category: trust
+        delta: 20
+      - category: respect
+        delta: 5
+      repeat:
+        maxApplications: 1
+        cooldownSeconds: 0
+    - id: birthday-occasion-1
+      source: dialogue
+      condition: "The player offers sincere birthday wishes to me in the authored birthday occasion. Reject sarcasm or negation."
+      meaning: "The player wished me well on my birthday."
+      evidenceKey: ""
+      effects:
+      - category: trust
+        delta: 10
+      - category: affection
+        delta: 10
+      repeat:
+        maxApplications: 1
+        cooldownSeconds: 0
+  greetings:
+  - priority: 100
+    name: annoyed
+    greeting: "State your business."
+    conditions:
+    - category: annoyance
+      comparison: gte
+      value: 10
+  - priority: 50
+    name: wary
+    greeting: "State your business."
+    conditions:
+    - category: trust
+      comparison: lt
+      value: 0
+  - priority: 40
+    name: trusted
+    greeting: "Welcome back, friend. I know I can count on you."
+    conditions:
+    - category: trust
+      comparison: gte
+      value: 40
+    - category: annoyance
+      comparison: lt
+      value: 10
+  - priority: 20
+    name: friendly
+    greeting: "Good to see you again. You care about this village."
+    conditions:
+    - category: trust
+      comparison: gte
+      value: 20
+    - category: annoyance
+      comparison: lt
+      value: 10
+  - priority: 0
+    name: neutral
+    greeting: ""
+    conditions: []

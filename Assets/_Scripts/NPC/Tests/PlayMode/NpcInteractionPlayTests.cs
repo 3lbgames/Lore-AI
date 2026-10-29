@@ -40,6 +40,49 @@ public class NpcInteractionPlayTests
     {
         yield return fixture.Dispose();
     }
+
+    [UnityTest, Category("NpcRoutine")]
+    public IEnumerator IdleNpcDoesNotMoveOnAWalkableNavMesh()
+    {
+        var npc = GameObject.Find("InteractionTestNpc");
+        var agent = npc.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        var floor = new UnityEngine.AI.NavMeshBuildSource
+        {
+            shape = UnityEngine.AI.NavMeshBuildSourceShape.Box,
+            transform = Matrix4x4.TRS(new Vector3(0, -0.1f, 0), Quaternion.identity, Vector3.one),
+            size = new Vector3(20, 0.2f, 20)
+        };
+        var data = UnityEngine.AI.NavMeshBuilder.BuildNavMeshData(
+            UnityEngine.AI.NavMesh.GetSettingsByID(agent.agentTypeID),
+            new System.Collections.Generic.List<UnityEngine.AI.NavMeshBuildSource> { floor },
+            new Bounds(Vector3.zero, new Vector3(20, 4, 20)), Vector3.zero, Quaternion.identity);
+        Assert.That(data, Is.Not.Null);
+        var surface = UnityEngine.AI.NavMesh.AddNavMeshData(data);
+        try
+        {
+            agent.enabled = false;
+            agent.enabled = true;
+            Assert.That(agent.isOnNavMesh, Is.True, "The test must exercise active navigation.");
+            yield return null;
+            var start = npc.transform.position;
+            float maximumDisplacement = 0;
+            float end = Time.realtimeSinceStartup + 3;
+            while (Time.realtimeSinceStartup < end)
+            {
+                maximumDisplacement = Mathf.Max(maximumDisplacement, Vector3.Distance(start, npc.transform.position));
+                yield return null;
+            }
+            Assert.That(maximumDisplacement, Is.LessThan(0.05f),
+                "An idle NPC must not relocate to escape its own carving obstacle.");
+        }
+        finally
+        {
+            agent.enabled = false;
+            surface.Remove();
+            UnityEngine.Object.Destroy(data);
+        }
+    }
+
     [UnityTest, Category("NpcRoutine")]
     public IEnumerator ApproachCancelRepeatAndReturnToRoutine()
     {
