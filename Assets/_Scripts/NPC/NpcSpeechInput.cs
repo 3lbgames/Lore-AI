@@ -59,6 +59,13 @@ public class NpcSpeechInput : MonoBehaviour
     private void Update()
     {
         if (listening && (Time.realtimeSinceStartup > deadline || !recipient || recipient != NpcCharacterDirector.Selected || recipient.InteractionId != interactionId || recipient.TurnRevision != turnRevision))
-        { transcription._CancelListening(); OnFailure("capture_cancelled"); }
+        {
+            string reason = Time.realtimeSinceStartup > deadline ? "capture_timeout" :
+                !recipient || recipient != NpcCharacterDirector.Selected ? "capture_recipient_changed" :
+                recipient.InteractionId != interactionId ? "capture_interaction_changed" : "capture_turn_changed";
+            Debug.Log("NPC speech capture cancelled: " + reason, this);
+            transcription._CancelListening();
+            OnFailure(reason);
+        }
     }
 }
