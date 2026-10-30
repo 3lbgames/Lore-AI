@@ -2897,6 +2897,7 @@ MonoBehaviour:
   quest: {fileID: 610588428}
   panel: {fileID: 908392019}
   label: {fileID: 10489790}
+  attachToController: 1
   controllerAnchor: {fileID: 0}
   controllerOffset: {x: 0, y: 0.24, z: 0}
   loadingText: "Loading objective\u2026"
@@ -3260,6 +3261,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7172214816500445574, guid: 9289d9f40c795f147aeb5346a85a0dca, type: 3}
+      propertyPath: apiKeySO
+      value: 
+      objectReference: {fileID: 11400000, guid: 41ee6642449191c43b4cca7e43fb1ee8, type: 2}
     - target: {fileID: 8855848330509715598, guid: 9289d9f40c795f147aeb5346a85a0dca, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

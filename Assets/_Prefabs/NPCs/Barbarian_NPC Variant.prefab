@@ -1,5 +1,213 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &713892424119475301
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8120509051952614712}
+  - component: {fileID: 1716544938194180845}
+  m_Layer: 0
+  m_Name: MoveToQuietSpot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8120509051952614712
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 713892424119475301}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6846681714241137802}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1716544938194180845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 713892424119475301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9e0f14566d804657a06aae4955a733b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcMoveEffect
+  agent: {fileID: 7932896411217615081}
+  destination: {fileID: 0}
+  facing: {fileID: 5745986881355088598}
+  animator: {fileID: 4064368955495427461}
+  speedParameter: Speed
+  animationSpeedAtMaxVelocity: 0.5
+  timeoutSeconds: 30
+--- !u!1 &1787680026656068432
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1340044417891345717}
+  - component: {fileID: 4029465226930692920}
+  m_Layer: 0
+  m_Name: Cheer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1340044417891345717
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1787680026656068432}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6846681714241137802}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4029465226930692920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1787680026656068432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9d1f450ac48846f5b31061dd159ca44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcAnimationEffect
+  animator: {fileID: 4064368955495427461}
+  trigger: Cheer
+  state: Cheer
+  layers:
+  - layer: Base Layer
+    returnState: MoveBlend
+  - layer: Torso
+    returnState: New State
+  timeoutSeconds: 10
+--- !u!1 &3206405868378061468
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2491718209555067471}
+  - component: {fileID: 6865548742735751002}
+  m_Layer: 0
+  m_Name: MoveToHome
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2491718209555067471
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3206405868378061468}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6846681714241137802}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6865548742735751002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3206405868378061468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9e0f14566d804657a06aae4955a733b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcMoveEffect
+  agent: {fileID: 7932896411217615081}
+  destination: {fileID: 0}
+  facing: {fileID: 5745986881355088598}
+  animator: {fileID: 4064368955495427461}
+  speedParameter: Speed
+  animationSpeedAtMaxVelocity: 0.5
+  timeoutSeconds: 30
+--- !u!1 &6936261606024489311
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7663554389596805109}
+  - component: {fileID: 4616831456381796659}
+  m_Layer: 0
+  m_Name: Wave
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7663554389596805109
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6936261606024489311}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6846681714241137802}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4616831456381796659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6936261606024489311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9d1f450ac48846f5b31061dd159ca44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcAnimationEffect
+  animator: {fileID: 4064368955495427461}
+  trigger: Wave
+  state: Wave
+  layers:
+  - layer: Base Layer
+    returnState: MoveBlend
+  - layer: Torso
+    returnState: New State
+  timeoutSeconds: 10
 --- !u!1001 &629324630308912210
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -383,6 +591,76 @@ PrefabInstance:
       propertyPath: managedReferences[4954066882073722923].m_Value
       value: 
       objectReference: {fileID: 4856055925124905366}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[0].id
+      value: wave
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[1].id
+      value: cheer
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[2].id
+      value: walk_quiet_spot
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[3].id
+      value: walk_home
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[0].effect
+      value: 
+      objectReference: {fileID: 4616831456381796659}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[1].effect
+      value: 
+      objectReference: {fileID: 4029465226930692920}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[2].effect
+      value: 
+      objectReference: {fileID: 1716544938194180845}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[3].effect
+      value: 
+      objectReference: {fileID: 6865548742735751002}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[0].targetId
+      value: self
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[1].targetId
+      value: self
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[2].targetId
+      value: barbarian_quiet_spot
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[3].targetId
+      value: barbarian_home
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[0].description
+      value: Wave to the player when greeting, saying goodbye, or when it fits the
+        conversation.
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[1].description
+      value: Cheer when delighted, encouraged, or celebrating good news.
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[2].description
+      value: Turn away and walk to a quiet spot behind you, for example when annoyed
+        and wanting space. You may do this silently.
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699942192401594431, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: actions.Array.data[3].description
+      value: Walk back to your usual standing place.
+      objectReference: {fileID: 0}
     - target: {fileID: 4797932211770069400, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       propertyPath: m_LocalScale.y
       value: 1
@@ -409,8 +687,30 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3349540742646383213, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       insertIndex: 10
       addedObject: {fileID: 5201654881771873068}
+    - targetCorrespondingSourceObject: {fileID: 245724374368745656, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7663554389596805109}
+    - targetCorrespondingSourceObject: {fileID: 245724374368745656, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1340044417891345717}
+    - targetCorrespondingSourceObject: {fileID: 245724374368745656, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8120509051952614712}
+    - targetCorrespondingSourceObject: {fileID: 245724374368745656, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2491718209555067471}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+--- !u!4 &6846681714241137802 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 245724374368745656, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+  m_PrefabInstance: {fileID: 6659893362828907570}
+  m_PrefabAsset: {fileID: 0}
+--- !u!195 &7932896411217615081 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 3637781478625955035, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+  m_PrefabInstance: {fileID: 6659893362828907570}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8221114640743323231 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3349540742646383213, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}

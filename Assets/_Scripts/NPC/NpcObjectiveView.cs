@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NpcObjectiveView : MonoBehaviour
 {
-    public NpcDeliveryQuest quest;
+    public NpcQuestBase quest;
     public GameObject panel;
     public TMP_Text label;
     public bool attachToController = true;

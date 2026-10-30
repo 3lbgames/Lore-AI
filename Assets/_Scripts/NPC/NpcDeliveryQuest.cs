@@ -3,33 +3,20 @@ using System.Collections;
 using Core3lb;
 using UnityEngine;
 
-public class NpcDeliveryQuest : MonoBehaviour
+public class NpcDeliveryQuest : NpcQuestBase
 {
-    public NpcGameState state;
-    public string stateKey;
     public BaseGrabObject item;
     public Transform pickupPoint;
     public ItemHandoffTrigger recipient;
     public GameObject receivedVisual;
     public NpcCharacterDirector recipientCharacter;
     public NpcCharacterDirector giver;
-    public NpcRelationshipCondition[] requiredConditions = Array.Empty<NpcRelationshipCondition>();
-    public string availableText = "Delivery available";
-    public string acceptedText = "Delivery in progress";
-    public string completedText = "Delivery completed";
-    [TextArea] public string completionDescription = "The delivery recipient accepted the item.";
-    public string completionEvidenceKey;
-    public string Error { get; private set; }
-    public string Status => state && state.Loaded ? state.Get(stateKey) : "";
-    public string ObjectiveText => Status == "completed" ? completedText : Status == "accepted" ? acceptedText : availableText;
-    bool projected, completing;
-    string projectedStatus;
 
     void OnEnable()
     {
         if (state) state.Changed += ProjectState;
         if (recipient) recipient.Transferred += Receive;
-        projected = false;
+        Projected = false;
         ProjectState();
     }
     void OnDisable()
@@ -44,7 +31,7 @@ public class NpcDeliveryQuest : MonoBehaviour
             !pickupPoint || !recipient || !recipientCharacter || !giver || !giver.profile || actor != giver)
             error = "invalid_delivery_configuration";
         else if (!state.Loaded || state.Error != null || !actor.Memory.Loaded) error = "game_state_unavailable";
-        else if (state.IsBusy || completing) error = "game_state_busy";
+        else if (state.IsBusy || Completing) error = "game_state_busy";
         else if (Status != "") error = "delivery_already_granted";
         else if (requiredConditions != null && requiredConditions.Length > 0 && (!actor.profile.relationship ||
                  !actor.profile.relationship.Matches(actor.Memory.Relationship, requiredConditions)))
@@ -65,14 +52,14 @@ public class NpcDeliveryQuest : MonoBehaviour
     {
         if (!state || !state.Loaded)
         {
-            projected = false; completing = false; Error = null;
+            Projected = false; Completing = false; Error = null;
             if (receivedVisual) receivedVisual.SetActive(false);
             Place(false);
             return;
         }
         string value = Status;
-        if (projected && projectedStatus == value) return;
-        projected = true; projectedStatus = value;
+        if (Projected && ProjectedStatus == value) return;
+        Projected = true; ProjectedStatus = value;
         if (receivedVisual) receivedVisual.SetActive(value == "completed");
         Place(value == "accepted");
     }
@@ -87,9 +74,9 @@ public class NpcDeliveryQuest : MonoBehaviour
     }
     void Receive(ItemHandoff receipt)
     {
-        if (completing || Status != "accepted" || !item || receipt.item != item.gameObject ||
+        if (Completing || Status != "accepted" || !item || receipt.item != item.gameObject ||
             !recipientCharacter || receipt.recipient != recipientCharacter.gameObject) return;
-        completing = true;
+        Completing = true;
         StartCoroutine(Complete(receipt, giver.campaignId));
     }
     IEnumerator Complete(ItemHandoff receipt, string campaign)
@@ -99,7 +86,7 @@ public class NpcDeliveryQuest : MonoBehaviour
         yield return state.Transition(receipt.eventId, stateKey, "accepted", "completed", (success, error) =>
         { accepted = success; failure = error; });
         if (!giver || giver.campaignId != campaign) yield break;
-        completing = false; Error = failure;
+        Completing = false; Error = failure;
         giver.Memory.RecordObservedOutcome(receipt.eventId + ":delivery", accepted ? completionDescription :
             "The item was handed over, but delivery progress could not be confirmed: " + failure,
             accepted ? "completed" : "failed", accepted ? completionEvidenceKey : null);
