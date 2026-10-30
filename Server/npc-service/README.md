@@ -4,11 +4,44 @@ Node 22 and PostgreSQL 17. Runtime dependencies are locked in package-lock.json.
 
 ## Local Editor
 
+### Prerequisites: macOS
+
+- Install Node.js 22 or newer (including npm).
+- Install and start [OrbStack](https://docs.orbstack.dev/docker/) or Docker Desktop. OrbStack provides the Docker engine and supports the same `docker compose` commands below. PostgreSQL runs in a container; Node runs directly on your Mac.
+- Open Terminal in the project's `Server/npc-service` directory.
+
+### Prerequisites: Windows
+
+- Install Node.js 22 or newer (including npm) for Windows.
+- Install and start [Docker Desktop with the WSL 2 backend](https://docs.docker.com/desktop/setup/install/windows-install/), using Linux containers.
+- Open PowerShell in the project's `Server/npc-service` directory. Run Node and the USB setup from Windows, rather than inside WSL, for this workflow. PostgreSQL runs in Docker Desktop.
+- If PowerShell blocks `npm.ps1`, use `npm.cmd` in place of `npm` in the commands below.
+
+On either platform, check that `node --version`, `npm --version`, and `docker compose version` work before continuing.
+
+### First-time configuration (both platforms)
+
 1. Copy `.env.example` to `.env` and `scopes.example.json` to `scopes.local.json` if they do not exist.
 2. Put the Meta Model API key in `.env` as `MODEL_API_KEY=your-key`. This key stays on Node. Do not put it in an Inspector, ScriptableObject, APK, or chat.
-3. Set a random `LOCAL_ACCESS_TOKEN` in `.env`. Put that same token in the ignored project file `UserSettings/NpcService.local.json`: `{"url":"http://127.0.0.1:8787","token":"your-local-token"}`. The implementation setup creates these local files once.
-4. Set `POSTGRES_PASSWORD` and matching `DATABASE_URL` using `.env.example`. Run `docker compose up -d postgres`, then `npm ci` and `npm start`. Startup applies versioned migrations transactionally. The named volume preserves history across container restarts.
-5. Unity's proxy client reads those local settings in the Editor only. Local authentication accepts loopback connections and grants only `local-player` the scopes listed in `scopes.local.json`.
+3. Keep `AUTH_MODE=local`, `HOST=127.0.0.1`, and `PORT=8787`. Set a random `LOCAL_ACCESS_TOKEN` in `.env`.
+4. Create the ignored file `UserSettings/NpcService.local.json` under the Unity project root if missing, with the same token: `{"url":"http://127.0.0.1:8787","token":"your-local-token"}`.
+5. Set a URL-safe `POSTGRES_PASSWORD` and the matching password in `DATABASE_URL`, following `.env.example`. The local database address is `127.0.0.1:54329`.
+
+Unity reads the project settings file in the Editor. Android Development Builds can read a copy provisioned into the app's private storage by the USB script below. Local authentication accepts loopback connections and grants only `local-player` the scopes listed in `scopes.local.json`. Release builds require Meta Platform authentication.
+
+### Start the service (both platforms)
+
+With OrbStack or Docker Desktop running, execute these commands from `Server/npc-service`:
+
+```sh
+docker compose up -d --wait postgres
+npm ci
+npm start
+```
+
+`--wait` waits for PostgreSQL to become healthy before Node starts. Run `npm ci` on first setup and after dependency changes; subsequent starts only need the Docker command and `npm start`. Startup applies versioned migrations transactionally. The named volume preserves history across container restarts.
+
+Keep the Node terminal open. Open [the health endpoint](http://127.0.0.1:8787/health) to confirm the service is reachable. Stop Node with Ctrl+C; `docker compose stop postgres` stops the database without removing its stored history.
 
 Run `npm test` for service and adapter tests. `GET /health` reports service availability, not provider readiness.
 
@@ -16,13 +49,31 @@ Run `npm test` for service and adapter tests. `GET /health` reports service avai
 
 For local headset testing without a registered Meta Platform app:
 
+Install Python 3 and [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools) on the development computer. Add the SDK's `platform-tools` directory to your `PATH`, then open a new terminal and confirm `adb version` works. Unity's installed Android SDK also contains these tools. The script searches `PATH` first, then falls back to `~/Library/Android/sdk/platform-tools/adb` on macOS; Windows requires `adb.exe` on `PATH`.
+
 1. Build and install an Android **Development Build**. Permit HTTP downloads for development in Player Settings.
    Keep **Development Build** checked in Unity when using Build And Run again. A release rebuild excludes the local connection code and attempts Meta Platform authentication, even if Node is running and USB forwarding is active.
 2. Keep Node running with the same local configuration used by the Editor.
-3. Connect the headset by USB and allow USB debugging.
-4. From this directory run `python3 scripts/connect-quest.py`.
+3. Enable Developer Mode on the Quest, connect it with a USB data cable, and accept the headset's USB debugging prompt. Run `adb devices`; the headset should show as `device`, not `unauthorized`. Connect only the intended device for this script. If Windows does not detect it, install the Meta Quest ADB driver.
+4. In a second terminal, open `Server/npc-service` and run the command for your platform:
 
-The script copies the local service token into the development app's private files using `adb run-as`, forwards headset port 8787 to the Mac, and restarts the app. It never reads or copies the model API key. Keep USB connected; rerun the script after reconnecting. Release builds do not read this file and still require Meta authentication. No local-token access is enabled over LAN.
+   **macOS:**
+
+   ```sh
+   python3 scripts/connect-quest.py
+   ```
+
+   **Windows PowerShell:**
+
+   ```powershell
+   py -3 scripts/connect-quest.py
+   ```
+
+   If your Windows Python installation provides `python` instead of `py`, use `python scripts/connect-quest.py`.
+
+The script copies the local service token into the development app's private files using `adb run-as`, forwards headset port 8787 to port 8787 on the development computer, and restarts the app. It never reads or copies the model API key. Keep USB connected; rerun the script after reconnecting. Release builds do not read this file and still require Meta authentication. No local-token access is enabled over LAN.
+
+After setup, run `adb reverse --list` and confirm a `tcp:8787 tcp:8787` entry, and check the computer's health endpoint again. If `run-as` reports that the package is not debuggable, install a Development Build and rerun the script. If local authentication fails, confirm the token in `UserSettings/NpcService.local.json` matches `.env`, then rerun the script to refresh the app's copy.
 
 ## Quest controls / LAN authentication
 
