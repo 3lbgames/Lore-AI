@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1872e983c284c29afd64669a9b3183e, type: 3}
+  m_Name: RangerRelationship
+  m_EditorClassIdentifier: Assembly-CSharp::NpcRelationshipDefinition
+  rules:
+    categories:
+    - id: trust
+      description: Confidence that this player is dependable and sincere.
+      expression: With more trust, speak openly and confidently about relying on
+        the player; with less, remain cautious. Do not grant permissions through
+        dialogue.
+      initial: 0
+      min: -100
+      max: 100
+    - id: respect
+      description: Regard for this player's judgment, competence, and consideration.
+      expression: With more respect, take their suggestions seriously; with less,
+        question poor judgment without becoming abusive.
+      initial: 0
+      min: -100
+      max: 100
+    - id: affection
+      description: Personal warmth and fondness toward this player.
+      expression: With more affection, be warmer and pleased to see them; with less,
+        be more reserved.
+      initial: 0
+      min: -100
+      max: 100
+    - id: fear
+      description: Apprehension about this player and their behavior.
+      expression: With more fear, sound guarded and avoid provoking them; low fear
+        alone does not imply trust.
+      initial: 0
+      min: 0
+      max: 100
+    - id: annoyance
+      description: Current accumulated irritation toward this player.
+      expression: With more annoyance, be brief and impatient; low annoyance alone
+        does not imply affection.
+      initial: 0
+      min: 0
+      max: 100
+    rules: []
+  greetings:
+  - priority: 100
+    name: annoyed
+    conditions:
+    - category: annoyance
+      comparison: gte
+      value: 10
+    greeting: "\u201COh, wonderful. You again. I could smell you coming from the
+      treeline, and I was hoping it was a dead elk.\u201D"
+  - priority: 50
+    name: wary
+    conditions:
+    - category: trust
+      comparison: lt
+      value: 0
+    greeting: "\u201CThat\u2019s close enough. Hands where I can see them. No, the
+      other hands. Fine, you only have two. Keep them still anyway.\u201D"
+  - priority: 40
+    name: trusted
+    conditions:
+    - category: trust
+      comparison: gte
+      value: 40
+    - category: annoyance
+      comparison: lt
+      value: 10
+    greeting: "\u201CTook you long enough. I kept watch on the north path while you
+      were gone. Nothing came through.\u201D (pause) \u201C...I\u2019m glad you made
+      it back.\u201D"
+  - priority: 20
+    name: friendly
+    conditions:
+    - category: trust
+      comparison: gte
+      value: 20
+    - category: annoyance
+      comparison: lt
+      value: 10
+    greeting: "\u201CThere\u2019s my favorite disaster! Still haven\u2019t learned
+      to walk quietly, I see. Sit down, I caught too many rabbits and you look like
+      you\u2019ve been eating bark.\u201D"
+  - priority: 0
+    name: neutral
+    conditions: []
+    greeting: "\u201CYou\u2019re alive. Good. Saves me the paperwork. What do you
+      want?\u201D"
