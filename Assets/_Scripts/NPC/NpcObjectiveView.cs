@@ -7,6 +7,7 @@ public class NpcObjectiveView : MonoBehaviour
     public NpcDeliveryQuest quest;
     public GameObject panel;
     public TMP_Text label;
+    public bool attachToController = true;
     public Transform controllerAnchor;
     public Vector3 controllerOffset = new Vector3(0, 0.22f, 0);
     public string loadingText = "Loading objective…";
@@ -21,8 +22,11 @@ public class NpcObjectiveView : MonoBehaviour
         bool visible = quest && panel && label && camera && anchor;
         if (panel) panel.SetActive(visible);
         if (!visible) return;
-        var position = anchor.position + controllerOffset;
-        transform.SetPositionAndRotation(position, Quaternion.LookRotation(position - camera.transform.position, camera.transform.up));
+        if (attachToController)
+        {
+            var position = anchor.position + controllerOffset;
+            transform.SetPositionAndRotation(position, Quaternion.LookRotation(position - camera.transform.position, camera.transform.up));
+        }
         string text = !quest.state || !quest.state.Loaded ? loadingText : quest.ObjectiveText;
         if (!string.IsNullOrEmpty(quest.Error) || (quest.state && !string.IsNullOrEmpty(quest.state.Error)))
             text += "\n" + errorText;

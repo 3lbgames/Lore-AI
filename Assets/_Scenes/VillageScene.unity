@@ -1372,6 +1372,7 @@ GameObject:
   m_Component:
   - component: {fileID: 577415311}
   - component: {fileID: 577415312}
+  - component: {fileID: 577415313}
   m_Layer: 0
   m_Name: Delivery objective
   m_TagString: Untagged
@@ -1388,7 +1389,7 @@ Transform:
   m_GameObject: {fileID: 577415310}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 6.325, y: 2.479, z: 8.428}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1410,10 +1411,34 @@ MonoBehaviour:
   quest: {fileID: 1706661572}
   panel: {fileID: 1608395202}
   label: {fileID: 946075032}
+  attachToController: 0
   controllerAnchor: {fileID: 0}
   controllerOffset: {x: 0, y: 0.24, z: 0}
   loadingText: "Loading objective\u2026"
   errorText: Objective progress unavailable
+--- !u!114 &577415313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577415310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2f69eb38ad98f548b8c1be55032e1ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Facing
+  faceTo: {fileID: 0}
+  snapOnEnable: 1
+  alwaysSnap: 1
+  facePlayer: 1
+  isFacing: 1
+  axisConstraint: 0
+  lookTime: 1
+  scaleToDistance: 1
+  scaleMultiplier: 0.5
+  scaleMultiMax: 5
+  scaleTransformOverride: {fileID: 0}
 --- !u!1 &595767429
 GameObject:
   m_ObjectHideFlags: 0
@@ -3865,14 +3890,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1608395202}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.0005, y: 0.0005, z: 0.0005}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.002, y: 0.002, z: 0.002}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 946075031}
   m_Father: {fileID: 577415311}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -4667,6 +4692,10 @@ PrefabInstance:
     - target: {fileID: 107158488689147929, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: speech
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2115649694885111266, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2982291557187187652, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: TTS
