@@ -134,6 +134,10 @@ PrefabInstance:
       propertyPath: m_Center.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6705866071541945387, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: profile
+      value: 
+      objectReference: {fileID: 11400000, guid: b93c407ff576cc84c9915b421193df8e, type: 2}
     - target: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       propertyPath: m_Name
       value: Ranger_NPC Variant

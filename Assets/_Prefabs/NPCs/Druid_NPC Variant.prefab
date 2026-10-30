@@ -596,6 +596,10 @@ PrefabInstance:
       propertyPath: m_Center.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6705866071541945387, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: profile
+      value: 
+      objectReference: {fileID: 11400000, guid: ca73ccdf2fdec904aa46a1e70e6d5a3d, type: 2}
     - target: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       propertyPath: m_Name
       value: Druid_NPC Variant
