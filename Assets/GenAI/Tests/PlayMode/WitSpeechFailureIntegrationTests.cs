@@ -143,16 +143,80 @@ public class WitSpeechFailureIntegrationTests
         Assert.That(SpeechProperty("Outcome").ToString(), Is.EqualTo("Completed"));
     }
 
+    [UnityTest, Category("WitSpeech")]
+    public IEnumerator FaultedWitLoadReturnsWithoutWaitingForStartupTimeout()
+    {
+        Create();
+        yield return WaitFor(Ready, 5, "cached greeting completes");
+        var wit = (TTSWit)speaker.TTSService;
+        wit.RequestSettings.audioType = (Meta.WitAi.TTSWitAudioType)999;
+        LogAssert.ignoreFailingMessages = true;
+        Submit("Unsupported decoder test.");
+        yield return WaitFor(Ready, 2, "faulted SDK task must release the conversation before the five-second deadline");
+        AssertCaption(fixture.Service.PlayerReply);
+        Assert.That(SpeechProperty("Outcome").ToString(), Is.EqualTo("Failed"));
+        Assert.That(SpeechProperty("SpeechError") as string, Does.Contain("audio decoder not supported"));
+        Assert.That(speaker.IsActive, Is.False);
+    }
+
+    [UnityTest, Category("WitSpeech")]
+    public IEnumerator StreamFailureDuringPlaybackPreservesProviderError()
+    {
+        Create();
+        yield return WaitFor(Ready, 5, "cached greeting completes");
+        const string reply = "Speech interrupted by a stream failure.";
+        Cache(reply, 2);
+        Submit(reply);
+        yield return WaitFor(() => speaker.IsSpeaking, 3, "cached response starts playback");
+        speaker.SpeakingClip.LoadError = "timeout";
+        speaker.Stop();
+        yield return WaitFor(Ready, 2, "stream failure releases the conversation");
+        AssertCaption(reply);
+        Assert.That(SpeechProperty("Outcome").ToString(), Is.EqualTo("Failed"));
+        Assert.That(SpeechProperty("SpeechError") as string, Is.EqualTo("timeout"));
+    }
+
+    [Test, Category("WitSpeech")]
+    public void FastHttpDecoderDoesNotStrandFollowingChunks()
+    {
+        var type = typeof(Meta.WitAi.WitRequestSettings).Assembly.GetType("Meta.WitAi.Requests.AudioStreamHandler", true);
+        var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+        int decodedSamples = 0;
+        Meta.Voice.Audio.Decoding.AudioSampleDecodeDelegate onSamples =
+            (samples, offset, count) => decodedSamples += count;
+        var decoder = Meta.WitAi.WitRequestSettings.GetTtsAudioDecoder(Meta.WitAi.TTSWitAudioType.PCM, null);
+        var handler = Activator.CreateInstance(type, new object[] { decoder, onSamples });
+        try
+        {
+            var enqueue = type.GetMethod("EnqueueAndDecodeChunkAsync", flags);
+            var chunk = new byte[1024];
+            // Execute on a worker so Background completes inline, deterministically
+            // reproducing the fast-worker-before-task-assignment interleaving.
+            System.Threading.Tasks.Task.Run(() =>
+            {
+                for (int i = 0; i < 4; i++)
+                    enqueue.Invoke(handler, new object[] { chunk, 0, chunk.Length });
+            }).GetAwaiter().GetResult();
+            Assert.That(decodedSamples, Is.EqualTo(2048), "every received PCM byte must reach the sample stream");
+            Assert.That(type.GetField("_decodedBytes", flags).GetValue(handler), Is.EqualTo((ulong)4096));
+        }
+        finally { ((IDisposable)handler).Dispose(); }
+    }
+
     [UnityTest, Category("WitLive")]
     public IEnumerator LiveWitCompletesAndCancellationPreservesCaption()
     {
         Create();
         yield return WaitFor(Ready, 5, "cached greeting completes");
         string text = "Welcome, traveler. The village is peaceful today. You can find the inn beside the bridge, and the market opens in the morning. Test " + DateTime.UtcNow.Ticks;
-        Submit(text);
-        yield return WaitFor(Ready, 35, "real Wit response completes");
-        Assert.That(SpeechProperty("Outcome").ToString(), Is.EqualTo("Completed"), SpeechProperty("SpeechError") as string);
-        AssertCaption(text);
+        for (int turn = 0; turn < 3; turn++)
+        {
+            string reply = text + " Turn " + turn;
+            Submit(reply);
+            yield return WaitFor(Ready, 35, "repeated real Wit response completes");
+            Assert.That(SpeechProperty("Outcome").ToString(), Is.EqualTo("Completed"), SpeechProperty("SpeechError") as string);
+            AssertCaption(reply);
+        }
         Submit(text + " Let me explain the rest of the journey.");
         yield return WaitFor(() => (bool)SpeechProperty("IsSpeechActive") && (bool)SpeechProperty("HasSpeechPlaybackStarted"), 8, "second real response begins");
         speech.GetType().GetMethod("_StopAudio").Invoke(speech, null);
