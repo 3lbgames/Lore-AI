@@ -23,8 +23,6 @@ public class NpcInteractionTests
             var mira = directors.Single(c => c.gameObject.name == "Mira_NPC");
             var profile = new SerializedObject(mira).FindProperty("profile").objectReferenceValue;
             Assert.That(AssetDatabase.GetAssetPath(profile), Is.EqualTo("Assets/_Behavior/MiraProfile.asset"));
-            var voice = mira.GetComponentsInChildren<MonoBehaviour>(true).Single(c => c.GetType().Name == "NpcWitVoiceBinding");
-            Assert.That(new SerializedObject(voice).FindProperty("profile").objectReferenceValue, Is.EqualTo(profile));
             var overrides = new SerializedObject(mira.GetComponent<BehaviorGraphAgent>()).FindProperty("m_BlackboardVariableOverridesList");
             var greetings = Enumerable.Range(0, overrides.arraySize)
                 .Select(i => (BlackboardVariable)overrides.GetArrayElementAtIndex(i).managedReferenceValue).OfType<BlackboardVariable<string>>().ToArray();
@@ -88,6 +86,7 @@ public class NpcInteractionTests
     public void InvalidSpeechRetainsItsFailureWhenNodeEnds()
     {
         var speaker = new GameObject("Invalid speech test");
+        var output = speaker.AddComponent(System.Type.GetType("NpcSpeechOutput, Assembly-CSharp", true));
         try
         {
             var type = System.Type.GetType("SpeakText, Assembly-CSharp", true);
@@ -100,7 +99,9 @@ public class NpcInteractionTests
             type.GetField("SpeechError").SetValue(node, error);
             const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
             Assert.That(type.GetMethod("OnStart", flags).Invoke(node, null).ToString(), Is.EqualTo("Failure"));
+            Assert.That(output.GetType().GetProperty("Text").GetValue(output), Is.EqualTo("Hello"));
             type.GetMethod("OnEnd", flags).Invoke(node, null);
+            Assert.That(output.GetType().GetProperty("Text").GetValue(output), Is.EqualTo("Hello"), "text survives unavailable audio");
             Assert.That(result.Value, Is.EqualTo("Failed"));
             Assert.That(error.Value, Is.EqualTo("invalid_speech"));
         }

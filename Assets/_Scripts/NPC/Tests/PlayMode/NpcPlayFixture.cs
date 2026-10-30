@@ -15,6 +15,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("GroKit.Speech.PlayModeTests")]
+
 // Native PlayMode fixtures share the runner's play session, but own separate scenes and services.
 internal sealed class NpcPlayFixture
 {

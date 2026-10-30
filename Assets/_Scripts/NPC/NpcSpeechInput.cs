@@ -1,9 +1,12 @@
 using Core3lb;
+using System;
 using UnityEngine;
 
 public class NpcSpeechInput : MonoBehaviour
 {
     public BaseAI_SpeechToText transcription;
+    public event Action CaptureStarted;
+    public event Action<string> TranscriptAccepted;
     private NpcCharacterDirector recipient;
     private string interactionId;
     private int turnRevision;
@@ -14,10 +17,10 @@ public class NpcSpeechInput : MonoBehaviour
     public bool HasRecipient => NpcCharacterDirector.Selected;
     public bool CanBeginListening => isActiveAndEnabled && !listening && transcription &&
         NpcCharacterDirector.Selected && NpcCharacterDirector.Selected.AcceptingTranscript;
-    public bool IsCaptureStatusUnavailable => recording && !(transcription is INpcSpeechCaptureStatus);
-    public bool IsRecording => recording && (transcription as INpcSpeechCaptureStatus)?.IsRecording == true;
-    public bool IsStarting => recording && transcription is INpcSpeechCaptureStatus && !IsRecording && (transcription as INpcSpeechCaptureStatus)?.IsProcessing != true;
-    public string PartialTranscript => (transcription as INpcSpeechCaptureStatus)?.PartialTranscript;
+    public bool IsCaptureStatusUnavailable => recording && !(transcription is ISpeechCaptureStatus);
+    public bool IsRecording => recording && (transcription as ISpeechCaptureStatus)?.IsRecording == true;
+    public bool IsStarting => recording && transcription is ISpeechCaptureStatus && !IsRecording && (transcription as ISpeechCaptureStatus)?.IsProcessing != true;
+    public string PartialTranscript => (transcription as ISpeechCaptureStatus)?.PartialTranscript;
     public float LastFailureTime { get; private set; } = float.NegativeInfinity;
     private float deadline;
     private void OnEnable()
@@ -39,6 +42,7 @@ public class NpcSpeechInput : MonoBehaviour
         recording = true;
         LastFailureTime = float.NegativeInfinity;
         deadline = Time.realtimeSinceStartup + captureTimeout;
+        CaptureStarted?.Invoke();
         transcription._StartListening();
     }
     public void EndListening()
@@ -50,8 +54,8 @@ public class NpcSpeechInput : MonoBehaviour
     {
         listening = false;
         recording = false;
-        if (recipient && recipient == NpcCharacterDirector.Selected && recipient.InteractionId == interactionId && recipient.TurnRevision == turnRevision)
-            recipient.SubmitTranscript(text);
+        if (recipient && recipient == NpcCharacterDirector.Selected && recipient.InteractionId == interactionId && recipient.TurnRevision == turnRevision && recipient.SubmitTranscript(text))
+            TranscriptAccepted?.Invoke(text);
         recipient = null;
     }
     private void OnFailure(string reason)
@@ -59,6 +63,13 @@ public class NpcSpeechInput : MonoBehaviour
     private void Update()
     {
         if (listening && (Time.realtimeSinceStartup > deadline || !recipient || recipient != NpcCharacterDirector.Selected || recipient.InteractionId != interactionId || recipient.TurnRevision != turnRevision))
-        { transcription._CancelListening(); OnFailure("capture_cancelled"); }
+        {
+            string reason = Time.realtimeSinceStartup > deadline ? "capture_timeout" :
+                !recipient || recipient != NpcCharacterDirector.Selected ? "capture_recipient_changed" :
+                recipient.InteractionId != interactionId ? "capture_interaction_changed" : "capture_turn_changed";
+            Debug.Log("NPC speech capture cancelled: " + reason, this);
+            transcription._CancelListening();
+            OnFailure(reason);
+        }
     }
 }

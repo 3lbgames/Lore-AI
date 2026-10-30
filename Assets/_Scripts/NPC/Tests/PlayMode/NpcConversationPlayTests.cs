@@ -143,6 +143,14 @@ public class NpcConversationPlayTests
         var director = npc.GetComponent("NpcCharacterDirector");
         fixture.Service.HoldPlayerResponses = true;
         var inputObject = CreateSpeechInput(out var input, out var transcription);
+        var hud = UnityEngine.Object.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Prefabs/NpcSpeechStatus.prefab"));
+        hud.SetActive(false);
+        var view = hud.GetComponent("NpcSpeechStatusView");
+        view.GetType().GetField("input").SetValue(view, input);
+        Assert.That(view.GetType().GetField("transcriptDuration").GetValue(view), Is.EqualTo(8f));
+        var label = view.GetType().GetField("textUI").GetValue(view);
+        Func<string> display = () => (string)label.GetType().GetProperty("text").GetValue(label);
+        hud.SetActive(true);
         try
         {
             yield return WaitFor(() => Accepting(director), 5, "ready for microphone input");
@@ -157,10 +165,19 @@ public class NpcConversationPlayTests
             yield return WaitFor(() => graph.GetVariable<string>("Transcript", out var value) && value.Value == exact,
                 3, "speech completion reaches the graph without normalization");
             Assert.That(Accepting(director), Is.False);
+            yield return null;
+            Assert.That(display(), Does.Contain(exact), "final recognition stays visible after capture finishes");
+            yield return new WaitForSecondsRealtime(.15f);
+            Assert.That(display(), Does.Contain(exact), "waiting for the NPC reply must not erase recognized text");
+            view.GetType().GetField("transcriptDuration").SetValue(view, .1f);
+            yield return null;
+            yield return null;
+            Assert.That(display(), Does.Not.Contain(exact), "the HUD owns expiration of its retained transcript");
         }
         finally
         {
             Invoke(director, "CancelTurn");
+            UnityEngine.Object.Destroy(hud);
             UnityEngine.Object.Destroy(inputObject);
         }
     }
@@ -276,6 +293,42 @@ public class NpcConversationPlayTests
             Assert.That(otherDirector.GetType().GetMethod("SubmitTranscript").Invoke(otherDirector, new object[] { "Hello" }), Is.True);
         }
         finally { other.SetActive(false); UnityEngine.Object.Destroy(other); }
+    }
+
+    [UnityTest, Category("NpcRoutine")]
+    public IEnumerator SpeechTimeoutKeepsCaptionAndAllowsAnotherTurn()
+    {
+        var npc = GameObject.Find("ConversationNpc");
+        var director = npc.GetComponent("NpcCharacterDirector");
+        yield return WaitFor(() => Accepting(director), 5, "greeting finishes");
+        Invoke(director, "SelectForConversation");
+        var speech = (Component)director.GetType().GetField("speech").GetValue(director);
+        foreach (bool startsPlayback in new[] { false, true })
+        {
+            string expectedError = startsPlayback ? "speech_playback_stalled" : "speech_start_timeout";
+            speech.GetType().GetField("Duration").SetValue(speech, 100f);
+            speech.GetType().GetField("StartPlayback").SetValue(speech, startsPlayback);
+            speech.GetType().GetField("AdvancePlayback").SetValue(speech, false);
+            speech.GetType().GetField("speechStartTimeout").SetValue(speech, startsPlayback ? 2f : .1f);
+            speech.GetType().GetField("speechPlaybackStallTimeout").SetValue(speech, .1f);
+            LogAssert.Expect(LogType.Warning, "NPC speech output abandoned: " + expectedError);
+            Assert.That(director.GetType().GetMethod("SubmitTranscript").Invoke(director, new object[] { "Where is the inn?" }), Is.True);
+            yield return WaitFor(() => Accepting(director), 5, "stalled audio does not block conversation");
+            Assert.That(speech.GetType().GetProperty("IsSpeechActive").GetValue(speech), Is.False);
+            var output = speech.GetComponent("NpcSpeechOutput");
+            Assert.That(output.GetType().GetProperty("Text").GetValue(output), Is.EqualTo("The inn is east of here."));
+            var graph = npc.GetComponent<BehaviorGraphAgent>();
+            Assert.That(graph.GetVariable<string>("SpeechError", out var error), Is.True);
+            Assert.That(error.Value, Is.EqualTo(expectedError));
+            speech.GetType().GetField("Duration").SetValue(speech, .25f);
+            speech.GetType().GetField("StartPlayback").SetValue(speech, true);
+            speech.GetType().GetField("AdvancePlayback").SetValue(speech, true);
+            speech.GetType().GetField("speechStartTimeout").SetValue(speech, .1f);
+            speech.GetType().GetField("speechPlaybackStallTimeout").SetValue(speech, .1f);
+            Assert.That(director.GetType().GetMethod("SubmitTranscript").Invoke(director, new object[] { "Where is the inn?" }), Is.True);
+            yield return WaitFor(() => Accepting(director), 5, "healthy playback can exceed the startup deadline");
+            Assert.That(speech.GetType().GetProperty("Outcome").GetValue(speech).ToString(), Is.EqualTo("Completed"));
+        }
     }
 
     [UnityTest, Category("NpcRoutine")]

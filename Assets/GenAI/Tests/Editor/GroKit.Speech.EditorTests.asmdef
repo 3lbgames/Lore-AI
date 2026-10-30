@@ -1,0 +1,13 @@
+{
+  "name": "GroKit.Speech.EditorTests",
+  "references": [
+    "Unity.Behavior",
+    "Unity.Behavior.SerializableGUID"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
