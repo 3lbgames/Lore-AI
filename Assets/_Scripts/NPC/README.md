@@ -63,6 +63,18 @@ With Unity MCP, use `run_tests(mode="PlayMode", category_names=["NpcRoutine"], i
 
 Routine fixtures create runtime scenes and in-memory fake speech, not scripts or saved test assets. Unity itself may create temporary runner scenes and writes its result XML outside Assets. Test input uses the finalized transcript API; these checks do not measure microphone-recognition quality or replace attended Quest checks.
 
+## Meta streaming ASR prototype (US-07)
+
+`NpcMetaTranscription` streams microphone audio directly from Unity to Meta Model API (`muse-voice-transcribe-1.0`). Both the camera rig used by BaseScene/VillageScene and the standalone speech-input prefab use it. The former Wit adapter remains available for baseline comparisons.
+
+Hold the right trigger to start a fresh push-to-talk session. Wait for **RECORDING** before speaking; release to finalize. The HUD replaces provisional text as recognition changes. Only the exact nonempty final transcript reaches `NpcSpeechInput`, which retains the selected NPC, interaction ID and turn revision checks. Partial text never enters dialogue or memory. Releasing during connection/permission startup reports failure and permits another press.
+
+The transport waits for Meta's handshake acknowledgement, sends mono PCM16 at 24 kHz in paced 80 ms frames, drains queued audio on release, sends `endStream`, and waits for a final transcript and normal server close. Microphone buffering is four seconds; outbound audio is capped at two seconds. Overflow, missing audio, disconnect, invalid/empty results and timeouts fail instead of silently dropping speech. Cancellation, disable and application pause stop the microphone and abort the socket. No Node audio route is involved.
+
+Local setup: put the Model API key in ignored `Assets/Resources/MetaAsrKey.private.txt`. This prototype resource is bundled in local builds, just like the ElevenLabs credential; it is not suitable as a secret-distribution mechanism for a public release. Do not put the key into prefabs or scenes. Meta account access to Muse Voice Transcribe is required.
+
+Run EditMode `MetaAsrTests` for protocol, buffering and resolved-scene wiring coverage. The `NpcRoutine` PlayMode category includes missing-configuration/disabled-provider checks. Run the explicit PlayMode `MetaAsrLiveTests.StreamsPrerecordedSpeechDirectlyFromUnity` separately; it uses credits and expects a 24 kHz mono signed PCM16 file named `villager-meta-asr.pcm` in `System.IO.Path.GetTempPath()`. Edit Mode is unsuitable for real-time pacing. See [ASR verification](../../../../docs/US07MetaAsrVerification.md) for evidence and remaining attended Quest acceptance.
+
 ## ElevenLabs prototype (US-07)
 
 BaseScene's Barbarian and Mira use `ElevenlabsTTS` as scene overrides on their existing speaker objects. The Behavior Graph still calls `SpeakText`; captions and completion/cancellation outcomes use the existing speech interface. The original Wit prefab adapters remain available for other scenes and regression fixtures. The director's optional legacy profile-voice override is cleared on these two instances: set ElevenLabs voice IDs on each adapter, not the Wit preset in `NpcProfile.voice`.
