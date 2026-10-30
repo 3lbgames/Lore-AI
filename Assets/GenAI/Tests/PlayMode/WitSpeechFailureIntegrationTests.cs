@@ -209,12 +209,16 @@ public class WitSpeechFailureIntegrationTests
         Create();
         yield return WaitFor(Ready, 5, "cached greeting completes");
         string text = "Welcome, traveler. The village is peaceful today. You can find the inn beside the bridge, and the market opens in the morning. Test " + DateTime.UtcNow.Ticks;
-        for (int turn = 0; turn < 3; turn++)
+        foreach (string guid in UnityEditor.AssetDatabase.FindAssets("t:NpcProfile", new[] { "Assets/_Behavior" }))
         {
-            string reply = text + " Turn " + turn;
+            var profile = UnityEditor.AssetDatabase.LoadMainAssetAtPath(UnityEditor.AssetDatabase.GUIDToAssetPath(guid));
+            string voice = new UnityEditor.SerializedObject(profile).FindProperty("voice").stringValue;
+            Set("voiceID", voice);
+            string reply = text + " Voice check for " + profile.name;
             Submit(reply);
             yield return WaitFor(Ready, 35, "repeated real Wit response completes");
             Assert.That(SpeechProperty("Outcome").ToString(), Is.EqualTo("Completed"), SpeechProperty("SpeechError") as string);
+            Assert.That(speaker.VoiceSettings.SettingsId, Is.EqualTo(voice), "The authored voice must play without a default fallback.");
             AssertCaption(reply);
         }
         Submit(text + " Let me explain the rest of the journey.");
