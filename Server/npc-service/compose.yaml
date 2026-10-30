@@ -24,8 +24,6 @@ services:
       DATABASE_URL: postgresql://villagerai:${POSTGRES_PASSWORD}@postgres:5432/villagerai
     ports:
       - '127.0.0.1:8787:8787'
-    volumes:
-      - ./scopes.local.json:/app/scopes.local.json:ro
     depends_on:
       postgres:
         condition: service_healthy

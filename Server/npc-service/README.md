@@ -26,22 +26,20 @@ tar -xzf npc-service.tar.gz
 sudo python3 npc-service/scripts/deploy-aws.py npc.your-domain.com
 ```
 
-The installer prompts once for the Meta app ID, app secret, Model API key,
-player IDs and matching Unity world/campaign/NPC IDs. Secrets are entered
-without echo. It installs Ubuntu's Docker/Compose and Caddy packages, builds
+The installer prompts once for the Meta app ID, app secret and Model API key.
+It installs Ubuntu's Docker/Compose and Caddy packages, builds
 the app, enables automatic restarts, configures HTTPS, and creates nightly
 database backups. It runs on an existing instance; it does not create AWS
 resources or DNS records. An existing unmanaged Caddy installation is rejected.
 
-The deployment lives at `/opt/villagerai/npc-service`. The `.env` is root-only;
-the read-only grants file is readable inside the Node container. Both are
-preserved on reruns. To change model/app credentials or grants, edit those files
-with `sudoedit` and rerun the installer. Keep `POSTGRES_PASSWORD` unchanged;
+The deployment lives at `/opt/villagerai/npc-service`. The root-only `.env`
+is preserved on reruns. To change model/app credentials, edit it with
+`sudoedit` and rerun the installer. Keep `POSTGRES_PASSWORD` unchanged;
 changing it in `.env` alone does not rotate the password in an existing database.
 No model key goes into Unity.
 
 Set `NpcProxyClient.serviceUrl` to the HTTPS hostname and test with an entitled
-Meta account in the grants file. Remove the USB development override or use a
+Meta account for the configured app. Remove the USB development override or use a
 release build. Verify a real conversation, memory after a server reboot and
 response time with three players. The installer checks HTTPS reachability;
 it does not verify Meta credentials or model responses.
@@ -147,7 +145,7 @@ After setup, run `adb reverse --list` and confirm a `tcp:8787 tcp:8787` entry, a
 
 In BaseScene, approach the NPC and wait for the greeting to finish. Hold the right controller's index trigger while speaking, then release it to finish recording. `NpcSpeechInput` uses the rig's `InputXR` Interact binding; its controller and button are configurable in the Inspector. Accept the headset's microphone permission prompt. The Editor also provides a **Talk to NPC** button followed by **Finish speaking**.
 
-Set `AUTH_MODE=meta`, `HOST=0.0.0.0`, and `META_APP_ID` / `META_APP_SECRET` in the server `.env`. These are the Meta Platform app credentials, distinct from `MODEL_API_KEY`. Configure the same app in Unity's Meta Platform settings and use an entitled test account. Add its app-scoped user ID to `scopes.local.json`, with exact world and NPC grants. `allowNewCampaigns: true` additionally grants UUID campaign IDs for that player/world/NPC set, enabling Reset campaign. Existing exact campaign grants remain supported. The client obtains a fresh user proof for every request; Node validates it with Meta before checking scope.
+Set `AUTH_MODE=meta`, `HOST=0.0.0.0`, and `META_APP_ID` / `META_APP_SECRET` in the server `.env`. These are the Meta Platform app credentials, distinct from `MODEL_API_KEY`. Configure the same app in Unity's Meta Platform settings and use an entitled test account. The client obtains a fresh user proof for every request; Node validates it with Meta. Unity supplies world, campaign and NPC IDs, and the server creates storage on first use under the verified player identity. Hosted Meta mode does not require `scopes.local.json`. Players cannot read or write another player’s state.
 
 Set `NpcProxyClient.serviceUrl` to the development computer's LAN address on port 8787. A headset's `127.0.0.1` refers to the headset. Allow that port through the computer firewall only on your trusted development network. Local bearer authentication is deliberately unavailable over LAN and is not compiled into a release player build. For an HTTP development endpoint, Unity's Player Settings must permit HTTP downloads in development builds. Use HTTPS before traffic crosses an untrusted network.
 
@@ -157,7 +155,7 @@ Set `NpcProxyClient.serviceUrl` to the development computer's LAN address on por
 
 - `version: 1`
 - `sessionId`, `interactionId`, `turnId`: client correlation strings
-- `worldId`, `campaignId`, `npcId`: exact granted scope
+- `worldId`, `campaignId`, `npcId`: Unity-provided storage scope within the authenticated player
 - `writerId`: persistent installation ID, unchanged on application restart
 - `expectedRevision`: acknowledged stream revision
 - `npcInitiated`: `false` (default) for a player reply; `true` for graph-initiated speech
@@ -220,8 +218,8 @@ Player statements remain dialogue, not witnessed facts.
 
 Reset campaign generates a new UUID and loads that separate history. Prior
 campaign history stays stored. Full crash/offline journaling and retention are
-not part of US-03. Persistent campaigns require `allowNewCampaigns: true` in the
-matching local grant; do not grant wildcard players, worlds or NPCs.
+not part of US-03. Local authentication requires `allowNewCampaigns: true` in the matching
+local grant for campaign reset. Meta authentication creates campaigns on first use.
 
 `npm test` runs service/provider tests. Set `TEST_DATABASE_URL` to a PostgreSQL 17
 test database to also run real transaction/restart/isolation tests. Test rows use

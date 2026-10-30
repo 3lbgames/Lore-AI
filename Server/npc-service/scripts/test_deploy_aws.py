@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 spec = importlib.util.spec_from_file_location("deploy_aws", Path(__file__).with_name("deploy-aws.py"))
@@ -47,13 +48,20 @@ class DeploymentTests(unittest.TestCase):
             self.assertEqual((root / ".env").read_text(), "existing-secret")
             self.assertEqual((root / "scopes.local.json").read_text(), "existing-grants")
 
-    def test_partial_settings_are_not_overwritten(self):
+    def test_existing_env_needs_no_grants_file(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / ".env").write_text("existing-secret")
-            with self.assertRaises(ValueError):
-                deploy.configure(root)
+            deploy.configure(root)
             self.assertEqual((root / ".env").read_text(), "existing-secret")
+
+    def test_first_install_only_requests_app_credentials(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch('builtins.input', side_effect=['123']), patch('getpass.getpass', side_effect=['app-secret','model-key']):
+                deploy.configure(root)
+            self.assertIn('META_APP_ID="123"', (root / '.env').read_text())
+            self.assertFalse((root / 'scopes.local.json').exists())
 
 
 if __name__ == "__main__":
