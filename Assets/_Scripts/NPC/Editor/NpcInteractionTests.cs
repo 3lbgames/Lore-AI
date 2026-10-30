@@ -86,6 +86,7 @@ public class NpcInteractionTests
     public void InvalidSpeechRetainsItsFailureWhenNodeEnds()
     {
         var speaker = new GameObject("Invalid speech test");
+        var output = speaker.AddComponent(System.Type.GetType("NpcSpeechOutput, Assembly-CSharp", true));
         try
         {
             var type = System.Type.GetType("SpeakText, Assembly-CSharp", true);
@@ -98,7 +99,9 @@ public class NpcInteractionTests
             type.GetField("SpeechError").SetValue(node, error);
             const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
             Assert.That(type.GetMethod("OnStart", flags).Invoke(node, null).ToString(), Is.EqualTo("Failure"));
+            Assert.That(output.GetType().GetProperty("Text").GetValue(output), Is.EqualTo("Hello"));
             type.GetMethod("OnEnd", flags).Invoke(node, null);
+            Assert.That(output.GetType().GetProperty("Text").GetValue(output), Is.EqualTo("Hello"), "text survives unavailable audio");
             Assert.That(result.Value, Is.EqualTo("Failed"));
             Assert.That(error.Value, Is.EqualTo("invalid_speech"));
         }

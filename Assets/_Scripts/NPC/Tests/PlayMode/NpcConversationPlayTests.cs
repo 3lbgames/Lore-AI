@@ -296,6 +296,42 @@ public class NpcConversationPlayTests
     }
 
     [UnityTest, Category("NpcRoutine")]
+    public IEnumerator SpeechTimeoutKeepsCaptionAndAllowsAnotherTurn()
+    {
+        var npc = GameObject.Find("ConversationNpc");
+        var director = npc.GetComponent("NpcCharacterDirector");
+        yield return WaitFor(() => Accepting(director), 5, "greeting finishes");
+        Invoke(director, "SelectForConversation");
+        var speech = (Component)director.GetType().GetField("speech").GetValue(director);
+        foreach (bool startsPlayback in new[] { false, true })
+        {
+            string expectedError = startsPlayback ? "speech_playback_stalled" : "speech_start_timeout";
+            speech.GetType().GetField("Duration").SetValue(speech, 100f);
+            speech.GetType().GetField("StartPlayback").SetValue(speech, startsPlayback);
+            speech.GetType().GetField("AdvancePlayback").SetValue(speech, false);
+            speech.GetType().GetField("speechStartTimeout").SetValue(speech, startsPlayback ? 2f : .1f);
+            speech.GetType().GetField("speechPlaybackStallTimeout").SetValue(speech, .1f);
+            LogAssert.Expect(LogType.Warning, "NPC speech output abandoned: " + expectedError);
+            Assert.That(director.GetType().GetMethod("SubmitTranscript").Invoke(director, new object[] { "Where is the inn?" }), Is.True);
+            yield return WaitFor(() => Accepting(director), 5, "stalled audio does not block conversation");
+            Assert.That(speech.GetType().GetProperty("IsSpeechActive").GetValue(speech), Is.False);
+            var output = speech.GetComponent("NpcSpeechOutput");
+            Assert.That(output.GetType().GetProperty("Text").GetValue(output), Is.EqualTo("The inn is east of here."));
+            var graph = npc.GetComponent<BehaviorGraphAgent>();
+            Assert.That(graph.GetVariable<string>("SpeechError", out var error), Is.True);
+            Assert.That(error.Value, Is.EqualTo(expectedError));
+            speech.GetType().GetField("Duration").SetValue(speech, .25f);
+            speech.GetType().GetField("StartPlayback").SetValue(speech, true);
+            speech.GetType().GetField("AdvancePlayback").SetValue(speech, true);
+            speech.GetType().GetField("speechStartTimeout").SetValue(speech, .1f);
+            speech.GetType().GetField("speechPlaybackStallTimeout").SetValue(speech, .1f);
+            Assert.That(director.GetType().GetMethod("SubmitTranscript").Invoke(director, new object[] { "Where is the inn?" }), Is.True);
+            yield return WaitFor(() => Accepting(director), 5, "healthy playback can exceed the startup deadline");
+            Assert.That(speech.GetType().GetProperty("Outcome").GetValue(speech).ToString(), Is.EqualTo("Completed"));
+        }
+    }
+
+    [UnityTest, Category("NpcRoutine")]
     public IEnumerator SpeechWithoutPlaybackFailsInsteadOfReportingDelivery()
     {
         var speaker = new GameObject("Silent speech provider");

@@ -1,6 +1,13 @@
 {
   "name": "GroKit.Speech.PlayModeTests",
-  "references": [],
+  "references": [
+    "NpcInteraction.PlayModeTests",
+    "Unity.Behavior",
+    "Unity.Behavior.SerializableGUID",
+    "Meta.WitAi.TTS",
+    "Meta.WitAi",
+    "Meta.WitAi.Lib"
+  ],
   "includePlatforms": [],
   "optionalUnityReferences": [
     "TestAssemblies"

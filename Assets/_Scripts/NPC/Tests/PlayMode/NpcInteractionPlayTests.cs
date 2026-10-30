@@ -128,7 +128,8 @@ public class NpcInteractionPlayTests
         Assert.That(cancellations(), Is.EqualTo(1));
         Assert.That(npc.GetComponent<BehaviorGraphAgent>().GetVariable<string>("SpeechResult", out var speechResult), Is.True);
         Assert.That(speechResult.Value, Is.EqualTo("Cancelled"), "graph records interrupted playback as cancellation");
-        Assert.That(captionHolder.activeSelf, Is.False, "Cancelling speech must hide its caption.");
+        Assert.That(captionHolder.activeSelf, Is.True, "Cancelling audio must not remove readable response text.");
+        Assert.That(captionText.GetType().GetProperty("text").GetValue(captionText), Is.EqualTo(requestedText()));
         Assert.That(Quaternion.Angle(pivot.localRotation, idleRotation), Is.GreaterThan(5f),
             "Departure must start a smooth return, not snap to idle.");
 
@@ -137,7 +138,7 @@ public class NpcInteractionPlayTests
         Assert.That(captionHolder.activeInHierarchy, Is.True, "Repeat interaction must show the caption again.");
         Assert.That(captionText.GetType().GetProperty("text").GetValue(captionText), Is.EqualTo(requestedText()));
         yield return WaitFor(() => completions() == 1, 6, "playback completes");
-        yield return WaitFor(() => !captionHolder.activeSelf, 2, "completed speech clears the caption");
+        Assert.That(captionHolder.activeSelf, Is.True, "Audio completion must not clear the response caption.");
         yield return new WaitForSeconds(1.2f);
         Assert.That(FacingPlayer(pivot), Is.True, "Finishing speech must not end the interaction.");
         player.position = new Vector3(-2, 1.7f, 0);

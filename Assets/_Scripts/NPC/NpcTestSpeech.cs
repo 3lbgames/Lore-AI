@@ -6,10 +6,14 @@ using UnityEngine;
 public class NpcTestSpeech : BaseAI_TextToSpeech
 {
     public float Duration = 0.05f;
+    public bool StartPlayback = true;
+    public bool AdvancePlayback = true;
     public int Starts, Completions, Cancellations;
     public string LastText;
     float finishTime;
     public override bool IsSpeechActive => Outcome == SpeechOutcome.Pending;
+    public override bool HasSpeechPlaybackStarted => StartPlayback && IsSpeechActive;
+    public override long SpeechPlaybackProgress => AdvancePlayback && HasSpeechPlaybackStarted ? (long)(Time.realtimeSinceStartup * 1000) : 0;
     public override void _Speak(string text)
     {
         _StopAudio();
