@@ -264,14 +264,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 107158488689147929, guid: 091954210a3557f459962cdd51b1527b, type: 3}
-      propertyPath: speech
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2982291557187187652, guid: 091954210a3557f459962cdd51b1527b, type: 3}
-      propertyPath: TTS
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 3846277744125631185, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: m_Name
       value: Barbarian_NPC Variant
@@ -316,14 +308,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 8877408205886043071, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6916612336409017942, guid: 091954210a3557f459962cdd51b1527b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2007000003}
     - targetCorrespondingSourceObject: {fileID: 3846277744125631185, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 30679692}
@@ -542,14 +530,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 438574289388437154, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-      propertyPath: speech
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3317374684905344383, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-      propertyPath: TTS
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 111389792543157610, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -598,14 +578,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 8960042676340149508, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6383336439041458413, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2007000006}
     - targetCorrespondingSourceObject: {fileID: 3605744853716608106, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 391014702}
@@ -3417,103 +3393,3 @@ SceneRoots:
   - {fileID: 399380576}
   - {fileID: 391014688}
   - {fileID: 610588430}
---- !u!1 &2007000001 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6916612336409017942, guid: 091954210a3557f459962cdd51b1527b, type: 3}
-  m_PrefabInstance: {fileID: 30679678}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &2007000002 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 2361286682846619573, guid: 091954210a3557f459962cdd51b1527b, type: 3}
-  m_PrefabInstance: {fileID: 30679678}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2007000003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007000001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 250bc414c88bde94ca986bc0cc44d62c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Core3lb.ElevenlabsTTS
-  useStringAPIKey: 0
-  apiKeySO: {fileID: 0}
-  apiKeyString: 
-  aiStarted:
-    m_PersistentCalls:
-      m_Calls: []
-  aiCompleted:
-    m_PersistentCalls:
-      m_Calls: []
-  aiFailed:
-    m_PersistentCalls:
-      m_Calls: []
-  showDebugs: 0
-  textOutput: 
-  speakerSource: {fileID: 2007000002}
-  testPrompt: Today is a wonderful day to build something people love!
-  useScriptable: 0
-  voiceID: JBFqnCBsd6RMkjVDRZzb
-  voiceName: George
-  voiceSO: {fileID: 0}
-  audioPlayStarted:
-    m_PersistentCalls:
-      m_Calls: []
-  stability: 0.5
-  similarityBoost: 0.5
-  modelId: eleven_v4_turbo
-  credentialResource: ElevenLabsKey.private
-  initialBufferSeconds: 0.75
---- !u!1 &2007000004 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6383336439041458413, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-  m_PrefabInstance: {fileID: 391014688}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &2007000005 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 2859343037170915598, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-  m_PrefabInstance: {fileID: 391014688}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2007000006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007000004}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 250bc414c88bde94ca986bc0cc44d62c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Core3lb.ElevenlabsTTS
-  useStringAPIKey: 0
-  apiKeySO: {fileID: 0}
-  apiKeyString: 
-  aiStarted:
-    m_PersistentCalls:
-      m_Calls: []
-  aiCompleted:
-    m_PersistentCalls:
-      m_Calls: []
-  aiFailed:
-    m_PersistentCalls:
-      m_Calls: []
-  showDebugs: 0
-  textOutput: 
-  speakerSource: {fileID: 2007000005}
-  testPrompt: Today is a wonderful day to build something people love!
-  useScriptable: 0
-  voiceID: EXAVITQu4vr4xnSDxMaL
-  voiceName: Sarah
-  voiceSO: {fileID: 0}
-  audioPlayStarted:
-    m_PersistentCalls:
-      m_Calls: []
-  stability: 0.5
-  similarityBoost: 0.5
-  modelId: eleven_v4_turbo
-  credentialResource: ElevenLabsKey.private
-  initialBufferSeconds: 0.75

@@ -77,7 +77,7 @@ Run EditMode `MetaAsrTests` for protocol, buffering and resolved-scene wiring co
 
 ## ElevenLabs prototype (US-07)
 
-BaseScene's Barbarian and Mira use `ElevenlabsTTS` as scene overrides on their existing speaker objects. The Behavior Graph still calls `SpeakText`; captions and completion/cancellation outcomes use the existing speech interface. The original Wit prefab adapters remain available for other scenes and regression fixtures. The director's optional legacy profile-voice override is cleared on these two instances: set ElevenLabs voice IDs on each adapter, not the Wit preset in `NpcProfile.voice`.
+BaseScene's Barbarian and Mira currently inherit `Witt_TextToSpeech` from their prefabs, using the Wit voices authored in `NpcProfile.voice`. The ElevenLabs scene overrides have been removed. Speech input remains Meta streaming ASR. The Behavior Graph still calls the generic `SpeakText` node; switching the output provider requires no application-code changes. The ElevenLabs adapter remains available for alternative configurations and its focused tests.
 
 The adapter calls ElevenLabs directly from Unity using `eleven_v4_turbo` and streamed mono 24 kHz signed 16-bit PCM. Playback starts after 0.75 seconds of queued audio (or the end of a shorter response), without waiting for the full response. Stopping speech, disabling the component, or leaving the interaction aborts the request and releases its audio clip. The queue is capped at 60 seconds of PCM; overflow fails explicitly instead of growing memory indefinitely. Open-ended bracketed voice directions pass to synthesis but are removed from captions. Captions still display the whole line; word timing and generated emotion cues are separate work. The adapter exposes first-audio, playback-start, download-time, and underrun measurements for diagnosis.
 
@@ -85,7 +85,7 @@ Local setup: place the API key alone in `Assets/Resources/ElevenLabsKey.private.
 
 Configured voices: George (`JBFqnCBsd6RMkjVDRZzb`) for the Barbarian, Sarah (`EXAVITQu4vr4xnSDxMaL`) for Mira. The key needs Text to Speech access; User Read is only needed for usage checks.
 
-Verification: `ElevenLabsPcmTests` covers chunk boundaries, signed PCM conversion, underrun recovery, and BaseScene provider wiring. `ElevenLabsPlayTests` contains a non-network missing-configuration test and an explicit `ElevenLabsLive` test that spends credits to verify streamed playback before download completion, successful completion, cancellation, and disabling during playback. Run live tests separately from `NpcRoutine`.
+Verification: `ElevenLabsPcmTests` covers chunk boundaries, signed PCM conversion, underrun recovery, and current BaseScene speech-provider wiring. `ElevenLabsPlayTests` contains a non-network missing-configuration test and an explicit `ElevenLabsLive` test that spends credits to verify streamed playback before download completion, successful completion, cancellation, and disabling during playback. Run live tests separately from `NpcRoutine`.
 
 Speech provider code lives under `Assets/GenAI`: Meta ASR in `MetaASR`, Wit in `MetaWitt.AI`, and ElevenLabs in `ElevenLabs`. NPC runtime code uses `BaseAI_SpeechToText`, `BaseAI_TextToSpeech`, and optional `ISpeechCaptureStatus`; it does not reference speech-provider SDKs or concrete adapters. The director supplies an opaque voice ID through GroKit; each TTS adapter applies it. Provider choice belongs to prefab/scene configuration.
 
