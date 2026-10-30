@@ -23,8 +23,6 @@ public class NpcInteractionTests
             var mira = directors.Single(c => c.gameObject.name == "Mira_NPC");
             var profile = new SerializedObject(mira).FindProperty("profile").objectReferenceValue;
             Assert.That(AssetDatabase.GetAssetPath(profile), Is.EqualTo("Assets/_Behavior/MiraProfile.asset"));
-            var voice = mira.GetComponentsInChildren<MonoBehaviour>(true).Single(c => c.GetType().Name == "NpcWitVoiceBinding");
-            Assert.That(new SerializedObject(voice).FindProperty("profile").objectReferenceValue, Is.EqualTo(profile));
             var overrides = new SerializedObject(mira.GetComponent<BehaviorGraphAgent>()).FindProperty("m_BlackboardVariableOverridesList");
             var greetings = Enumerable.Range(0, overrides.arraySize)
                 .Select(i => (BlackboardVariable)overrides.GetArrayElementAtIndex(i).managedReferenceValue).OfType<BlackboardVariable<string>>().ToArray();

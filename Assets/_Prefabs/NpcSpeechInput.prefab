@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be14a462e038c4877a3946fecfdf14eb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NpcMetaTranscription
+  m_EditorClassIdentifier: Assembly-CSharp::Core3lb.MetaStreamingSpeechToText
   credentialResource: MetaAsrKey.private
   useStringAPIKey: 0
   apiKeySO: {fileID: 0}

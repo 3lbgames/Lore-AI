@@ -14,7 +14,7 @@ Use **Tools → NPC Tests → Edit Mode** for unit checks and **Tools → NPC Te
 
 ## Profile conversation
 
-The Barbarian now has an `NpcCharacterDirector`, `NpcProxyClient`, and a `BarbarianProfile` asset. Edit the profile's personality, permitted facts, restrictions and voice preset in `Assets/_Behavior/BarbarianProfile.asset`. `NpcWitVoiceBinding` applies that voice preset to the existing Wit speaker.
+The Barbarian now has an `NpcCharacterDirector`, `NpcProxyClient`, and a `BarbarianProfile` asset. Edit the profile's personality, permitted facts, restrictions and voice preset in `Assets/_Behavior/BarbarianProfile.asset`. `NpcCharacterDirector` passes the optional voice ID through `BaseAI_TextToSpeech._ChangeVoice`; the configured adapter applies it.
 
 The Conversation graph opens an interaction, selects the NPC when no other NPC is selected, faces the player, loads memory, and requests an NPC-initiated opening using blackboard intent and situation. The authored `Succeeder` lets a failed greeting continue to listening. It then repeats **Wait For NPC Transcript → Try In Order [Load Memory → Commit Input → Request → Remember Speech [Speak], Request Fallback → Remember Speech [Speak]]**. `NpcTurnScope` cancels its child branch when the selection revision changes, including an A → B → A switch within one frame. Request and speech nodes stop their own adapters when the graph ends them. `NpcCharacterDirector` holds interaction and selection state and coordinates campaign reset; normal conversation sequencing belongs to the graph.
 
@@ -22,15 +22,15 @@ The Conversation graph opens an interaction, selects the NPC when no other NPC i
 
 Edit the saved graph assets in Unity’s Behavior window and configure profiles and prefab references in the Inspector; use source control for rollback.
 
-The scene's `NPC Speech Input` uses the current Wit SDK through `NpcWitTranscription`. In the Editor, enter Play Mode, approach the Barbarian, wait for its greeting, click **Talk to NPC**, and ask “Where can I get lodging for the night?”. Click **Finish speaking** or let Wit finalize the utterance. On Quest, hold the right index trigger to record and release to finish; the controller and `InputXR` button are configurable on `NpcSpeechControls`. One NPC owns the active conversation until departure; gameplay may explicitly call `SelectForConversation` to choose another nearby NPC. A recording captures its recipient and interaction at its start, and late transcripts are discarded after departure or selection change.
+The shipped scenes configure `NPC Speech Input` with `Core3lb.MetaStreamingSpeechToText`. In the Editor, enter Play Mode, approach the Barbarian, wait for its greeting, click **Talk to NPC**, and ask “Where can I get lodging for the night?”. Click **Finish speaking** to finalize the utterance. On Quest, hold the right index trigger to record and release to finish; the controller and `InputXR` button are configurable on `NpcSpeechControls`. One NPC owns the active conversation until departure; gameplay may explicitly call `SelectForConversation` to choose another nearby NPC. A recording captures its recipient and interaction at its start, and late transcripts are discarded after departure or selection change.
 
 Start the local service using [the macOS and Windows service instructions](../../../../Server/npc-service/README.md). Provider credentials belong only in `Server/npc-service/.env`. Editor connection settings live in ignored `UserSettings/NpcService.local.json`; the Quest USB setup script copies those settings into an Android Development Build's private storage for local authentication. Release builds and LAN connections require Meta Platform user proof instead.
 
 `NpcConversationPlayTests` covers unavailable-server recovery, single-recipient routing, exact transcript delivery, selection changes, and cached-audio watchdog behavior. The real-model playback/departure case is explicit and categorized `NpcLive`. Tests mute playback and restore listener volume and background-execution settings.
 
-The headset displays recording and processing status below the center of view, with partial recognized words during capture. The Wit configuration disables unused intent-attribute dispatch to avoid an assembly scan during Quest startup. For USB testing without a Meta Platform app, use the development-only setup in `Server/npc-service/README.md`.
+The headset displays recording and processing status below the center of view, with partial recognized words during capture. For USB testing without a Meta Platform app, use the development-only setup in `Server/npc-service/README.md`.
 
-The recording display is the nested `Assets/_Prefabs/NpcSpeechStatus.prefab`. Edit its Canvas/TMP layout and `NpcSpeechStatusView` fields for wording, colors, camera offset, and failure-display duration. `NpcSpeechInput` only routes capture and exposes provider-neutral status; `NpcWitTranscription` implements `INpcSpeechCaptureStatus`. Red RECORDING follows the provider's actual recording state.
+The recording display is the nested `Assets/_Prefabs/NpcSpeechStatus.prefab`. Edit its Canvas/TMP layout and `NpcSpeechStatusView` fields for wording, colors, camera offset, failure-display duration, and accepted-transcript duration. `NpcSpeechInput` only routes capture and exposes provider-neutral status; capture adapters implement `Core3lb.ISpeechCaptureStatus`. Red RECORDING follows the provider's actual recording state.
 
 ## Reskinning controls and speech output
 
@@ -65,7 +65,7 @@ Routine fixtures create runtime scenes and in-memory fake speech, not scripts or
 
 ## Meta streaming ASR prototype (US-07)
 
-`NpcMetaTranscription` streams microphone audio directly from Unity to Meta Model API (`muse-voice-transcribe-1.0`). Both the camera rig used by BaseScene/VillageScene and the standalone speech-input prefab use it. The former Wit adapter remains available for baseline comparisons.
+`Core3lb.MetaStreamingSpeechToText` streams microphone audio directly from Unity to Meta Model API (`muse-voice-transcribe-1.0`). Both the camera rig used by BaseScene/VillageScene and the standalone speech-input prefab use it. The former Wit adapter remains available for baseline comparisons.
 
 Hold the right trigger to start a fresh push-to-talk session. Wait for **RECORDING** before speaking; release to finalize. The HUD replaces provisional text as recognition changes. Only the exact nonempty final transcript reaches `NpcSpeechInput`, which retains the selected NPC, interaction ID and turn revision checks. Partial text never enters dialogue or memory. Microphone capture starts before the network connection, buffering opening audio during connection and handshake. Releasing during that network startup preserves captured audio and finalizes after connecting. Releasing before microphone permission is granted still fails.
 
@@ -86,3 +86,7 @@ Local setup: place the API key alone in `Assets/Resources/ElevenLabsKey.private.
 Configured voices: George (`JBFqnCBsd6RMkjVDRZzb`) for the Barbarian, Sarah (`EXAVITQu4vr4xnSDxMaL`) for Mira. The key needs Text to Speech access; User Read is only needed for usage checks.
 
 Verification: `ElevenLabsPcmTests` covers chunk boundaries, signed PCM conversion, underrun recovery, and BaseScene provider wiring. `ElevenLabsPlayTests` contains a non-network missing-configuration test and an explicit `ElevenLabsLive` test that spends credits to verify streamed playback before download completion, successful completion, cancellation, and disabling during playback. Run live tests separately from `NpcRoutine`.
+
+Speech provider code lives under `Assets/GenAI`: Meta ASR in `MetaASR`, Wit in `MetaWitt.AI`, and ElevenLabs in `ElevenLabs`. NPC runtime code uses `BaseAI_SpeechToText`, `BaseAI_TextToSpeech`, and optional `ISpeechCaptureStatus`; it does not reference speech-provider SDKs or concrete adapters. The director supplies an opaque voice ID through GroKit; each TTS adapter applies it. Provider choice belongs to prefab/scene configuration.
+
+`NpcSpeechInput` emits `CaptureStarted` and `TranscriptAccepted` facts; it stores no caption or display timer. `NpcSpeechStatusView` owns the accepted-text cache and an Inspector-configurable `transcriptDuration` (eight seconds by default). It shows the exact accepted transcript while the NPC responds, clears it when a new capture starts or the selected recipient changes, and clears/subscribes/unsubscribes with the view lifecycle. Neither recognition nor playback waits for this UI timer.

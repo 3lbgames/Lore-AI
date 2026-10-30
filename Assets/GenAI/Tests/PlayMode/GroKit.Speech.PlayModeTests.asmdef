@@ -1,0 +1,8 @@
+{
+  "name": "GroKit.Speech.PlayModeTests",
+  "references": [],
+  "includePlatforms": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

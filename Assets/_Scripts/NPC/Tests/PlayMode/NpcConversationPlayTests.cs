@@ -143,6 +143,14 @@ public class NpcConversationPlayTests
         var director = npc.GetComponent("NpcCharacterDirector");
         fixture.Service.HoldPlayerResponses = true;
         var inputObject = CreateSpeechInput(out var input, out var transcription);
+        var hud = UnityEngine.Object.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Prefabs/NpcSpeechStatus.prefab"));
+        hud.SetActive(false);
+        var view = hud.GetComponent("NpcSpeechStatusView");
+        view.GetType().GetField("input").SetValue(view, input);
+        Assert.That(view.GetType().GetField("transcriptDuration").GetValue(view), Is.EqualTo(8f));
+        var label = view.GetType().GetField("textUI").GetValue(view);
+        Func<string> display = () => (string)label.GetType().GetProperty("text").GetValue(label);
+        hud.SetActive(true);
         try
         {
             yield return WaitFor(() => Accepting(director), 5, "ready for microphone input");
@@ -157,10 +165,19 @@ public class NpcConversationPlayTests
             yield return WaitFor(() => graph.GetVariable<string>("Transcript", out var value) && value.Value == exact,
                 3, "speech completion reaches the graph without normalization");
             Assert.That(Accepting(director), Is.False);
+            yield return null;
+            Assert.That(display(), Does.Contain(exact), "final recognition stays visible after capture finishes");
+            yield return new WaitForSecondsRealtime(.15f);
+            Assert.That(display(), Does.Contain(exact), "waiting for the NPC reply must not erase recognized text");
+            view.GetType().GetField("transcriptDuration").SetValue(view, .1f);
+            yield return null;
+            yield return null;
+            Assert.That(display(), Does.Not.Contain(exact), "the HUD owns expiration of its retained transcript");
         }
         finally
         {
             Invoke(director, "CancelTurn");
+            UnityEngine.Object.Destroy(hud);
             UnityEngine.Object.Destroy(inputObject);
         }
     }
