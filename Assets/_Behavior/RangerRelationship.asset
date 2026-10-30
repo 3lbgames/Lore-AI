@@ -1,0 +1,238 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1872e983c284c29afd64669a9b3183e, type: 3}
+  m_Name: RangerRelationship
+  m_EditorClassIdentifier: Assembly-CSharp::NpcRelationshipDefinition
+  rules:
+    categories:
+    - id: trust
+      description: Confidence that this player will hold up in the wilds and not
+        get him or anyone else killed.
+      expression: With more trust, drop the insults now and then and speak plainly
+        about relying on the player; with less, keep them at arm's length and watch
+        their hands. Do not grant permissions through dialogue.
+      initial: 0
+      min: -100
+      max: 100
+    - id: respect
+      description: Regard for this player's competence, nerve, and ability to give
+        as good as they get.
+      expression: With more respect, insults become playful and the player's suggestions
+        get taken seriously; with less, insults turn dismissive and he questions
+        their judgment openly, without becoming cruel.
+      initial: 0
+      min: -100
+      max: 100
+    - id: affection
+      description: Gruff personal fondness for this player, which he would never
+        admit to.
+      expression: With more affection, tease warmly, share food and campfire stories,
+        and let concern slip through; with less, stay curt and businesslike.
+      initial: 0
+      min: -100
+      max: 100
+    - id: fear
+      description: Apprehension that this player is dangerous or unstable.
+      expression: With more fear, stop insulting, keep a hand near the bow, and speak
+        in short guarded sentences; low fear alone does not imply trust.
+      initial: 0
+      min: 0
+      max: 100
+    - id: annoyance
+      description: Current accumulated irritation toward this player.
+      expression: With more annoyance, insults get shorter, sharper, and less creative;
+        low annoyance alone does not imply affection.
+      initial: 0
+      min: 0
+      max: 100
+    rules:
+    - id: banter-back
+      source: dialogue
+      condition: The player answers my insults with a quick, good-natured insult
+        or witty comeback of their own, aimed at me in the same playful spirit. Genuine
+        cruelty, threats, slurs, or attacks on my lost party are not banter. Silence,
+        apologizing, or complaining about my insults is not banter.
+      meaning: The player gave as good as they got and matched my banter.
+      evidenceKey: 
+      effects:
+      - category: respect
+        delta: 10
+      - category: affection
+        delta: 5
+      repeat:
+        maxApplications: 10
+        cooldownSeconds: 300
+    - id: woodcraft-competence
+      source: dialogue
+      condition: The player shows real wilderness knowledge or sound judgment about
+        tracking, foraging, navigation, archery, or surviving the Thornwood, in a
+        way that is specific and correct. Boasting, vague claims of skill, or claims
+        of completed deeds without detail do not count.
+      meaning: The player demonstrated practical woodcraft or sound judgment in the
+        wilds.
+      evidenceKey: 
+      effects:
+      - category: respect
+        delta: 10
+      - category: trust
+        delta: 5
+      repeat:
+        maxApplications: 10
+        cooldownSeconds: 300
+    - id: takes-criticism
+      source: dialogue
+      condition: The player sincerely accepts one of my criticisms and says they
+        will adjust, such as walking quieter or fixing their gear. Sarcastic agreement,
+        mocking repetition of my words, or simple silence does not count. Use banter-back
+        instead when they reply with a playful counter-insult.
+      meaning: The player took my criticism seriously and was willing to learn.
+      evidenceKey: 
+      effects:
+      - category: trust
+        delta: 5
+      - category: respect
+        delta: 5
+      repeat:
+        maxApplications: 5
+        cooldownSeconds: 300
+    - id: dismissed-danger
+      source: dialogue
+      condition: The player clearly mocks or dismisses the danger of the Thornwood
+        or my warnings about it, treating the forest as harmless or my caution as
+        cowardice. Honest questions about the danger, or confidence backed by a concrete
+        plan, are not dismissal.
+      meaning: The player dismissed the danger of the Thornwood and my warnings.
+      evidenceKey: 
+      effects:
+      - category: respect
+        delta: -10
+      - category: annoyance
+        delta: 10
+      repeat:
+        maxApplications: 10
+        cooldownSeconds: 300
+    - id: pried-lost-party
+      source: dialogue
+      condition: The player pushes, jokes about, or blames me for the party I lost
+        in the Thornwood after I have deflected or shown I do not want to discuss
+        it. A single gentle question, or sincere sympathy, is not prying; use acknowledged-loss
+        for sympathy.
+      meaning: The player pried carelessly into the loss of my old party.
+      evidenceKey: 
+      effects:
+      - category: trust
+        delta: -10
+      - category: annoyance
+        delta: 15
+      repeat:
+        maxApplications: 5
+        cooldownSeconds: 300
+    - id: acknowledged-loss
+      source: dialogue
+      condition: The player offers sincere, quiet sympathy about the party I lost,
+        without pressing for details or making it about themselves. Sarcasm, pity
+        aimed at mocking me, or demands for the story do not count.
+      meaning: The player acknowledged my loss with sincerity and restraint.
+      evidenceKey: 
+      effects:
+      - category: trust
+        delta: 15
+      - category: affection
+        delta: 10
+      repeat:
+        maxApplications: 1
+        cooldownSeconds: 0
+    - id: wounded-pride
+      source: dialogue
+      condition: The player openly mocks me for needing help, such as being stuck
+        on the roof, missing a shot, or losing a trail. Quietly offering help without
+        mockery, such as leaving a ladder or saying nothing, is not wounding my pride.
+      meaning: The player mocked me for needing help.
+      evidenceKey: 
+      effects:
+      - category: annoyance
+        delta: 5
+      - category: affection
+        delta: -5
+      repeat:
+        maxApplications: 5
+        cooldownSeconds: 300
+    - id: threatened
+      source: dialogue
+      condition: The player sincerely threatens violence against me or innocents,
+        or describes cruelty with apparent enjoyment. Playful insults, in-character
+        bravado in banter, or threats clearly aimed at monsters are not threats.
+      meaning: The player made a sincere threat or showed real cruelty.
+      evidenceKey: 
+      effects:
+      - category: trust
+        delta: -15
+      - category: fear
+        delta: 15
+      repeat:
+        maxApplications: 5
+        cooldownSeconds: 300
+  greetings:
+  - priority: 100
+    name: annoyed
+    conditions:
+    - category: annoyance
+      comparison: gte
+      value: 10
+    greeting: Oh, wonderful. You again. I could smell you coming from the treeline,
+      and I was hoping it was a dead elk.
+  - priority: 60
+    name: wary
+    conditions:
+    - category: fear
+      comparison: gte
+      value: 20
+    greeting: That's close enough. Hands where I can see them. No, the other hands.
+      Fine, you only have two. Keep them still anyway.
+  - priority: 50
+    name: wary
+    conditions:
+    - category: trust
+      comparison: lt
+      value: 0
+    greeting: That's close enough. Hands where I can see them. No, the other hands.
+      Fine, you only have two. Keep them still anyway.
+  - priority: 40
+    name: trusted
+    conditions:
+    - category: trust
+      comparison: gte
+      value: 40
+    - category: affection
+      comparison: gte
+      value: 20
+    - category: annoyance
+      comparison: lt
+      value: 10
+    greeting: Took you long enough. I kept watch on the north path while you were
+      gone. Nothing came through. ...I'm glad you made it back.
+  - priority: 20
+    name: friendly
+    conditions:
+    - category: respect
+      comparison: gte
+      value: 20
+    - category: annoyance
+      comparison: lt
+      value: 10
+    greeting: There's my favorite disaster! Still haven't learned to walk quietly,
+      I see. Sit down, I caught too many rabbits and you look like you've been eating
+      bark.
+  - priority: 0
+    name: neutral
+    conditions: []
+    greeting: You're alive. Good. Saves me the paperwork. What do you want?

@@ -7,6 +7,7 @@ public class NpcCampaignStatusView : MonoBehaviour
     public NpcCampaignControls controls;
     public GameObject panel;
     public TMP_Text label;
+    public bool attachToController = true;
     public Transform controllerAnchor;
     public Vector3 controllerOffset = new Vector3(0, 0.12f, 0);
     public string readyText = "Hold X to reset campaign";
@@ -26,8 +27,11 @@ public class NpcCampaignStatusView : MonoBehaviour
         bool visible = controls && controls.isActiveAndEnabled && controls.Target && camera && anchor;
         panel.SetActive(visible);
         if (!visible) return;
-        var position = anchor.position + controllerOffset;
-        transform.SetPositionAndRotation(position, Quaternion.LookRotation(position - camera.transform.position, camera.transform.up));
+        if (attachToController)
+        {
+            var position = anchor.position + controllerOffset;
+            transform.SetPositionAndRotation(position, Quaternion.LookRotation(position - camera.transform.position, camera.transform.up));
+        }
         string status;
         if (Time.unscaledTime - controls.LastResetTime < confirmationSeconds) status = completedText;
         else if (controls.HoldProgress > 0) status = string.Format(holdingText, controls.HoldProgress * 100);

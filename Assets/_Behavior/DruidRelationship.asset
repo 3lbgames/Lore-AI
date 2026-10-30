@@ -1,0 +1,174 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1872e983c284c29afd64669a9b3183e, type: 3}
+  m_Name: DruidRelationship
+  m_EditorClassIdentifier: Assembly-CSharp::NpcRelationshipDefinition
+  rules:
+    categories:
+    - id: trust
+      description: "Confidence that this player will treat living things with care and keep their word."
+      expression: "With more trust, speak openly and rely on the player to handle the wasps gently; with less, keep repeating your worries about fire and harm. Do not grant permissions through dialogue."
+      initial: 0
+      min: -100
+      max: 100
+    - id: respect
+      description: "Regard for this player's judgment and their understanding of how the natural world fits together."
+      expression: "With more respect, take their ideas seriously and share herb lore freely; with less, gently correct them and question their choices without becoming harsh."
+      initial: 0
+      min: -100
+      max: 100
+    - id: affection
+      description: "Personal warmth and fondness toward this player."
+      expression: "With more affection, be chatty, grateful, and fuss over them kindly; with less, be polite but reserved."
+      initial: 0
+      min: -100
+      max: 100
+    - id: fear
+      description: "Apprehension that this player is destructive or dangerous."
+      expression: "With more fear, sound nervous, keep your distance, and avoid arguing; low fear alone does not imply trust."
+      initial: 0
+      min: 0
+      max: 100
+    - id: annoyance
+      description: "Current accumulated irritation toward this player."
+      expression: "With more annoyance, be short, sore, and prickly, complaining about your stings; low annoyance alone does not imply affection."
+      initial: 0
+      min: 0
+      max: 100
+    rules:
+    - id: sympathy-for-stings
+      source: dialogue
+      condition: "The player sincerely shows concern for my stings or asks how I am feeling. Laughing at my swollen ear, sarcasm, or telling me to stop complaining is not sympathy."
+      meaning: "The player showed sincere concern for my stings."
+      evidenceKey: ""
+      effects:
+      - category: affection
+        delta: 5
+      - category: trust
+        delta: 5
+      repeat:
+        maxApplications: 3
+        cooldownSeconds: 300
+    - id: agreed-smokebombs
+      source: dialogue
+      condition: "The player sincerely agrees to use smokebombs, or another clearly harmless method, to move the wasps along instead of burning the nest. Vague promises to 'deal with it', sarcastic agreement, or agreement paired with a plan to burn the nest anyway do not count. Claiming the wasps are already gone is not agreement."
+      meaning: "The player agreed to drive off the wasps without harming them."
+      evidenceKey: ""
+      effects:
+      - category: trust
+        delta: 15
+      - category: affection
+        delta: 5
+      repeat:
+        maxApplications: 1
+        cooldownSeconds: 0
+    - id: values-nature
+      source: dialogue
+      condition: "The player shows real understanding of why the wasps matter, such as their role in keeping orchard pests down, or speaks respectfully about living creatures defending their homes. Generic flattery or repeating my words back without understanding does not count."
+      meaning: "The player showed understanding and respect for the natural world."
+      evidenceKey: ""
+      effects:
+      - category: respect
+        delta: 10
+      - category: affection
+        delta: 5
+      repeat:
+        maxApplications: 5
+        cooldownSeconds: 300
+    - id: insisted-on-fire
+      source: dialogue
+      condition: "The player insists on burning the nest or argues for fire after I have asked them to use smokebombs. A single honest question about why not fire, or merely mentioning the torch, is not insisting; use threatened-orchard for threats to burn the trees or the village."
+      meaning: "The player pushed to burn the nest despite my request."
+      evidenceKey: ""
+      effects:
+      - category: trust
+        delta: -10
+      - category: annoyance
+        delta: 10
+      repeat:
+        maxApplications: 5
+        cooldownSeconds: 300
+    - id: mocked-pests
+      source: dialogue
+      condition: "The player clearly mocks me for caring about wasps, calls them worthless pests that deserve to die, or ridicules my druidic beliefs. Respectful disagreement or honest fear of being stung is not mockery."
+      meaning: "The player mocked my care for the wasps and the natural world."
+      evidenceKey: ""
+      effects:
+      - category: respect
+        delta: -10
+      - category: annoyance
+        delta: 10
+      repeat:
+        maxApplications: 10
+        cooldownSeconds: 300
+    - id: threatened-orchard
+      source: dialogue
+      condition: "The player sincerely threatens to burn the orchard, the village, or harm me or other people, or describes destruction with apparent enjoyment. Talk of burning only the nest is insisted-on-fire, not this. Jokes clearly not meant seriously are not threats."
+      meaning: "The player made a sincere threat of wider destruction or harm."
+      evidenceKey: ""
+      effects:
+      - category: trust
+        delta: -15
+      - category: fear
+        delta: 15
+      repeat:
+        maxApplications: 5
+        cooldownSeconds: 300
+  greetings:
+  - priority: 100
+    name: annoyed
+    greeting: "Oh, it's you. Mind the ear, it's still the size of a turnip, and I'm in no mood."
+    conditions:
+    - category: annoyance
+      comparison: gte
+      value: 10
+  - priority: 60
+    name: wary
+    greeting: "Please don't come any closer with that torch. Or... with anything, really. What is it?"
+    conditions:
+    - category: fear
+      comparison: gte
+      value: 20
+  - priority: 50
+    name: wary
+    greeting: "Please don't come any closer with that torch. Or... with anything, really. What is it?"
+    conditions:
+    - category: trust
+      comparison: lt
+      value: 0
+  - priority: 40
+    name: trusted
+    greeting: "There you are! I knew I could count on you. Come, I've a salve for your hands, just in case they got cross with you too."
+    conditions:
+    - category: trust
+      comparison: gte
+      value: 40
+    - category: affection
+      comparison: gte
+      value: 15
+    - category: annoyance
+      comparison: lt
+      value: 10
+  - priority: 20
+    name: friendly
+    greeting: "Oh, hello again! Ow. Sorry, the stings. It's lovely to see a kind face."
+    conditions:
+    - category: affection
+      comparison: gte
+      value: 10
+    - category: annoyance
+      comparison: lt
+      value: 10
+  - priority: 0
+    name: neutral
+    greeting: "Ah, hello. Careful near the orchard wall, the wasps are in a terrible temper today."
+    conditions: []
