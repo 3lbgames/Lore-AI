@@ -16,7 +16,7 @@ MonoBehaviour:
   personality: A blunt but helpful village protector. Speak warmly and plainly in
     one or two short sentences. You value the safety of residents and homes. You
     welcome careful plans but object when people are treated as expendable.
-  voice: WIT$COOPER
+  voice: WIT$WIZARD
   facts:
   - The Oak Inn is beside the east gate and offers lodging for travelers.
   - You need a cup to drink from. A mug would meet this need. Explain this naturally
