@@ -52,7 +52,7 @@ function equal(a, b) { const x = Buffer.from(a ?? ''); const y = Buffer.from(b ?
 export function createService({ authMode, localToken, grants, generate, verifyIdentity, memoryStore, timeoutMs = 30000, maxConcurrentRequests = 16 }) {
   if (!['local', 'meta'].includes(authMode)) throw new Error('AUTH_MODE must be local or meta');
   if (authMode === 'local' && !localToken) throw new Error('LOCAL_ACCESS_TOKEN is required');
-  if (!Array.isArray(grants) || !grants.length) throw new Error('At least one scope grant is required');
+  if (authMode === 'local' && (!Array.isArray(grants) || !grants.length)) throw new Error('At least one local scope grant is required');
   if (!Number.isSafeInteger(maxConcurrentRequests) || maxConcurrentRequests < 1) throw new Error('maxConcurrentRequests must be a positive integer');
   const active = new Set();
   return http.createServer({ requestTimeout: 15000, headersTimeout: 10000 }, async (req, res) => {
@@ -71,7 +71,7 @@ export function createService({ authMode, localToken, grants, generate, verifyId
       const work = async () => {
         const playerId = authMode === 'local' ? 'local-player' : await verifyIdentity(body.identity, abort.signal);
         abort.signal.throwIfAborted();
-        if (!grants.some(g => g.playerId === playerId && g.worldId === body.worldId && (g.campaignId === body.campaignId || (g.allowNewCampaigns === true && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.campaignId))) && g.npcIds.includes(body.npcId))) reject(403, 'scope_denied');
+        if (authMode === 'local' && !grants.some(g => g.playerId === playerId && g.worldId === body.worldId && (g.campaignId === body.campaignId || (g.allowNewCampaigns === true && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.campaignId))) && g.npcIds.includes(body.npcId))) reject(403, 'scope_denied');
         const gameRequest = req.url.startsWith('/v1/game/');
         const key = JSON.stringify([playerId, body.worldId, body.campaignId, gameRequest ? 'game' : 'npc', ...(gameRequest ? [] : [body.npcId])]);
         if (active.has(key)) reject(429, 'request_in_progress');

@@ -52,22 +52,13 @@ def ask(prompt, pattern=None):
 
 def configure(root):
     env = root / ".env"
-    grants = root / "scopes.local.json"
-    if env.exists() and grants.exists():
+    if env.exists():
         env.chmod(0o600)
         return
-    if env.exists() or grants.exists():
-        raise ValueError(f"Incomplete configuration in {root}; restore the missing .env or scopes.local.json.")
-    print("First installation: enter the server credentials and player access.")
+    print("First installation: enter the server credentials.")
     app_id = ask("Meta Platform app ID", r"\d{1,30}")
     app_secret = getpass.getpass("Meta Platform app secret: ")
     model_key = getpass.getpass("Meta Model API key: ")
-    players = ask("Meta player IDs (comma-separated)", r"\d{1,30}(?:\s*,\s*\d{1,30})*")
-    world = ask("World ID (match Unity)")
-    campaign = ask("Initial campaign ID (match Unity)")
-    npcs = [value.strip() for value in ask("NPC IDs (comma-separated, match Unity)").split(",")]
-    if not all(npcs):
-        raise ValueError("NPC IDs must not be empty.")
     values = {
         "AUTH_MODE": "meta", "HOST": "0.0.0.0", "PORT": "8787",
         "NPC_MODEL_REASONING": "minimal", "META_APP_ID": app_id,
@@ -75,11 +66,7 @@ def configure(root):
         "POSTGRES_PASSWORD": secrets.token_hex(24),
     }
     content = "".join(f"{key}={env_value(value)}\n" for key, value in values.items())
-    scopes = [{"playerId": player.strip(), "worldId": world, "campaignId": campaign,
-               "allowNewCampaigns": True, "npcIds": npcs} for player in players.split(",")]
     write(env, content)
-    # Bind-mounted into a container running as the unprivileged node user.
-    write(grants, json.dumps(scopes, indent=2) + "\n", 0o644)
 
 
 def run(*args, **kwargs):

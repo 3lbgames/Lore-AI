@@ -4,6 +4,39 @@ import { randomUUID } from 'node:crypto';
 import { createService, ServiceError } from '../src/service.js';
 import { PostgresMemoryStore } from '../src/memory.js';
 
+test('Meta first-use storage isolates players without configured grants', {skip:!process.env.TEST_DATABASE_URL}, async t => {
+  const store = new PostgresMemoryStore(process.env.TEST_DATABASE_URL);
+  await store.migrate();
+  const players = ['test-'+randomUUID(), 'test-'+randomUUID()];
+  const server = createService({authMode:'meta',memoryStore:store,
+    verifyIdentity:async identity => {
+      if (!players.includes(identity?.userId) || identity?.nonce !== 'valid') throw new ServiceError(401,'invalid_identity');
+      return identity.userId;
+    }});
+  await new Promise(resolve => server.listen(0,'127.0.0.1',resolve));
+  t.after(async () => {
+    server.closeAllConnections(); server.close();
+    for (const table of ['conversation_events','conversation_streams','campaign_writers'])
+      await store.pool.query(`DELETE FROM ${table} WHERE player_id=ANY($1)`,[players]);
+    await store.close();
+  });
+  const body = {version:1,sessionId:'s',interactionId:'i',turnId:'t',writerId:'writer',
+    worldId:'new-world',campaignId:randomUUID(),npcId:'new-npc'};
+  async function post(route, player, extra={}) {
+    const response = await fetch(`http://127.0.0.1:${server.address().port}/v1/memory/${route}`, {
+      method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({...body,identity:{userId:player,nonce:'valid'},...extra})});
+    return {...await response.json(),httpStatus:response.status};
+  }
+  assert.equal((await post('load',players[0])).revision,0);
+  const event={eventId:'event',turnId:'t',kind:'player_input',text:'Private memory',delivery:'completed'};
+  assert.equal((await post('commit',players[0],{expectedRevision:0,event})).revision,1);
+  assert.deepEqual((await post('load',players[1],{playerId:players[0]})).history,[]);
+  assert.equal((await post('load',players[0])).history[0].text,'Private memory');
+  assert.equal((await post('load',players[0],{campaignId:randomUUID()})).revision,0);
+  assert.equal((await post('load',players[0],{identity:{userId:players[0],nonce:'invalid'}})).httpStatus,401);
+});
+
 test('PostgreSQL atomic receipts, revisions, writer lease, restart and scope isolation', {skip:!process.env.TEST_DATABASE_URL}, async () => {
   const store = new PostgresMemoryStore(process.env.TEST_DATABASE_URL);
   const scope={playerId:'test-'+randomUUID(),worldId:'world',campaignId:randomUUID(),npcId:'barbarian',writerId:'installation'};

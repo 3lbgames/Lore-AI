@@ -76,20 +76,41 @@ test('rejects an ungranted NPC even when the request and profile identities matc
   assert.equal((await post(body)).status, 403);
 });
 
-test('Meta proof must resolve to the granted player before generation', async t => {
+test('Meta authentication permits first use without player or content grants', async t => {
   let generations = 0;
   const post = await fixture(t, async () => { generations++; return {speech:'Hello',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null}; }, {
     authMode: 'meta',
+    grants: undefined,
     verifyIdentity: async identity => {
       if (identity?.nonce !== 'valid-proof') throw new ServiceError(401, 'invalid_identity');
       return identity.userId;
     }
   });
   assert.equal((await post({ ...request(), identity: { userId: 'local-player', nonce: 'bad' } })).status, 401);
-  assert.equal((await post({ ...request(), identity: { userId: 'ungranted-player', nonce: 'valid-proof' } })).status, 403);
   assert.equal(generations, 0);
-  assert.equal((await post({ ...request(), identity: { userId: 'local-player', nonce: 'valid-proof' } })).status, 200);
+  const body = {...request(), worldId:'new-world',campaignId:'new-campaign',npcId:'new-npc',
+    profile:{...request().profile,npcId:'new-npc'},identity:{userId:'new-player',nonce:'valid-proof'}};
+  assert.equal((await post(body)).status, 200);
   assert.equal(generations, 1);
+});
+
+test('Meta storage scope uses verified identity on every persistence route', async t => {
+  const seen = [];
+  const remember = async scope => { seen.push(scope); return {revision:0, history:[]}; };
+  const server = createService({authMode:'meta', verifyIdentity:async () => 'verified-player',
+    memoryStore:{load:remember,commit:remember,loadGame:remember,commitGame:remember}});
+  await new Promise(resolve => server.listen(0,'127.0.0.1',resolve));
+  t.after(() => {server.closeAllConnections();server.close();});
+  for (const route of ['memory/load','memory/commit','game/load','game/commit']) {
+    const body = {...request(),playerId:'someone-else',identity:{userId:'spoofed'},expectedRevision:0,
+      event:{eventId:'event',turnId:'turn-1',kind:'player_input',text:'Hello',delivery:'completed'},
+      mutation:{eventId:'game-event',key:'door',expected:'',value:'open'}};
+    const response = await fetch(`http://127.0.0.1:${server.address().port}/v1/${route}`,{
+      method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
+    assert.equal(response.status,200,route);
+  }
+  assert.equal(seen.length,4);
+  for (const scope of seen) assert.equal(scope.playerId,'verified-player');
 });
 
 test('timed out identity verification cannot generate later or block the next turn', async t => {
