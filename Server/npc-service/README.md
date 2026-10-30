@@ -4,6 +4,12 @@ Node 22 and PostgreSQL 17. Runtime dependencies are locked in package-lock.json.
 
 ## AWS: one EC2 instance
 
+Prerequisites: a registered Quest app in the Meta Horizon Developer Dashboard,
+its **App ID** and **App Secret** from **your app → API**, and a separate
+**Meta Model API key**. Use the same registered app in Unity's Meta Platform
+settings. The App Secret lets the server verify player identity; the Model API
+key authenticates model requests. See [Meta's server-to-server documentation](https://developers.meta.com/vr/documentation/native/ps-s2s-basics/).
+
 Create a dedicated **Ubuntu 24.04 x86-64** EC2 instance (start with `t3.small`
 and 30 GB encrypted storage). Choose a region near the players. Assign an
 Elastic IP and point a DNS hostname at it. Allow inbound TCP 80/443 publicly
