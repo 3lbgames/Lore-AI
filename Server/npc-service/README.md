@@ -2,6 +2,74 @@
 
 Node 22 and PostgreSQL 17. Runtime dependencies are locked in package-lock.json. The service assembles character context and calls Meta's Responses API; Unity owns selection, permitted knowledge, voice, and gameplay. Conversation history persists in PostgreSQL; gameplay actions remain out of scope.
 
+## AWS: one EC2 instance
+
+Create a dedicated **Ubuntu 24.04 x86-64** EC2 instance (start with `t3.small`
+and 30 GB encrypted storage). Choose a region near the players. Assign an
+Elastic IP and point a DNS hostname at it. Allow inbound TCP 80/443 publicly
+and SSH 22 from your IP only. Keep ports 8787 and 5432/54329 closed to the internet.
+
+Copy `Server/npc-service` to the instance, excluding `node_modules`, `.env`
+and `scopes.local.json`. From the repository root on macOS/Linux:
+
+```sh
+tar --exclude=node_modules --exclude='.env*' --exclude='*.local.json' \
+  --exclude=__pycache__ -czf /tmp/npc-service.tar.gz -C Server npc-service
+scp -i /path/to/key.pem /tmp/npc-service.tar.gz ubuntu@SERVER_IP:~/
+ssh -i /path/to/key.pem ubuntu@SERVER_IP
+```
+
+On the instance:
+
+```sh
+tar -xzf npc-service.tar.gz
+sudo python3 npc-service/scripts/deploy-aws.py npc.your-domain.com
+```
+
+The installer prompts once for the Meta app ID, app secret, Model API key,
+player IDs and matching Unity world/campaign/NPC IDs. Secrets are entered
+without echo. It installs Ubuntu's Docker/Compose and Caddy packages, builds
+the app, enables automatic restarts, configures HTTPS, and creates nightly
+database backups. It runs on an existing instance; it does not create AWS
+resources or DNS records. An existing unmanaged Caddy installation is rejected.
+
+The deployment lives at `/opt/villagerai/npc-service`. The `.env` is root-only;
+the read-only grants file is readable inside the Node container. Both are
+preserved on reruns. To change model/app credentials or grants, edit those files
+with `sudoedit` and rerun the installer. Keep `POSTGRES_PASSWORD` unchanged;
+changing it in `.env` alone does not rotate the password in an existing database.
+No model key goes into Unity.
+
+Set `NpcProxyClient.serviceUrl` to the HTTPS hostname and test with an entitled
+Meta account in the grants file. Remove the USB development override or use a
+release build. Verify a real conversation, memory after a server reboot and
+response time with three players. The installer checks HTTPS reachability;
+it does not verify Meta credentials or model responses.
+
+### Updates and backups
+
+Upload a fresh source archive, remove only the previous **upload directory**
+(`~/npc-service`), extract the new archive, and rerun the same command. Keep
+`/opt/villagerai/npc-service` and its Docker volume intact. Updates take a
+database backup before applying migrations and briefly interrupt service.
+
+Nightly dumps run at 03:15 in the server's timezone and are retained locally
+for approximately seven days in `/opt/villagerai/npc-service/backups`. Copy
+them off the instance; local backups cannot recover from instance/disk loss.
+Test restoring a dump into a separate PostgreSQL 17 database with `pg_restore`
+before relying on it. Never run `docker compose down -v` on this deployment.
+
+Inspect the service:
+
+```sh
+sudo sh -c 'cd /opt/villagerai/npc-service && docker compose --project-name villagerai --profile hosted -f compose.yaml -f compose.aws.yaml ps'
+sudo journalctl -u caddy --no-pager -n 50
+```
+
+The server stays on between sessions and uses minimal model reasoning. Measure
+transcription, model-request and speech-startup times before increasing instance
+size; current model responses are non-streaming.
+
 ## Local Editor
 
 ### Prerequisites: macOS
