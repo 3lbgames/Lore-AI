@@ -613,46 +613,6 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 19864882, guid: 996caa051abc4be4d8b39b565b8694b5, type: 3}
   m_PrefabInstance: {fileID: 173616710}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &178535857
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1850893179}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 250bc414c88bde94ca986bc0cc44d62c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Core3lb.ElevenlabsTTS
-  useStringAPIKey: 0
-  apiKeySO: {fileID: 0}
-  apiKeyString: 
-  aiStarted:
-    m_PersistentCalls:
-      m_Calls: []
-  aiCompleted:
-    m_PersistentCalls:
-      m_Calls: []
-  aiFailed:
-    m_PersistentCalls:
-      m_Calls: []
-  showDebugs: 0
-  textOutput: 
-  speakerSource: {fileID: 1850893180}
-  testPrompt: Today is a wonderful day to build something people love!
-  useScriptable: 0
-  voiceID: JBFqnCBsd6RMkjVDRZzb
-  voiceName: George
-  voiceSO: {fileID: 0}
-  audioPlayStarted:
-    m_PersistentCalls:
-      m_Calls: []
-  stability: 0.5
-  similarityBoost: 0.5
-  modelId: eleven_v4_turbo
-  credentialResource: ElevenLabsKey.private
-  initialBufferSeconds: 0.75
 --- !u!4 &188230365 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5290530546335810771, guid: a116595981232e24393ff4fab872d0ac, type: 3}
@@ -7016,10 +6976,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 438574289388437154, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-      propertyPath: speech
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 2708633540489883411, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       propertyPath: enterEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -7027,10 +6983,6 @@ PrefabInstance:
     - target: {fileID: 2708633540489883411, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       propertyPath: enterEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetTrigger
-      objectReference: {fileID: 0}
-    - target: {fileID: 3317374684905344383, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-      propertyPath: TTS
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3605744853716608106, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       propertyPath: m_Name
@@ -7084,8 +7036,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 8960042676340149508, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 8466152503495698660, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
@@ -7119,9 +7070,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3605744853716608106, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1637217332}
-    - targetCorrespondingSourceObject: {fileID: 6383336439041458413, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1637217331}
   m_SourcePrefab: {fileID: 100100000, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
 --- !u!114 &1637217325 stripped
 MonoBehaviour:
@@ -7134,16 +7082,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebdfb9cf5954f47ccbc2e114138b88d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcCharacterDirector
---- !u!82 &1637217326 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 2859343037170915598, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-  m_PrefabInstance: {fileID: 1637217324}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1637217327 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6383336439041458413, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-  m_PrefabInstance: {fileID: 1637217324}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1637217328 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8466152503495698660, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
@@ -7159,46 +7097,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3605744853716608106, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
   m_PrefabInstance: {fileID: 1637217324}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1637217331
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1637217327}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 250bc414c88bde94ca986bc0cc44d62c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Core3lb.ElevenlabsTTS
-  useStringAPIKey: 0
-  apiKeySO: {fileID: 0}
-  apiKeyString: 
-  aiStarted:
-    m_PersistentCalls:
-      m_Calls: []
-  aiCompleted:
-    m_PersistentCalls:
-      m_Calls: []
-  aiFailed:
-    m_PersistentCalls:
-      m_Calls: []
-  showDebugs: 0
-  textOutput: 
-  speakerSource: {fileID: 1637217326}
-  testPrompt: Today is a wonderful day to build something people love!
-  useScriptable: 0
-  voiceID: EXAVITQu4vr4xnSDxMaL
-  voiceName: Sarah
-  voiceSO: {fileID: 0}
-  audioPlayStarted:
-    m_PersistentCalls:
-      m_Calls: []
-  stability: 0.5
-  similarityBoost: 0.5
-  modelId: eleven_v4_turbo
-  credentialResource: ElevenLabsKey.private
-  initialBufferSeconds: 0.75
 --- !u!114 &1637217332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7944,17 +7842,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1706661571}
     m_Modifications:
-    - target: {fileID: 107158488689147929, guid: 091954210a3557f459962cdd51b1527b, type: 3}
-      propertyPath: speech
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 2115649694885111266, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2982291557187187652, guid: 091954210a3557f459962cdd51b1527b, type: 3}
-      propertyPath: TTS
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3846277744125631185, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: m_Name
@@ -8000,8 +7890,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 8877408205886043071, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -8026,9 +7915,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3846277744125631185, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1850893182}
-    - targetCorrespondingSourceObject: {fileID: 6916612336409017942, guid: 091954210a3557f459962cdd51b1527b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 178535857}
   m_SourcePrefab: {fileID: 100100000, guid: 091954210a3557f459962cdd51b1527b, type: 3}
 --- !u!1 &1850893173 stripped
 GameObject:
@@ -8078,16 +7964,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebdfb9cf5954f47ccbc2e114138b88d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcCharacterDirector
---- !u!1 &1850893179 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6916612336409017942, guid: 091954210a3557f459962cdd51b1527b, type: 3}
-  m_PrefabInstance: {fileID: 1850893172}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &1850893180 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 2361286682846619573, guid: 091954210a3557f459962cdd51b1527b, type: 3}
-  m_PrefabInstance: {fileID: 1850893172}
-  m_PrefabAsset: {fileID: 0}
 --- !u!195 &1850893181 stripped
 NavMeshAgent:
   m_CorrespondingSourceObject: {fileID: 7932896411217615081, guid: 091954210a3557f459962cdd51b1527b, type: 3}

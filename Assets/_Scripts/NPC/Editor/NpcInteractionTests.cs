@@ -9,6 +9,21 @@ public class NpcInteractionTests
     internal const string PrefabPath = "Assets/_Prefabs/NPCs/Barbarian_NPC Variant.prefab";
 
     [Test]
+    public void VillageSceneIncludesItsBakedNavigationData()
+    {
+        var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenPreviewScene("Assets/_Scenes/VillageScene.unity");
+        try
+        {
+            var surface = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<MonoBehaviour>(true))
+                .Single(c => c && c.GetType().Name == "NavMeshSurface");
+            var data = new SerializedObject(surface).FindProperty("m_NavMeshData").objectReferenceValue;
+            Assert.That(data, Is.Not.Null, "The scene's baked NavMesh must be included in the checkout and build.");
+            Assert.That(System.IO.File.Exists(AssetDatabase.GetAssetPath(data)), Is.True);
+        }
+        finally { UnityEditor.SceneManagement.EditorSceneManager.ClosePreviewScene(scene); }
+    }
+
+    [Test]
     public void BaseScenePreservesDistinctNpcProfilesAndOneCampaignResetOwner()
     {
         var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenPreviewScene("Assets/_Scenes/BaseScene.unity");
