@@ -14120,6 +14120,14 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6669098170592918158, guid: 9289d9f40c795f147aeb5346a85a0dca, type: 3}
+      propertyPath: hideMeshOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6826559703425739174, guid: 9289d9f40c795f147aeb5346a85a0dca, type: 3}
+      propertyPath: hideMeshOnAwake
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8855848330509715598, guid: 9289d9f40c795f147aeb5346a85a0dca, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
