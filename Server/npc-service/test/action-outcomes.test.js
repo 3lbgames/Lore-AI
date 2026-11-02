@@ -10,7 +10,6 @@ test('action outcomes persist and inform NPC speech without player dialogue', {s
   const worldId = 'action-test-' + randomUUID(), campaignId = randomUUID();
   let received;
   const server = createService({authMode:'local',localToken:'test',memoryStore:store,
-    grants:[{playerId:'local-player',worldId,campaignId,npcIds:['npc']}],
     generate:async body=>{received=body;return {speech:'I remember.',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null};}});
   await new Promise(r=>server.listen(0,'127.0.0.1',r));
   t.after(async()=>{

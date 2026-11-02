@@ -12,7 +12,6 @@ const request = () => ({
 });
 async function fixture(t, generate = async () => ({speech:'Try the Oak Inn beside the east gate.',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null}), options = {}) {
   const server = createService({ authMode: 'local', localToken: 'test-token',
-    grants: [{ playerId: 'local-player', worldId: 'local-world', campaignId: 'local-campaign', npcIds: ['barbarian'] }],
     timeoutMs: 50, generate, memoryStore: { load: async () => ({ revision: 1, history: [{kind: 'player_input',turnId:'turn-1',text: fixtureInput,delivery:'completed'}] }) }, ...options });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   t.after(() => { server.closeAllConnections(); server.close(); });
@@ -32,9 +31,9 @@ test('rejects missing credentials before generation', async t => {
   const post = await fixture(t, () => assert.fail('unauthorized generation'));
   assert.equal((await post(request(), '')).status, 401);
 });
-test('rejects other campaign, NPC and profile scope', async t => {
+test('rejects mismatched request and profile identities', async t => {
   const post = await fixture(t, () => assert.fail('out of scope generation'));
-  for (const patch of [{ campaignId: 'other' }, { npcId: 'other' }, { profile: { ...request().profile, npcId: 'other' } }])
+  for (const patch of [{ npcId: 'other' }, { profile: { ...request().profile, npcId: 'other' } }])
     assert.equal((await post({ ...request(), ...patch })).status, 403);
 });
 test('rejects actions and incompatible protocol versions', async t => {
@@ -70,17 +69,38 @@ test('times out and remains usable', async t => {
   assert.equal((await post(request())).status, 200);
 });
 
-test('rejects an ungranted NPC even when the request and profile identities match', async t => {
-  const post = await fixture(t, () => assert.fail('ungranted NPC reached generation'));
-  const body = request(); body.npcId = 'other'; body.profile.npcId = 'other';
-  assert.equal((await post(body)).status, 403);
+test('local authentication accepts Unity world, campaign and NPC IDs without grants', async t => {
+  const body = request();
+  Object.assign(body, {worldId:'new-world',campaignId:'authored-campaign',npcId:'sorrel'});
+  body.profile.npcId = body.npcId;
+  const post = await fixture(t, undefined);
+  assert.equal((await post(body)).status, 200);
+});
+
+test('local persistence routes accept Unity scopes and preserve their IDs', async t => {
+  const scopes = [];
+  const remember = async scope => {scopes.push(scope); return {revision:0,history:[]};};
+  const server = createService({authMode:'local',localToken:'test',memoryStore:{
+    load:remember,commit:remember,loadGame:remember,commitGame:remember}});
+  await new Promise(resolve => server.listen(0,'127.0.0.1',resolve));
+  t.after(() => {server.closeAllConnections();server.close();});
+  const body = {...request(),worldId:'new-world',campaignId:'authored-campaign',npcId:'flynn',expectedRevision:0,
+    event:{eventId:'e',turnId:'turn-1',kind:'player_input',text:'Hello',delivery:'completed'},
+    mutation:{eventId:'m',key:'quest',expected:'',value:'started'}};
+  for (const route of ['memory/load','memory/commit','game/load','game/commit']) {
+    const response = await fetch(`http://127.0.0.1:${server.address().port}/v1/${route}`,{
+      method:'POST',headers:{'content-type':'application/json',authorization:'Bearer test'},body:JSON.stringify(body)});
+    assert.equal(response.status,200,route);
+  }
+  assert.equal(scopes.length,4);
+  for (const scope of scopes) assert.deepEqual(scope,{playerId:'local-player',worldId:body.worldId,
+    campaignId:body.campaignId,npcId:body.npcId,writerId:body.writerId});
 });
 
 test('Meta authentication permits first use without player or content grants', async t => {
   let generations = 0;
   const post = await fixture(t, async () => { generations++; return {speech:'Hello',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null}; }, {
     authMode: 'meta',
-    grants: undefined,
     verifyIdentity: async identity => {
       if (identity?.nonce !== 'valid-proof') throw new ServiceError(401, 'invalid_identity');
       return identity.userId;

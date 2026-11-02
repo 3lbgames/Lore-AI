@@ -16,7 +16,7 @@ Elastic IP and point a DNS hostname at it. Allow inbound TCP 80/443 publicly
 and SSH 22 from your IP only. Keep ports 8787 and 5432/54329 closed to the internet.
 
 Copy `Server/npc-service` to the instance, excluding `node_modules`, `.env`
-and `scopes.local.json`. From the repository root on macOS/Linux:
+and legacy `*.local.json` files. From the repository root on macOS/Linux:
 
 ```sh
 tar --exclude=node_modules --exclude='.env*' --exclude='*.local.json' \
@@ -93,13 +93,13 @@ On either platform, check that `node --version`, `npm --version`, and `docker co
 
 ### First-time configuration (both platforms)
 
-1. Copy `.env.example` to `.env` and `scopes.example.json` to `scopes.local.json` if they do not exist.
+1. Copy `.env.example` to `.env` if it does not exist.
 2. Put the Meta Model API key in `.env` as `MODEL_API_KEY=your-key`. This key stays on Node. Do not put it in an Inspector, ScriptableObject, APK, or chat.
 3. Keep `AUTH_MODE=local`, `HOST=127.0.0.1`, and `PORT=8787`. Set a random `LOCAL_ACCESS_TOKEN` in `.env`.
 4. Create the ignored file `UserSettings/NpcService.local.json` under the Unity project root if missing, with the same token: `{"url":"http://127.0.0.1:8787","token":"your-local-token"}`.
 5. Set a URL-safe `POSTGRES_PASSWORD` and the matching password in `DATABASE_URL`, following `.env.example`. The local database address is `127.0.0.1:54329`.
 
-Unity reads the project settings file in the Editor. Android Development Builds can read a copy provisioned into the app's private storage by the USB script below. Local authentication accepts loopback connections and grants only `local-player` the scopes listed in `scopes.local.json`. Release builds require Meta Platform authentication.
+Unity reads the project settings file in the Editor. Android Development Builds can read a copy provisioned into the app's private storage by the USB script below. Local authentication requires the local token and a loopback connection, using `local-player` as the development identity. Unity supplies world, campaign and NPC IDs; no scope allowlist or server registration is required. Existing `scopes.local.json` files are ignored. Release builds require Meta Platform authentication.
 
 ### Start the service (both platforms)
 
@@ -151,7 +151,7 @@ After setup, run `adb reverse --list` and confirm a `tcp:8787 tcp:8787` entry, a
 
 In BaseScene, approach the NPC and wait for the greeting to finish. Hold the right controller's index trigger while speaking, then release it to finish recording. `NpcSpeechInput` uses the rig's `InputXR` Interact binding; its controller and button are configurable in the Inspector. Accept the headset's microphone permission prompt. The Editor also provides a **Talk to NPC** button followed by **Finish speaking**.
 
-Set `AUTH_MODE=meta`, `HOST=0.0.0.0`, and `META_APP_ID` / `META_APP_SECRET` in the server `.env`. These are the Meta Platform app credentials, distinct from `MODEL_API_KEY`. Configure the same app in Unity's Meta Platform settings and use an entitled test account. The client obtains a fresh user proof for every request; Node validates it with Meta. Unity supplies world, campaign and NPC IDs, and the server creates storage on first use under the verified player identity. Hosted Meta mode does not require `scopes.local.json`. Players cannot read or write another player’s state.
+Set `AUTH_MODE=meta`, `HOST=0.0.0.0`, and `META_APP_ID` / `META_APP_SECRET` in the server `.env`. These are the Meta Platform app credentials, distinct from `MODEL_API_KEY`. Configure the same app in Unity's Meta Platform settings and use an entitled test account. The client obtains a fresh user proof for every request; Node validates it with Meta. Unity supplies world, campaign and NPC IDs, and the server creates storage on first use under the verified player identity. No scope configuration file is required. Players cannot read or write another player’s state.
 
 Set `NpcProxyClient.serviceUrl` to the development computer's LAN address on port 8787. A headset's `127.0.0.1` refers to the headset. Allow that port through the computer firewall only on your trusted development network. Local bearer authentication is deliberately unavailable over LAN and is not compiled into a release player build. For an HTTP development endpoint, Unity's Player Settings must permit HTTP downloads in development builds. Use HTTPS before traffic crosses an untrusted network.
 

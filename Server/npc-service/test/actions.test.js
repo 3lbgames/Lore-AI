@@ -32,8 +32,7 @@ test('Meta schema and context supply only this turn’s catalog and permit silen
 
 test('HTTP returns structured action-only output and rejects invalid catalogs before generation', async t => {
   let generations = 0;
-  const server = createService({authMode:'local',localToken:'test',grants:[{playerId:'local-player',worldId:'world',campaignId:'campaign',npcIds:['npc']}],
-    memoryStore:{load:async()=>({revision:0,history:[]})},generate:async value => {
+  const server = createService({authMode:'local',localToken:'test',memoryStore:{load:async()=>({revision:0,history:[]})},generate:async value => {
       generations++; assert.deepEqual(value.actions,actions); return reply({actionId:'wave',targetId:'self'});
     }});
   await new Promise(resolve => server.listen(0,'127.0.0.1',resolve));
