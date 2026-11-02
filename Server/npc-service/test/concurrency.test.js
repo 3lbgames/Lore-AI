@@ -20,7 +20,6 @@ async function fixture(t, generate, options = {}) {
   const commits = [];
   const server = createService({
     authMode: 'local', localToken: 'test', timeoutMs: 1000,
-    grants: [{ playerId: 'local-player', worldId: 'world', campaignId: 'campaign', npcIds: ['one', 'two', 'three'] }],
     memoryStore: {
       load: async () => ({ revision: 0, history: [] }),
       commit: async (scope, revision, event) => { commits.push({ scope, event }); return { revision: revision + 1 }; }

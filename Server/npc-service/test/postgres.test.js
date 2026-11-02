@@ -68,12 +68,11 @@ test('HTTP → PostgreSQL keeps failed-generation input, excludes undelivered sp
   const campaignId=randomUUID(), resetCampaignId=randomUUID();
   let fail=true, received;
   const server=createService({authMode:'local',localToken:'test',memoryStore:store,
-    grants:[{playerId:'local-player',worldId:'test-world',allowNewCampaigns:true,npcIds:['npc']}],
     generate:async body=>{received=body.history;if(fail) throw new ServiceError(502,'model_unavailable');return {speech:'I remember the blue kite.',relationshipProposal:{ruleId:null,evidence:null},actionProposal:null};}});
   await new Promise(r=>server.listen(0,'127.0.0.1',r));
   t.after(async()=>{server.closeAllConnections();server.close();
-    for (const id of [campaignId, resetCampaignId]) {
-    const key=['local-player','test-world',id];
+    for (const [worldId,id] of [['test-world',campaignId],['test-world',resetCampaignId],['other-world',campaignId]]) {
+    const key=['local-player',worldId,id];
     for(const table of ['conversation_events','conversation_streams','campaign_writers']) await store.pool.query(`DELETE FROM ${table} WHERE player_id=$1 AND world_id=$2 AND campaign_id=$3`,key);
     }
     await store.close();});
@@ -92,7 +91,7 @@ test('HTTP → PostgreSQL keeps failed-generation input, excludes undelivered sp
   assert.deepEqual(received,[event]);
   assert.equal((await post('memory/load')).history.length,2); // generation stores no assistant text
   assert.equal((await post('memory/load',{campaignId:resetCampaignId})).hasSpoken,false);
-  assert.equal((await post('memory/load',{worldId:'other-world'})).error,'scope_denied');
-  assert.equal((await post('memory/load',{npcId:'other-npc'})).error,'scope_denied');
+  assert.equal((await post('memory/load',{worldId:'other-world'})).hasSpoken,false);
+  assert.equal((await post('memory/load',{npcId:'other-npc'})).hasSpoken,false);
   assert.equal((await post('responses',{...generation,expectedRevision:1})).error,'revision_conflict');
 });

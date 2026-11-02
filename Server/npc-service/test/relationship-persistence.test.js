@@ -45,7 +45,6 @@ test('HTTP commits only after successful single generation and does not reward a
   const campaignId = randomUUID();
   let generations = 0, fail = true;
   const server = createService({ authMode: 'local', localToken: 'test', memoryStore: store,
-    grants: [{ playerId: 'local-player', worldId: 'relationship-test', campaignId, npcIds: ['one'] }],
     generate: async body => { generations++; if (fail) throw new Error('provider unavailable'); return {speech:'Thanks for believing in me.',relationshipProposal:body.eligibleRules.length?{ruleId:'support',evidence:body.input}:{ruleId:null,evidence:null},actionProposal:null}; }
   });
   await new Promise(r => server.listen(0, '127.0.0.1', r));

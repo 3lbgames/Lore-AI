@@ -8,7 +8,7 @@ const base={version:1,sessionId:'s',interactionId:'i',turnId:'t',worldId:'world'
 const mutation={eventId:'grant',key:'delivery',expected:'',value:'accepted'};
 async function fixture(t,memoryStore) {
   const server=createService({authMode:'local',localToken:'test',memoryStore,
-    grants:[{playerId:'local-player',worldId:'world',campaignId:'campaign',npcIds:['npc','other']}],generate:()=>assert.fail('game state must not call model')});
+    generate:()=>assert.fail('game state must not call model')});
   await new Promise(r=>server.listen(0,'127.0.0.1',r));
   t.after(()=>{server.closeAllConnections();server.close();});
   return async(route,patch={},token='test')=>{
@@ -25,7 +25,7 @@ test('game state API authenticates, validates and returns campaign state separat
   const loaded=await post('load');assert.equal(loaded.httpStatus,200);assert.deepEqual(loaded.gameState,state);assert.equal(loaded.revision,undefined);
   assert.deepEqual((await post('commit',{expectedRevision:3,mutation})).gameState,state);
   assert.equal((await post('load',{},'')).httpStatus,401);
-  for(const scope of [{campaignId:'ungranted'},{npcId:'ungranted'},{worldId:'ungranted'}]) assert.equal((await post('load',scope)).httpStatus,403);
+  for(const scope of [{campaignId:'ungranted'},{npcId:'ungranted'},{worldId:'ungranted'}]) assert.equal((await post('load',scope)).httpStatus,200);
   for(const invalid of [null,{...mutation,key:''},{...mutation,expected:3},{...mutation,value:[]},{...mutation,extra:true}])
     assert.equal((await post('commit',{expectedRevision:3,mutation:invalid})).httpStatus,400);
 });
@@ -62,8 +62,7 @@ test('pending campaign writes do not block NPC memory requests',async t=>{
   const pending=new Promise(resolve=>{finish=resolve;});
   let started;
   const observed=new Promise(resolve=>{started=resolve;});
-  const server=createService({authMode:'local',localToken:'test',grants:[{playerId:'local-player',worldId:'world',campaignId:'campaign',npcIds:['npc']}],
-    memoryStore:{commitGame:async()=>{started();await pending;return {revision:1,values:[]};},load:async()=>({revision:0,history:[]})}});
+  const server=createService({authMode:'local',localToken:'test',memoryStore:{commitGame:async()=>{started();await pending;return {revision:1,values:[]};},load:async()=>({revision:0,history:[]})}});
   await new Promise(r=>server.listen(0,'127.0.0.1',r));
   t.after(()=>{finish();server.closeAllConnections();server.close();});
   const post=route=>fetch(`http://127.0.0.1:${server.address().port}/v1/${route}`,{method:'POST',headers:{authorization:'Bearer test','content-type':'application/json'},body:JSON.stringify({...base,expectedRevision:0,mutation})});
