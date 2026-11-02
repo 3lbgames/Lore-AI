@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Core3lb;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
@@ -21,7 +22,9 @@ public class NpcHouseFireQuest : NpcQuestBase
     public DOTweenAnimation ladderTween;
     public Collider ladderInteractCollider;
     public ParticleSystem houseFlames;
-    public GameObject torchLit, torchUnlit;
+    [Tooltip("Torches returned to their start, unlit, when the campaign resets.")]
+    public BaseGrabObject[] torches = Array.Empty<BaseGrabObject>();
+    public string litTriggerName = "FireTrigger - lit OOS", unlitTriggerName = "FireTrigger - unlit";
 
     [Header("Ranger movement")]
     public Transform ladderTop;
@@ -48,9 +51,16 @@ public class NpcHouseFireQuest : NpcQuestBase
     [TextArea] public string witnessFireDescription =
         "The player deliberately set a house in the village on fire with a torch to scare Flynn the ranger off its roof.";
 
+    [Header("Spoken reactions (NpcWorldEventInbox)")]
+    [TextArea] public string ladderReactionIntent =
+        "React out loud, in character, to the player having just raised a ladder against the roof you are stuck on. Protect your pride: you can grudgingly acknowledge it, but do not climb down yet unless they have already talked you into it.";
+    [TextArea] public string fireReactionIntent =
+        "React out loud, in character, having just been forced to jump off the roof because the player set the house on fire beneath you.";
+
     Vector3 roofPosition;
     Quaternion roofRotation;
-    bool moving, previousFacing, eventPending;
+    bool moving, previousFacing, eventPending, pendingWorldReset = true;
+    Pose[] torchPoses = Array.Empty<Pose>();
 
     public override string ObjectiveText
     {
@@ -69,6 +79,9 @@ public class NpcHouseFireQuest : NpcQuestBase
     void Awake()
     {
         if (ranger) { roofPosition = ranger.transform.position; roofRotation = ranger.transform.rotation; }
+        torchPoses = new Pose[torches.Length];
+        for (int i = 0; i < torches.Length; i++)
+            if (torches[i]) torchPoses[i] = new Pose(torches[i].transform.position, torches[i].transform.rotation);
     }
     void OnEnable()
     {
@@ -101,6 +114,7 @@ public class NpcHouseFireQuest : NpcQuestBase
         eventPending = false; Error = failure;
         if (!ok || !ranger || ranger.campaignId != campaign) yield break;
         ranger.Memory.RecordObservedOutcome(eventId + ":ladder", ladderRaisedDescription, "completed");
+        NpcWorldEventInbox.Notify(ranger, eventId + ":ladder", ladderReactionIntent, ladderRaisedDescription);
     }
 
     // HouseFire/FireTrigger ItemIDTrigger.enterEvent
@@ -128,6 +142,9 @@ public class NpcHouseFireQuest : NpcQuestBase
         yield return new WaitForSeconds(fireScareDelay);
         yield return Jump(fireLanding);
         Completing = false;
+        // Speak once he's on the ground.
+        if (ranger && ranger.campaignId == campaign)
+            NpcWorldEventInbox.Notify(ranger, eventId + ":fire", fireReactionIntent, fireDescription);
     }
 
     // ---- Conversation action (NpcHouseFireDescendEffect) ----
@@ -249,7 +266,7 @@ public class NpcHouseFireQuest : NpcQuestBase
     void Reproject() { Projected = false; ProjectState(); }
     void ProjectState()
     {
-        if (!state || !state.Loaded) { Projected = false; Error = null; return; }
+        if (!state || !state.Loaded) { Projected = false; Error = null; pendingWorldReset = true; return; }
         string value = Status;
         if (Projected && ProjectedStatus == value) return;
         Projected = true; ProjectedStatus = value;
@@ -261,8 +278,8 @@ public class NpcHouseFireQuest : NpcQuestBase
                 PlaceRanger(roofPosition, roofRotation);
                 SetLadder(false);
                 SetFlames(false);
-                if (torchLit) torchLit.SetActive(false);
-                if (torchUnlit) torchUnlit.SetActive(true);
+                // Only on a fresh load or campaign reset, never on a failed-commit re-projection mid-play.
+                if (pendingWorldReset) ResetTorches();
                 break;
             case LadderRaised:
                 PlaceRanger(roofPosition, roofRotation);
@@ -278,6 +295,24 @@ public class NpcHouseFireQuest : NpcQuestBase
                 if (fireLanding) PlaceRanger(fireLanding.position, fireLanding.rotation);
                 SetFlames(true);
                 break;
+        }
+        pendingWorldReset = false;
+    }
+    void ResetTorches()
+    {
+        for (int i = 0; i < torches.Length; i++)
+        {
+            var torch = torches[i];
+            if (!torch) continue;
+            if (torch.isGrabbed) torch.ForceDrop();
+            torch.transform.SetPositionAndRotation(torchPoses[i].position, torchPoses[i].rotation);
+            var body = torch.myBody;
+            if (body && !body.isKinematic) { body.linearVelocity = Vector3.zero; body.angularVelocity = Vector3.zero; }
+            torch.gameObject.SetActive(true);
+            var lit = torch.transform.Find(litTriggerName);
+            var unlit = torch.transform.Find(unlitTriggerName);
+            if (lit) lit.gameObject.SetActive(false);
+            if (unlit) unlit.gameObject.SetActive(true);
         }
     }
     void SetLadder(bool raised)

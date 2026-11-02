@@ -1910,7 +1910,7 @@ PrefabInstance:
     - target: {fileID: 4425791550725010581, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
       propertyPath: managedReferences[4954066882073722923].m_Value
       value: 
-      objectReference: {fileID: 343069453}
+      objectReference: {fileID: 1547005906150009898, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
     - target: {fileID: 4525453250791319235, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -2011,29 +2011,16 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1070511107257858898, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
       insertIndex: -1
       addedObject: {fileID: 896153049}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7259747256951033097, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1329184264}
   m_SourcePrefab: {fileID: 100100000, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
 --- !u!4 &343069452 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2578364272248832391, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
   m_PrefabInstance: {fileID: 343069451}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &343069453 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7962745123551529542, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
-  m_PrefabInstance: {fileID: 343069451}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &343069454 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2676204470490182579, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
-  m_PrefabInstance: {fileID: 343069451}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2f69eb38ad98f548b8c1be55032e1ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Facing
 --- !u!95 &343069455 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 165896111924953321, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
@@ -4157,6 +4144,10 @@ MonoBehaviour:
     smoked the wasps out for Sorrel the druid, and they no longer threaten the village.
   villagerFireDescription: The wasp nest in the orchard has been cleared. The player
     burned it with a torch, and the wasps no longer threaten the village.
+  smokeReactionIntent: React out loud, in character, to the player having just smoked
+    the wasps out of the nest so they moved along unharmed.
+  fireReactionIntent: React out loud, in character, to the player having just burned
+    the wasp nest and killed the wasps.
 --- !u!1001 &682531959
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4788,7 +4779,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5810699615985178561, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
   m_PrefabInstance: {fileID: 343069451}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1329184250}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebdfb9cf5954f47ccbc2e114138b88d1, type: 3}
@@ -5584,6 +5575,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2729321804267609439, guid: d6381b13fd9cf7d4093828ff2f96f871, type: 3}
   m_PrefabInstance: {fileID: 911517950}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &912953884 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2301472182909265414, guid: 3312844d7dd306a4b9d464493ac2055d, type: 3}
+  m_PrefabInstance: {fileID: 885437865}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c90db9b5fca504a4a945db5489a48f1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &923081678
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6003,9 +6005,38 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1297470770249785817, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
+      propertyPath: 'managedReferences[740755338596451112]'
+      value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[UnityEngine.GameObject,
+        UnityEngine.CoreModule]]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1297470770249785817, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
+      propertyPath: managedReferences[740755338596451112].Name
+      value: FacingObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 1297470770249785817, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
+      propertyPath: m_BlackboardVariableOverridesList.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1297470770249785817, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
+      propertyPath: managedReferences[740755338596451112].m_Value
+      value: 
+      objectReference: {fileID: 4184418622679284070, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
+    - target: {fileID: 1297470770249785817, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
       propertyPath: managedReferences[4954066882073722923].m_Value
       value: 
       objectReference: {fileID: 1621607132}
+    - target: {fileID: 1297470770249785817, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
+      propertyPath: 'm_BlackboardVariableOverridesList.Array.data[1]'
+      value: 740755338596451112
+      objectReference: {fileID: 0}
+    - target: {fileID: 1297470770249785817, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
+      propertyPath: managedReferences[740755338596451112].GUID.m_Value0
+      value: 4101354959723814362
+      objectReference: {fileID: 0}
+    - target: {fileID: 1297470770249785817, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
+      propertyPath: managedReferences[740755338596451112].GUID.m_Value1
+      value: 11771442843572073706
+      objectReference: {fileID: 0}
     - target: {fileID: 5464509668933867589, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
       propertyPath: m_Name
       value: Druid_NPC Variant
@@ -6087,7 +6118,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2427760241960922654, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 125531841}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5464509668933867589, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1952487306}
   m_SourcePrefab: {fileID: 100100000, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
 --- !u!4 &949360046 stripped
 Transform:
@@ -7321,6 +7355,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 478684, guid: 996caa051abc4be4d8b39b565b8694b5, type: 3}
   m_PrefabInstance: {fileID: 1305005724}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1329184250 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7259747256951033097, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
+  m_PrefabInstance: {fileID: 343069451}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1329184264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1329184250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfeef5e410246ab4d8d9022053c38e28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcWorldEventInbox
+  channelVariable: Interaction
 --- !u!1 &1360859162
 GameObject:
   m_ObjectHideFlags: 0
@@ -9431,9 +9483,46 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 972603533}
     - target: {fileID: 7772774847951003126, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      propertyPath: 'managedReferences[740755338596451113]'
+      value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[UnityEngine.GameObject,
+        UnityEngine.CoreModule]]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772774847951003126, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      propertyPath: managedReferences[740755338596451113].Name
+      value: FacingObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772774847951003126, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      propertyPath: m_BlackboardVariableOverridesList.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772774847951003126, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      propertyPath: managedReferences[740755338596451113].m_Value
+      value: 
+      objectReference: {fileID: 1786755352517226432, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+    - target: {fileID: 7772774847951003126, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       propertyPath: managedReferences[4954066882073722923].m_Value
       value: 
-      objectReference: {fileID: 1100274123}
+      objectReference: {fileID: 4904061344453609261, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+    - target: {fileID: 7772774847951003126, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      propertyPath: 'm_BlackboardVariableOverridesList.Array.data[1]'
+      value: 740755338596451113
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772774847951003126, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      propertyPath: 'm_BlackboardVariableOverridesList.Array.data[2]'
+      value: 4954066882073722924
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772774847951003126, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      propertyPath: 'm_BlackboardVariableOverridesList.Array.data[3]'
+      value: 4954066902360523221
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772774847951003126, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      propertyPath: managedReferences[740755338596451113].GUID.m_Value0
+      value: 4101354959723814362
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772774847951003126, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      propertyPath: managedReferences[740755338596451113].GUID.m_Value1
+      value: 11771442843572073706
+      objectReference: {fileID: 0}
     - target: {fileID: 8466152503495698660, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6
@@ -9822,7 +9911,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9208132523477484173, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
   m_PrefabInstance: {fileID: 949360045}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1952487292}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebdfb9cf5954f47ccbc2e114138b88d1, type: 3}
@@ -10084,6 +10173,17 @@ Transform:
   - {fileID: 1386108229}
   m_Father: {fileID: 228673908}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1756977934 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2301472182909265414, guid: 3312844d7dd306a4b9d464493ac2055d, type: 3}
+  m_PrefabInstance: {fileID: 228673907}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c90db9b5fca504a4a945db5489a48f1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1759142046
 GameObject:
   m_ObjectHideFlags: 0
@@ -10370,12 +10470,16 @@ MonoBehaviour:
   ladderTween: {fileID: 1361229821}
   ladderInteractCollider: {fileID: 1361229818}
   houseFlames: {fileID: 1890287522}
-  torchLit: {fileID: 1361722989}
-  torchUnlit: {fileID: 595767429}
+  torches:
+  - {fileID: 2115684678}
+  - {fileID: 1756977934}
+  - {fileID: 912953884}
+  litTriggerName: FireTrigger - lit OOS
+  unlitTriggerName: FireTrigger - unlit
   ladderTop: {fileID: 1998840091}
   ladderBottom: {fileID: 818584046}
   fireLanding: {fileID: 588476367}
-  facing: {fileID: 343069454}
+  facing: {fileID: 0}
   animator: {fileID: 343069455}
   speedParameter: Speed
   roofWalkSpeed: 1.2
@@ -10392,6 +10496,12 @@ MonoBehaviour:
     I am grudgingly impressed.
   witnessFireDescription: The player deliberately set a house in the village on fire
     with a torch to scare Flynn the ranger off its roof.
+  ladderReactionIntent: 'React out loud, in character, to the player having just
+    raised a ladder against the roof you are stuck on. Protect your pride: you can
+    grudgingly acknowledge it, but do not climb down yet unless they have already
+    talked you into it.'
+  fireReactionIntent: React out loud, in character, having just been forced to jump
+    off the roof because the player set the house on fire beneath you.
 --- !u!1001 &1820064870
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15636,6 +15746,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 305691602417464331, guid: cc4d5ee9c4fc77b488a53222d12328b0, type: 3}
   m_PrefabInstance: {fileID: 1906994895}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1952487292 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5464509668933867589, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
+  m_PrefabInstance: {fileID: 949360045}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1952487306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952487292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfeef5e410246ab4d8d9022053c38e28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcWorldEventInbox
+  channelVariable: Interaction
 --- !u!1001 &1989762045
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16370,6 +16498,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2097587644}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2115684678 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2301472182909265414, guid: 3312844d7dd306a4b9d464493ac2055d, type: 3}
+  m_PrefabInstance: {fileID: 837004405}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c90db9b5fca504a4a945db5489a48f1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2121594353
 PrefabInstance:
   m_ObjectHideFlags: 0

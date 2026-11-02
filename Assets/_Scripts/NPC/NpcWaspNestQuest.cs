@@ -45,6 +45,12 @@ public class NpcWaspNestQuest : NpcQuestBase
     [TextArea] public string villagerFireDescription =
         "The wasp nest in the orchard has been cleared. The player burned it with a torch, and the wasps no longer threaten the village.";
 
+    [Header("Spoken reactions (NpcWorldEventInbox)")]
+    [TextArea] public string smokeReactionIntent =
+        "React out loud, in character, to the player having just smoked the wasps out of the nest so they moved along unharmed.";
+    [TextArea] public string fireReactionIntent =
+        "React out loud, in character, to the player having just burned the wasp nest and killed the wasps.";
+
     Pose nestPose;
     Pose[] smokebombPoses = Array.Empty<Pose>();
 
@@ -132,6 +138,8 @@ public class NpcWaspNestQuest : NpcQuestBase
         bool smoke = outcome == ClearedBySmoke;
         druid.Memory.RecordObservedOutcome(eventId + ":wasps", smoke ? smokeDescription : from == "" ? fireWithoutAskingDescription : fireDescription,
             "completed", smoke ? completionEvidenceKey : fireEvidenceKey);
+        NpcWorldEventInbox.Notify(druid, eventId + ":wasps", smoke ? smokeReactionIntent : fireReactionIntent,
+            smoke ? smokeDescription : from == "" ? fireWithoutAskingDescription : fireDescription);
         string news = smoke ? villagerSmokeDescription : villagerFireDescription;
         foreach (var villager in villagers)
             if (villager && villager != druid && villager.isActiveAndEnabled && villager.campaignId == campaign)

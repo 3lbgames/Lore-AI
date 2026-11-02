@@ -43,6 +43,17 @@ public class NpcProximityTrigger : MonoBehaviour
 
     private void Update()
     {
+        if(playerOverride && player != playerOverride)
+        {
+            player = playerOverride;
+        }
+        if (!player)
+        {
+            if (XRPlayerController.instance && XRPlayerController.instance.headCamera)
+                player = XRPlayerController.instance.headCamera.transform;
+            if (!player && Camera.main) player = Camera.main.transform;
+        }
+        if (!player) return;
         var offset = player ? player.position - transform.position : Vector3.zero;
         offset.y = 0;
         bool inside = player && offset.sqrMagnitude <= interactionRadius * interactionRadius;
