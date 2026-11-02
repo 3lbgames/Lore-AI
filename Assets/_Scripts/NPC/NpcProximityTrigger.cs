@@ -16,6 +16,8 @@ public class NpcProximityTrigger : MonoBehaviour
     private bool playerInside;
     private float outsideSince = -1f;
 
+    Transform player;
+
     private void Awake()
     {
         agent = GetComponent<BehaviorGraphAgent>();
@@ -32,15 +34,15 @@ public class NpcProximityTrigger : MonoBehaviour
         outsideSince = -1f;
         selectedPlayer = null;
         agent.Start();
+
+        player = playerOverride;
+        if (!player && XRPlayerController.instance && XRPlayerController.instance.headCamera)
+            player = XRPlayerController.instance.headCamera.transform;
+        if (!player && Camera.main) player = Camera.main.transform;
     }
 
     private void Update()
     {
-        var player = playerOverride;
-        if (!player && XRPlayerController.instance && XRPlayerController.instance.headCamera)
-            player = XRPlayerController.instance.headCamera.transform;
-        if (!player && Camera.main) player = Camera.main.transform;
-
         var offset = player ? player.position - transform.position : Vector3.zero;
         offset.y = 0;
         bool inside = player && offset.sqrMagnitude <= interactionRadius * interactionRadius;

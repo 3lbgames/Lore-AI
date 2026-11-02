@@ -29,8 +29,9 @@ MonoBehaviour:
     makes them drowsy and they will relocate without being harmed. You do not want
     the nest burned, because the wasps keep the orchard free of pests and fire could
     spread to the trees.
-  - You know smokebombs can be bought or found in the village, but you do not know
-    exactly where; say so if asked.
+  - You keep a few smokebombs of your own, but you only hand them over once you trust
+    the player to move the wasps along gently. When you do, they are waiting on the
+    table a short walk from where you stand; point the player to it.
   - The Oak Inn is beside the east gate and offers lodging for travelers.
   - The goal is to clear the wasps from the orchard. The player can either use smokebombs
     to drive them off peacefully, or light the torch and set fire to the nest. If

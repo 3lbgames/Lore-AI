@@ -15,7 +15,7 @@ public class NpcQuestBase : MonoBehaviour
     public string completionEvidenceKey;
     public string Error { get; set; }
     public string Status => state && state.Loaded ? state.Get(stateKey) : "";
-    public string ObjectiveText => Status == "completed" ? completedText : Status == "accepted" ? acceptedText : availableText;
+    public virtual string ObjectiveText => Status == "completed" ? completedText : Status == "accepted" ? acceptedText : availableText;
 
     public bool Projected { get; set; }
     public bool Completing { get; set; }

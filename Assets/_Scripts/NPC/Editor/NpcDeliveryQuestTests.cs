@@ -62,13 +62,13 @@ public class NpcDeliveryQuestTests
             ApplyState(state, 3, "completed");
             Assert.That(item.activeSelf, Is.False);
             Assert.That(visual.activeSelf, Is.True);
-            Assert.That(questType.GetProperty("ObjectiveText").GetValue(quest), Is.EqualTo("Delivery completed"));
+            Assert.That(questType.GetProperty("ObjectiveText").GetValue(quest), Is.EqualTo("Quest completed"));
             state.GetType().GetMethod("ResetState", Hidden).Invoke(state, new object[] { "new-campaign" });
             Assert.That(item.activeSelf, Is.False);
             Assert.That(visual.activeSelf, Is.False);
             ApplyState(state, 0, "");
             Assert.That(item.activeSelf, Is.False);
-            Assert.That(questType.GetProperty("ObjectiveText").GetValue(quest), Is.EqualTo("Delivery available"));
+            Assert.That(questType.GetProperty("ObjectiveText").GetValue(quest), Is.EqualTo("Quest available"));
             questType.GetMethod("OnDisable", Hidden).Invoke(quest, null);
         }
         finally
