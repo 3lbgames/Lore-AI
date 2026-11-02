@@ -2527,7 +2527,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NpcMoveEffect
   agent: {fileID: 1637217329}
   destination: {fileID: 1612679911}
-  facing: {fileID: 1100274125}
+  facing: {fileID: 1644248916}
   animator: {fileID: 1100274124}
   speedParameter: Speed
   animationSpeedAtMaxVelocity: 0.5
@@ -6456,7 +6456,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1637217328}
+    m_TransformParent: {fileID: 1644248915}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 3b8f5787a40dcce478ccdb12dd03cb94, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6476,15 +6476,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b8f5787a40dcce478ccdb12dd03cb94, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b8f5787a40dcce478ccdb12dd03cb94, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b8f5787a40dcce478ccdb12dd03cb94, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b8f5787a40dcce478ccdb12dd03cb94, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6505,19 +6505,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3b8f5787a40dcce478ccdb12dd03cb94, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1100274125}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b8f5787a40dcce478ccdb12dd03cb94, type: 3}
 --- !u!4 &1100274122 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3b8f5787a40dcce478ccdb12dd03cb94, type: 3}
-  m_PrefabInstance: {fileID: 1100274121}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1100274123 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3b8f5787a40dcce478ccdb12dd03cb94, type: 3}
   m_PrefabInstance: {fileID: 1100274121}
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &1100274124 stripped
@@ -6525,29 +6517,6 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 856328785614917604, guid: 3b8f5787a40dcce478ccdb12dd03cb94, type: 3}
   m_PrefabInstance: {fileID: 1100274121}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1100274125
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100274123}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2f69eb38ad98f548b8c1be55032e1ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Facing
-  faceTo: {fileID: 0}
-  snapOnEnable: 0
-  alwaysSnap: 0
-  facePlayer: 0
-  isFacing: 0
-  axisConstraint: 4
-  lookTime: 1
-  scaleToDistance: 0
-  scaleMultiplier: 0.5
-  scaleMultiMax: 5
-  scaleTransformOverride: {fileID: 0}
 --- !u!1 &1142256123
 GameObject:
   m_ObjectHideFlags: 0
@@ -9363,10 +9332,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1204977243217912918, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-      propertyPath: facing
-      value: 
-      objectReference: {fileID: 1100274125}
-    - target: {fileID: 1204977243217912918, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       propertyPath: animator
       value: 
       objectReference: {fileID: 1100274124}
@@ -9462,6 +9427,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mira_NPC
       objectReference: {fileID: 0}
+    - target: {fileID: 4090525164830282991, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      propertyPath: enterEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4904061344453609261, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -9470,10 +9439,6 @@ PrefabInstance:
       propertyPath: animator
       value: 
       objectReference: {fileID: 1100274124}
-    - target: {fileID: 6353946688545429985, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-      propertyPath: facing
-      value: 
-      objectReference: {fileID: 1100274125}
     - target: {fileID: 6353946688545429985, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       propertyPath: animator
       value: 
@@ -9564,17 +9529,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4904061344453609261, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 8466152503495698660, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
-      insertIndex: 12
-      addedObject: {fileID: 1100274122}
     - targetCorrespondingSourceObject: {fileID: 6372268376351347249, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 450563263}
     - targetCorrespondingSourceObject: {fileID: 6372268376351347249, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 224391667}
+    - targetCorrespondingSourceObject: {fileID: 8372326815716732800, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1100274122}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
 --- !u!114 &1637217325 stripped
@@ -9776,6 +9742,22 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: abc2373571c82b34c8af80b519ba88d4, type: 3}
+--- !u!4 &1644248915 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8372326815716732800, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+  m_PrefabInstance: {fileID: 1637217324}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1644248916 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6407975296989756632, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+  m_PrefabInstance: {fileID: 1637217324}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2f69eb38ad98f548b8c1be55032e1ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Facing
 --- !u!1 &1688808684
 GameObject:
   m_ObjectHideFlags: 0
@@ -9875,7 +9857,7 @@ MonoBehaviour:
   requiredConditions:
   - category: trust
     comparison: gte
-    value: 20
+    value: 15
   availableText: "Mira's first delivery \u2014 earn her trust"
   acceptedText: Deliver Mira's cup to the Barbarian
   completedText: "Delivery completed \u2014 the Barbarian has the cup"

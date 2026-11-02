@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NpcMoveEffect
   agent: {fileID: 7932896411217615081}
   destination: {fileID: 0}
-  facing: {fileID: 0}
+  facing: {fileID: 6883513956521771619}
   animator: {fileID: 4064368955495427461}
   speedParameter: Speed
   animationSpeedAtMaxVelocity: 0.5
@@ -150,7 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NpcMoveEffect
   agent: {fileID: 7932896411217615081}
   destination: {fileID: 0}
-  facing: {fileID: 0}
+  facing: {fileID: 6883513956521771619}
   animator: {fileID: 4064368955495427461}
   speedParameter: Speed
   animationSpeedAtMaxVelocity: 0.5
@@ -675,6 +675,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 245724374368745656, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
   m_PrefabInstance: {fileID: 6659893362828907570}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6883513956521771619 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 282485167204505169, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+  m_PrefabInstance: {fileID: 6659893362828907570}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2f69eb38ad98f548b8c1be55032e1ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Facing
 --- !u!195 &7932896411217615081 stripped
 NavMeshAgent:
   m_CorrespondingSourceObject: {fileID: 3637781478625955035, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
