@@ -5,10 +5,10 @@ using UnityEngine;
 public class NpcProfile : ScriptableObject
 {
     public string npcId;
-    [TextArea] public string personality;
+    [TextArea (1, 10)] public string personality;
     public string voice;
-    [TextArea] public string[] facts = Array.Empty<string>();
-    [TextArea] public string[] restrictions = Array.Empty<string>();
+    [TextArea(1, 10)] public string[] facts = Array.Empty<string>();
+    [TextArea(1, 10)] public string[] restrictions = Array.Empty<string>();
     public NpcRelationshipDefinition relationship;
     public NpcProfileData ToData() => new NpcProfileData
     { npcId = npcId, personality = personality, voice = voice, facts = facts, restrictions = restrictions,

@@ -84,4 +84,10 @@ public class NpcProximityTrigger : MonoBehaviour
     {
         if (runtimeChannel) Destroy(runtimeChannel);
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, interactionRadius);
+    }
 }

@@ -25,6 +25,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+      propertyPath: 'managedReferences[740755339610947815]'
+      value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[Facing, Assembly-CSharp]]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: 'managedReferences[4954066902360523221]'
       value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[System.String,
         mscorlib]]'
@@ -33,6 +37,10 @@ PrefabInstance:
       propertyPath: 'managedReferences[4954066902360523222]'
       value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[System.String,
         mscorlib]]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+      propertyPath: managedReferences[740755339610947815].Name
+      value: Facing
       objectReference: {fileID: 0}
     - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: managedReferences[4954066902360523221].Name
@@ -47,6 +55,10 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+      propertyPath: managedReferences[740755339610947815].m_Value
+      value: 
+      objectReference: {fileID: 6883513956521771619, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+    - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: managedReferences[4954066902360523221].m_Value
       value: Hello! I'm Mira. Have you got a moment?
       objectReference: {fileID: 0}
@@ -55,12 +67,24 @@ PrefabInstance:
       value: Hello again! How are you?
       objectReference: {fileID: 0}
     - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+      propertyPath: 'm_BlackboardVariableOverridesList.Array.data[1]'
+      value: 740755339610947815
+      objectReference: {fileID: 0}
+    - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: 'm_BlackboardVariableOverridesList.Array.data[3]'
       value: 4954066902360523221
       objectReference: {fileID: 0}
     - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: 'm_BlackboardVariableOverridesList.Array.data[4]'
       value: 4954066902360523222
+      objectReference: {fileID: 0}
+    - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+      propertyPath: managedReferences[740755339610947815].GUID.m_Value0
+      value: 4188126767018101393
+      objectReference: {fileID: 0}
+    - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
+      propertyPath: managedReferences[740755339610947815].GUID.m_Value1
+      value: 18033571381286472288
       objectReference: {fileID: 0}
     - target: {fileID: 7833137883007689549, guid: 091954210a3557f459962cdd51b1527b, type: 3}
       propertyPath: managedReferences[4954066902360523221].GUID.m_Value0
