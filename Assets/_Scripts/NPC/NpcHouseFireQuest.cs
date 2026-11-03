@@ -139,12 +139,15 @@ public class NpcHouseFireQuest : NpcQuestBase
                 witness.Memory.RecordObservedOutcome(eventId + ":witness:" + witness.profile.npcId, witnessFireDescription, "completed");
         // Interrupt any ladder-climb in progress and let the fire scare him off the roof.
         StopMovement();
+        // Speak when he sees the fire.
+        if (ranger && ranger.campaignId == campaign)
+            NpcWorldEventInbox.Notify(ranger, eventId + ":fire", fireReactionIntent, fireDescription);
         yield return new WaitForSeconds(fireScareDelay);
         yield return Jump(fireLanding);
         Completing = false;
-        // Speak once he's on the ground.
-        if (ranger && ranger.campaignId == campaign)
-            NpcWorldEventInbox.Notify(ranger, eventId + ":fire", fireReactionIntent, fireDescription);
+        //// Speak once he's on the ground.
+        //if (ranger && ranger.campaignId == campaign)
+        //    NpcWorldEventInbox.Notify(ranger, eventId + ":fire", fireReactionIntent, fireDescription);
     }
 
     // ---- Conversation action (NpcHouseFireDescendEffect) ----
