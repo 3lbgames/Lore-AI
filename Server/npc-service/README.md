@@ -187,7 +187,9 @@ The adapter uses `muse-spark-1.3`, strict JSON Schema, `reasoning.effort: minima
 campaignId, npcId, writerId, and the same authentication as responses. It returns
 `{version:1,status:"completed",sessionId,interactionId,turnId,revision,hasSpoken,history}`.
 History is ordered by commit revision. `hasSpoken` means an acknowledged finalized
-player input exists; greetings alone do not count.
+player input or completed NPC speech exists. A completed greeting or reaction counts
+even if the player never speaks; interrupted/failed NPC speech and action outcomes
+alone do not count. The field name is retained for existing clients.
 
 `POST /v1/memory/commit` additionally takes `expectedRevision` and
 `event: {eventId,turnId,kind,text,delivery}`. `kind` is `player_input`,

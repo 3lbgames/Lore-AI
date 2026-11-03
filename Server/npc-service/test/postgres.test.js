@@ -95,3 +95,30 @@ test('HTTP → PostgreSQL keeps failed-generation input, excludes undelivered sp
   assert.equal((await post('memory/load',{npcId:'other-npc'})).hasSpoken,false);
   assert.equal((await post('responses',{...generation,expectedRevision:1})).error,'revision_conflict');
 });
+
+test('completed NPC speech recognizes a silent visitor, but interrupted speech and actions do not', {skip:!process.env.TEST_DATABASE_URL}, async () => {
+  const store = new PostgresMemoryStore(process.env.TEST_DATABASE_URL);
+  const scope = {playerId:'test-'+randomUUID(),worldId:'world',campaignId:randomUUID(),npcId:'npc',writerId:'installation'};
+  try {
+    await store.migrate();
+    assert.equal((await store.load(scope)).hasSpoken,false);
+    const events = [
+      {kind:'npc_speech',delivery:'interrupted',text:'Hello, traveler.'},
+      {kind:'npc_speech',delivery:'failed',text:'Hello, traveler.'},
+      {kind:'action_outcome',delivery:'completed',text:'The player delivered an item.'},
+      {kind:'npc_speech',delivery:'completed',text:'Hello, traveler.'}
+    ];
+    for (const [index,event] of events.entries()) {
+      await store.commit(scope,index,{...event,eventId:'event-'+index,turnId:'turn-'+index});
+      assert.equal((await store.load(scope)).hasSpoken,index===3,`${event.kind} / ${event.delivery}`);
+    }
+    const restored = new PostgresMemoryStore(process.env.TEST_DATABASE_URL);
+    try { assert.equal((await restored.load(scope)).hasSpoken,true); } finally { await restored.close(); }
+    assert.equal((await store.load({...scope,campaignId:randomUUID()})).hasSpoken,false);
+    assert.equal((await store.load({...scope,npcId:'other'})).hasSpoken,false);
+  } finally {
+    for (const table of ['conversation_events','conversation_streams','campaign_writers'])
+      await store.pool.query(`DELETE FROM ${table} WHERE player_id=$1`,[scope.playerId]);
+    await store.close();
+  }
+});

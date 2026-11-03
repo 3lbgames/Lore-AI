@@ -90,7 +90,9 @@ export class PostgresMemoryStore {
       if (!includeHistory) return { revision, ...(relationship ? { relationship } : {}) };
       const { rows } = await client.query('SELECT payload FROM conversation_events WHERE player_id=$1 AND world_id=$2 AND campaign_id=$3 AND npc_id=$4 ORDER BY revision', key);
       const history = rows.map(row => row.payload);
-      return { revision, ...(relationship ? { relationship } : {}), hasSpoken: history.some(event => event.kind === 'player_input'), history };
+      const hasSpoken = history.some(event => event.kind === 'player_input' ||
+        (event.kind === 'npc_speech' && event.delivery === 'completed'));
+      return { revision, ...(relationship ? { relationship } : {}), hasSpoken, history };
     });
   }
   commit(scope, expectedRevision, event, relationshipConfig = null) {
