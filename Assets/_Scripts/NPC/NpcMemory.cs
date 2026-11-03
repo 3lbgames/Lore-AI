@@ -15,6 +15,8 @@ public class NpcMemory : MonoBehaviour
     public NpcRelationshipState Relationship { get; private set; }
     public event Action<NpcRelationshipState> RelationshipChanged;
     public NpcResponseRequest CurrentTurn { get; private set; }
+    public event Action<string> PlayerLineCommitted;
+    public event Action<string, string> NpcLineRecorded;
     public BaseAI_Conversation Buffer { get; private set; }
     NpcCharacterDirector director;
     NpcProxyClient proxy;
@@ -91,6 +93,7 @@ public class NpcMemory : MonoBehaviour
                 kind = "player_input", text = turn.input, delivery = "completed" }
         });
         Load();
+        if (!string.IsNullOrWhiteSpace(turn.input)) PlayerLineCommitted?.Invoke(turn.input);
     }
     public void CancelTurn() { CurrentTurn = null; }
     public void BeginDialogue(NpcResponseRequest turn) { CurrentTurn = turn; }
@@ -98,6 +101,7 @@ public class NpcMemory : MonoBehaviour
     {
         if (turn == null || turn.campaignId != director.campaignId) return;
         if (CurrentTurn == turn) CurrentTurn = null;
+        NpcLineRecorded?.Invoke(text, outcome);
         var request = Request(turn.turnId);
         request.campaignId = turn.campaignId;
         request.interactionId = turn.interactionId;
