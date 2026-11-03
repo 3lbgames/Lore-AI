@@ -24,6 +24,30 @@ public class NpcInteractionTests
     }
 
     [Test]
+    public void VillageObjectivesShareOneCampaignStateLoader()
+    {
+        var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenPreviewScene("Assets/_Scenes/VillageScene.unity");
+        try
+        {
+            var components = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<MonoBehaviour>(true)).Where(c => c).ToArray();
+            var states = components.Where(c => c.GetType().Name == "NpcGameState").ToArray();
+            Assert.That(states.Length, Is.EqualTo(1), "Parallel loaders for the same campaign collide with the server's request-in-progress guard.");
+            foreach (var component in components)
+            {
+                var serialized = new SerializedObject(component);
+                foreach (var field in new[] { "state", "gameState" })
+                {
+                    var property = serialized.FindProperty(field);
+                    if (property != null && property.propertyType == SerializedPropertyType.ObjectReference &&
+                        property.objectReferenceValue && property.objectReferenceValue.GetType().Name == "NpcGameState")
+                        Assert.That(property.objectReferenceValue, Is.SameAs(states[0]), component.name + " must share campaign state");
+                }
+            }
+        }
+        finally { UnityEditor.SceneManagement.EditorSceneManager.ClosePreviewScene(scene); }
+    }
+
+    [Test]
     public void BaseScenePreservesDistinctNpcProfilesAndOneCampaignResetOwner()
     {
         var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenPreviewScene("Assets/_Scenes/BaseScene.unity");

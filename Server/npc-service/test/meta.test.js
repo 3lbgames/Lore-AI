@@ -56,8 +56,35 @@ test('action outcomes are context, never assistant speech, including failed acti
   const generate = metaGenerator({apiKey:'secret',fetchImpl:async (_url, options)=>{
     const body = JSON.parse(options.body);
     assert.equal(JSON.parse(body.input[0].content).intent, 'Explain what happened');
-    assert.deepEqual(body.input.slice(1), [{role:'developer',content:JSON.stringify(event)}]);
+    assert.deepEqual(body.input.slice(1, -1), [{role:'developer',content:JSON.stringify(event)}]);
+    assert.equal(JSON.parse(body.input.at(-1).content).intent, 'Explain what happened');
     return Response.json({status:'completed',output:[{type:'message',role:'assistant',content:[{type:'output_text',text:JSON.stringify(reply('It is stuck.'))}]}]});
   }});
   await generate({npcInitiated:true,intent:'Explain what happened',input:'',history:[event],profile:{}});
+});
+
+
+test('NPC-initiated arrival ends with current event context after historical dialogue', async () => {
+  const intent = 'Greet the returning player briefly in character.';
+  const situation = 'The player has just approached you again and has not spoken in this encounter.';
+  const history = [
+    {kind:'player_input',text:'It all looks fine down here.'},
+    {kind:'npc_speech',text:'Excellent observation.'}
+  ];
+  const generate = metaGenerator({apiKey:'secret',fetchImpl:async (_url, options) => {
+    const body = JSON.parse(options.body);
+    assert.deepEqual(body.input.slice(1, -1), [
+      {role:'user',content:'It all looks fine down here.'},
+      {role:'assistant',content:'Excellent observation.'}
+    ]);
+    assert.equal(body.input.at(-1).role, 'developer');
+    const current = JSON.parse(body.input.at(-1).content);
+    assert.equal(current.npcInitiated, true);
+    assert.equal(current.intent, intent);
+    assert.equal(current.situation, situation);
+    assert.match(current.instruction, /no new player utterance/i);
+    assert.match(current.instruction, /do not answer or evaluate/i);
+    return Response.json({status:'completed',output:[{type:'message',role:'assistant',content:[{type:'output_text',text:JSON.stringify(reply('Back again?'))}]}]});
+  }});
+  await generate({npcInitiated:true,intent,situation,input:'',history,profile:{}});
 });
