@@ -32,7 +32,6 @@ public class NpcHouseFireQuest : NpcQuestBase
     public Transform ladderBottom;
     public Transform fireLanding;
     public Facing facing;
-    public Animator animator;
     public string speedParameter = "Speed";
     [Min(0.1f)] public float roofWalkSpeed = 1.2f;
     [Min(0.1f)] public float climbSeconds = 3f;
@@ -208,14 +207,14 @@ public class NpcHouseFireQuest : NpcQuestBase
         BeginMovement();
         var t = ranger.transform;
         Face(landing.position - t.position);
-        animator.SetBool("Jump", true);
+        if (ranger.animator) ranger.animator.SetBool("Jump", true);
         yield return Tween(t.DOJump(landing.position, jumpHeight, 1, jumpSeconds).SetEase(Ease.Linear).OnComplete(Land));
         if (!moving) yield break;
         EndMovement(landing.position, landing.rotation);
     }
     void Land()
     {
-        animator.SetBool("Jump", false);
+        if (ranger.animator) ranger.animator.SetBool("Jump", false);
     }
     IEnumerator Tween(Tween tween)
     {
@@ -229,7 +228,7 @@ public class NpcHouseFireQuest : NpcQuestBase
     }
     void SetSpeed(float speed)
     {
-        if (animator && !string.IsNullOrEmpty(speedParameter)) animator.SetFloat(speedParameter, speed);
+        if (ranger.animator && !string.IsNullOrEmpty(speedParameter)) ranger.animator.SetFloat(speedParameter, speed);
     }
     NavMeshAgent Agent => ranger ? ranger.GetComponent<NavMeshAgent>() : null;
     void BeginMovement()

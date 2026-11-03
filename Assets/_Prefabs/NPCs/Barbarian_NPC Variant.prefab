@@ -638,6 +638,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6705866071541945387, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 4064368955495427461}
     - target: {fileID: 7188399904673676902, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       propertyPath: enterEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

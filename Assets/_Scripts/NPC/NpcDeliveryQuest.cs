@@ -71,11 +71,13 @@ public class NpcDeliveryQuest : NpcQuestBase
         var body = item.myBody;
         if (body && !body.isKinematic) { body.linearVelocity = Vector3.zero; body.angularVelocity = Vector3.zero; }
         item.gameObject.SetActive(available);
+        if (giver.animator) giver.animator.SetTrigger("Interact");
     }
     void Receive(ItemHandoff receipt)
     {
         if (Completing || Status != "accepted" || !item || receipt.item != item.gameObject ||
             !recipientCharacter || receipt.recipient != recipientCharacter.gameObject) return;
+        if (recipientCharacter.animator) recipientCharacter.animator.SetTrigger("Interact");
         Completing = true;
         StartCoroutine(Complete(receipt, giver.campaignId));
     }

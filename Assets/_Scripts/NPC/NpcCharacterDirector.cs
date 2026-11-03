@@ -9,6 +9,7 @@ public class NpcCharacterDirector : MonoBehaviour
     public NpcProfile profile;
     public string worldId = "local-world", campaignId = "local-campaign";
     public BaseAI_TextToSpeech speech;
+    public Animator animator;
     public static NpcCharacterDirector Selected { get; private set; }
     public string InteractionId { get; private set; }
     public string SessionId { get; private set; } = Guid.NewGuid().ToString("N");

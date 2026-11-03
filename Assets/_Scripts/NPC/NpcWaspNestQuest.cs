@@ -198,6 +198,7 @@ public class NpcWaspNestQuest : NpcQuestBase
     static void StopTimer(BaseTimerEvent timer) { if (timer) timer._StopAndReset(); }
     void SetSmokebombs(bool available)
     {
+        if (druid.animator) druid.animator.SetTrigger("Interact");
         for (int i = 0; i < smokebombs.Length; i++)
         {
             var bomb = smokebombs[i];
