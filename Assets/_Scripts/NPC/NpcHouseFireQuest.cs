@@ -208,9 +208,14 @@ public class NpcHouseFireQuest : NpcQuestBase
         BeginMovement();
         var t = ranger.transform;
         Face(landing.position - t.position);
-        yield return Tween(t.DOJump(landing.position, jumpHeight, 1, jumpSeconds).SetEase(Ease.Linear));
+        animator.SetBool("Jump", true);
+        yield return Tween(t.DOJump(landing.position, jumpHeight, 1, jumpSeconds).SetEase(Ease.Linear).OnComplete(Land));
         if (!moving) yield break;
         EndMovement(landing.position, landing.rotation);
+    }
+    void Land()
+    {
+        animator.SetBool("Jump", false);
     }
     IEnumerator Tween(Tween tween)
     {
