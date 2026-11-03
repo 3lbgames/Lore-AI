@@ -8,7 +8,6 @@ public partial class NpcWorldEventTurnScope : NpcTurnScope
 {
     NpcWorldEventInbox inbox;
     string eventId;
-    int revision;
     bool started;
     readonly NpcRetryOnce memoryRetry = new NpcRetryOnce();
 
@@ -19,7 +18,7 @@ public partial class NpcWorldEventTurnScope : NpcTurnScope
         inbox = Character.Value ? Character.Value.GetComponent<NpcWorldEventInbox>() : null;
         eventId = inbox ? inbox.Peek()?.eventId : null;
         if (eventId == null || !Director || !Director.profile || Child == null) return Status.Failure;
-        revision = Director.TurnRevision;
+        Revision = Director.TurnRevision;
         memoryRetry.Start(LoadMemory, CheckMemory, null);
         return Advance();
     }
@@ -28,7 +27,7 @@ public partial class NpcWorldEventTurnScope : NpcTurnScope
 
     Status Advance()
     {
-        if (!Director || Director.TurnRevision != revision || !inbox || inbox.Peek()?.eventId != eventId)
+        if (!Director || Director.TurnRevision != Revision || !inbox || inbox.Peek()?.eventId != eventId)
         {
             if (started) EndNode(Child);
             return Status.Success;

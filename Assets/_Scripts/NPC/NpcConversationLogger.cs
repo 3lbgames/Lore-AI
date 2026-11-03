@@ -1,25 +1,52 @@
 using System;
 using System.IO;
+using System.Text;
 using UnityEngine;
 
 /// <summary>
-/// Records each conversation between the player and this NPC to a .txt file named
-/// "<NpcName> <yyyy-MM-dd> <HH-mm-ss>.txt", using the time the conversation began.
-/// Each line is written as "Speaker: text" the moment it happens, so nothing is lost
-/// if the game stops mid-conversation. A file is only created once someone actually speaks.
+/// Records conversations between the player and NPCs. Every conversation in one play session goes into a
+/// single shared file, "Conversation Log <yyyy-MM-dd> <HH-mm-ss>.txt" (named for when the session started).
+/// Each conversation is a block headed by the time it began, with a blank line between blocks:
+///
+///   14:32:05
+///   Mira: Hello, good to see you!
+///   Player: Hello to you, how are you?
+///
+///   14:35:40
+///   Flynn: What do you want?
+///
+/// Lines are written the moment they happen, so nothing is lost if the game stops mid-conversation.
+/// The file is only created once someone actually speaks.
 /// </summary>
 [RequireComponent(typeof(NpcCharacterDirector), typeof(NpcMemory))]
 public class NpcConversationLogger : MonoBehaviour
 {
-    [Tooltip("Name used in the file title and before NPC lines. Leave empty to use the profile's npcId, capitalized (\"mira\" -> \"Mira\").")]
+    [Tooltip("Name shown before this NPC's lines. Leave empty to use the profile's npcId, capitalized (\"mira\" -> \"Mira\").")]
     public string displayName;
     public string playerName = "Player";
-    [Tooltip("Log folder name. In the editor it sits in the project root next to Assets; in builds it goes under Application.persistentDataPath.")]
+    [Tooltip("Log folder name. In the editor it sits in the project root next to Assets; in builds it goes under Application.persistentDataPath. All NPCs share one session file, so keep this the same on every NPC.")]
     public string folderName = "ConversationLogs";
     [Tooltip("Also log NPC lines whose speech failed to play (the player never heard them).")]
     public bool includeFailedSpeech;
 
-    public string CurrentLogPath { get; private set; }
+    // ---- Shared by every NPC: one log file per play session ----
+    static DateTime sessionStartedAt = DateTime.Now;
+    static string sessionLogPath;
+    static NpcConversationLogger lastWriter;
+
+    /// <summary>Path of this play session's log file, or null until the first line is written.</summary>
+    public static string SessionLogPath => sessionLogPath;
+
+    // Runs at the start of every play session, including when domain reload is disabled
+    // in Enter Play Mode settings (where static fields would otherwise carry over).
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void ResetSession()
+    {
+        sessionStartedAt = DateTime.Now;
+        sessionLogPath = null;
+        lastWriter = null;
+    }
+
     /// <summary>
     /// In the editor: "<Project>/ConversationLogs", next to Assets (not inside it, so Unity won't import the logs).
     /// In a build there is no project folder, and writing inside the app is unreliable (on macOS it sits inside
@@ -40,8 +67,9 @@ public class NpcConversationLogger : MonoBehaviour
 
     NpcCharacterDirector director;
     NpcMemory memory;
-    DateTime startedAt;
+    DateTime conversationStartedAt;
     bool conversationActive;
+    bool headerWritten;
 
     void Awake()
     {
@@ -68,15 +96,16 @@ public class NpcConversationLogger : MonoBehaviour
 
     void BeginConversation()
     {
-        startedAt = DateTime.Now;
-        CurrentLogPath = null; // created lazily on the first line
+        conversationStartedAt = DateTime.Now;
         conversationActive = true;
+        headerWritten = false; // the time header is written with the first line
     }
 
     void EndConversation()
     {
         conversationActive = false;
-        CurrentLogPath = null;
+        headerWritten = false;
+        if (lastWriter == this) lastWriter = null;
     }
 
     void OnPlayerLine(string text) => WriteLine(playerName, text);
@@ -106,12 +135,27 @@ public class NpcConversationLogger : MonoBehaviour
         if (!conversationActive) BeginConversation();
         try
         {
-            if (CurrentLogPath == null)
+            if (sessionLogPath == null)
             {
                 Directory.CreateDirectory(LogFolder);
-                CurrentLogPath = UniquePath(LogFolder, $"{SafeFileName(NpcName)} {startedAt:yyyy-MM-dd} {startedAt:HH-mm-ss}");
+                sessionLogPath = UniquePath(LogFolder, $"Conversation Log {sessionStartedAt:yyyy-MM-dd} {sessionStartedAt:HH-mm-ss}");
             }
-            File.AppendAllText(CurrentLogPath, $"{speaker}: {Flatten(text)}{Environment.NewLine}");
+
+            var entry = new StringBuilder();
+            // Start a new block when this conversation begins, or when it resumes after another
+            // NPC's conversation wrote in between, so blocks never mix speakers from different chats.
+            if (!headerWritten || lastWriter != this)
+            {
+                if (File.Exists(sessionLogPath) && new FileInfo(sessionLogPath).Length > 0)
+                    entry.Append(Environment.NewLine);
+                DateTime stamp = headerWritten ? DateTime.Now : conversationStartedAt;
+                entry.Append(stamp.ToString("HH:mm:ss")).Append(Environment.NewLine);
+                headerWritten = true;
+            }
+            entry.Append(speaker).Append(": ").Append(Flatten(text)).Append(Environment.NewLine);
+
+            File.AppendAllText(sessionLogPath, entry.ToString());
+            lastWriter = this;
         }
         catch (Exception e)
         {
@@ -120,19 +164,6 @@ public class NpcConversationLogger : MonoBehaviour
     }
 
     static string Flatten(string text) => text.Replace("\r\n", " ").Replace('\n', ' ').Replace('\r', ' ').Trim();
-
-    // Characters that are invalid in file names on Windows, macOS or Linux. Using one fixed
-    // set (rather than the current OS's list) keeps names valid when logs move between machines.
-    static readonly char[] UnsafeFileNameChars = { '<', '>', ':', '"', '/', '\\', '|', '?', '*' };
-
-    static string SafeFileName(string name)
-    {
-        var chars = name.ToCharArray();
-        for (int i = 0; i < chars.Length; i++)
-            if (char.IsControl(chars[i]) || Array.IndexOf(UnsafeFileNameChars, chars[i]) >= 0) chars[i] = '_';
-        // Windows also rejects names ending in a dot or space.
-        return new string(chars).TrimEnd('.', ' ');
-    }
 
     static string UniquePath(string folder, string baseName)
     {

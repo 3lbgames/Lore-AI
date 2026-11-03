@@ -9,18 +9,18 @@ public partial class NpcTurnScope : Modifier
 {
     [SerializeReference] public BlackboardVariable<GameObject> Character;
     public NpcCharacterDirector Director {  get; set; }
-    private int revision;
+    public int Revision { get; set; }
     protected override Status OnStart()
     {
         Director = Character.Value ? Character.Value.GetComponent<NpcCharacterDirector>() : null;
         if (!Director || Child == null) return Status.Failure;
-        revision = Director.TurnRevision;
+        Revision = Director.TurnRevision;
         var status = StartNode(Child);
         return status == Status.Success || status == Status.Failure ? status : Status.Running;
     }
     protected override Status OnUpdate()
     {
-        if (!Director || Director.TurnRevision != revision) { EndNode(Child); return Status.Failure; }
+        if (!Director || Director.TurnRevision != Revision) { EndNode(Child); return Status.Failure; }
         return Child.CurrentStatus == Status.Success || Child.CurrentStatus == Status.Failure ? Child.CurrentStatus : Status.Running;
     }
 }
