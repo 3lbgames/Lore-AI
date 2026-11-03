@@ -6,6 +6,9 @@ public class NpcSpeechStatusView : MonoBehaviour
 {
     public NpcSpeechInput input;
     public GameObject panel;
+
+    public bool wrapText = true;
+    public int wrapAt = 5;
     //public TMP_Text label;
     public Text textUI;
     public Image imageUI;
@@ -71,7 +74,9 @@ public class NpcSpeechStatusView : MonoBehaviour
         else if (!string.IsNullOrEmpty(acceptedTranscript))
             status = transcriptPrefix + acceptedTranscript + "\n" + (selected.AcceptingTranscript ? readyText : waitingText);
         else status = selected.AcceptingTranscript ? readyText : waitingText;
-        textUI.text = status;
+
+        if (wrapText) textUI.text = TextWrapUtility.WrapEveryNWords(status, wrapAt);
+        else textUI.text = status;
     }
     private void OnDisable()
     {

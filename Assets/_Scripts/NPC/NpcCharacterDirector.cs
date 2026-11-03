@@ -40,7 +40,8 @@ public class NpcCharacterDirector : MonoBehaviour
         campaignId = campaign; Memory.ClearForCampaign();
         if (wasEnabled) proximity.enabled = true;
     }
-    public void BeginInteraction() { InteractionId = Guid.NewGuid().ToString("N"); }
+    public event System.Action InteractionStarted, InteractionEnded;
+    public void BeginInteraction() { InteractionId = Guid.NewGuid().ToString("N"); InteractionStarted?.Invoke(); }
     public void SelectForConversation()
     {
         if (!InteractionOpen || Selected == this) return;
@@ -61,6 +62,11 @@ public class NpcCharacterDirector : MonoBehaviour
         input = transcript, situation = "", writerId = NpcCampaign.WriterId, expectedRevision = Memory.Revision
     };
     public void CancelTurn() { if (Memory) Memory.CancelTurn(); TurnRevision++; pendingTranscript = null; AcceptingTranscript = false; }
-    public void EndInteraction() { CancelTurn(); if (Selected == this) Selected = null; InteractionId = null; }
+    public void EndInteraction()
+    {
+        bool wasOpen = InteractionOpen;
+        CancelTurn(); if (Selected == this) Selected = null; InteractionId = null;
+        if (wasOpen) InteractionEnded?.Invoke();
+    }
     private void OnDisable() { NpcCampaign.Changed -= CampaignChanged; EndInteraction(); }
 }
