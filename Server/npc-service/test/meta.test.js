@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 const reply = speech => ({speech,relationshipProposal:{ruleId:null,evidence:null},actionProposal:null});
-import { metaGenerator, metaIdentityVerifier } from '../src/meta.js';
+import { metaIdentityVerifier } from '../src/meta.js';
+import { modelGenerator } from '../src/generation.js';
 
 test('Meta adapter sends exact text and permitted context, and extracts only speech', async () => {
-  const generate = metaGenerator({ apiKey: 'server-secret', fetchImpl: async (url, options) => {
+  const generate = modelGenerator({ apiKey: 'server-secret', fetchImpl: async (url, options) => {
     assert.equal(url, 'https://api.meta.ai/v1/responses');
     assert.equal(options.headers.authorization, 'Bearer server-secret');
     const body = JSON.parse(options.body);
@@ -19,7 +20,7 @@ test('Meta adapter sends exact text and permitted context, and extracts only spe
 });
 test('incomplete generation and rate limits are explicit failures', async () => {
   for (const [response, code] of [[Response.json({ status: 'incomplete' }), 'model_incomplete'], [new Response('', { status: 429 }), 'model_rate_limited']]) {
-    const generate = metaGenerator({ apiKey: 'secret', fetchImpl: async () => response });
+    const generate = modelGenerator({ apiKey: 'secret', fetchImpl: async () => response });
     await assert.rejects(generate({ profile: {}, input: 'Hi' }), { code });
   }
 });
@@ -39,7 +40,7 @@ test('Meta identity requires positive nonce validation and keeps app secret serv
 
 test('all acknowledged dialogue is sent once, with roles preserved', async () => {
   const history = [{kind:'player_input',text:'Earlier input'}, {kind:'npc_speech',text:'Earlier answer'}, {kind:'player_input',text:'Current input'}];
-  const generate=metaGenerator({apiKey:'secret',fetchImpl:async (_url, options)=>{
+  const generate=modelGenerator({apiKey:'secret',fetchImpl:async (_url, options)=>{
     const input=JSON.parse(options.body).input;
     assert.deepEqual(input.slice(1),[{role:'user',content:'Earlier input'},{role:'assistant',content:'Earlier answer'},{role:'user',content:'Current input'}]);
     return Response.json({status:'completed',output:[{type:'message',role:'assistant',content:[{type:'output_text',text:JSON.stringify(reply('Reply'))}]}]});
@@ -47,13 +48,13 @@ test('all acknowledged dialogue is sent once, with roles preserved', async () =>
   await generate({history,input:'Current input',profile:{}});
 });
 test('provider context overflow is explicit without disclosing provider details',async()=>{
-  const generate=metaGenerator({apiKey:'secret',fetchImpl:async()=>Response.json({error:{code:'context_length_exceeded',message:'private detail'}},{status:400})});
+  const generate=modelGenerator({apiKey:'secret',fetchImpl:async()=>Response.json({error:{code:'context_length_exceeded',message:'private detail'}},{status:400})});
   await assert.rejects(generate({input:'Hi',profile:{}}),{code:'context_limit',status:422});
 });
 
 test('action outcomes are context, never assistant speech, including failed actions', async () => {
   const event = {kind:'action_outcome',text:'Could not open the gate.',delivery:'failed'};
-  const generate = metaGenerator({apiKey:'secret',fetchImpl:async (_url, options)=>{
+  const generate = modelGenerator({apiKey:'secret',fetchImpl:async (_url, options)=>{
     const body = JSON.parse(options.body);
     assert.equal(JSON.parse(body.input[0].content).intent, 'Explain what happened');
     assert.deepEqual(body.input.slice(1), [{role:'developer',content:JSON.stringify(event)}]);

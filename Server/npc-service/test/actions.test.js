@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createService } from '../src/service.js';
 import { validateModelReply } from '../src/model-reply.js';
-import { metaGenerator } from '../src/meta.js';
+import { modelGenerator } from '../src/generation.js';
 
 const actions = [{id:'wave',description:'Wave to the player when appropriate.',targetId:'self'}, {id:'walk',description:'Walk to the table.',targetId:'table'}];
 const reply = (actionProposal = null, speech = '') => ({speech,relationshipProposal:{ruleId:null,evidence:null},actionProposal});
@@ -17,7 +17,7 @@ test('silent turns and action-only turns are valid, with exact catalog membershi
 
 test('Meta schema and context supply only this turn’s catalog and permit silent contextual actions', async () => {
   const expected = reply({actionId:'wave',targetId:'self'});
-  const generate = metaGenerator({apiKey:'test',fetchImpl:async (_url, options) => {
+  const generate = modelGenerator({apiKey:'test',fetchImpl:async (_url, options) => {
     const request = JSON.parse(options.body);
     assert.deepEqual(JSON.parse(request.input[0].content).actions, actions);
     const schema = request.text.format.schema.properties.actionProposal;

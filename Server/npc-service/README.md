@@ -178,7 +178,25 @@ Unity must reject obsolete correlation IDs and cancel playback on departure. Gen
 
 ## Provider reference
 
-The adapter uses `muse-spark-1.3`, strict JSON Schema, `reasoning.effort: minimal`, `stream: false`, and `store: false`. One call returns speech, a relationship proposal and a null action proposal. `NPC_MODEL_REASONING` overrides effort; there is no second interpretation call. Game logic validates and commits category effects before returning speech. Generic instructions live in `src/prompts/interaction.txt`; character criteria and category expression guidance arrive in authored profile configuration. See [US-05 configuration and boundaries](../../docs/US05Implementation.md), Meta's [Responses endpoint](https://dev.meta.ai/docs/api-reference/responses/create-response), [schemas](https://dev.meta.ai/docs/api-reference/responses/schemas), and [user proof verification](https://developers.meta.com/vr/documentation/native/ps-ownership/).
+The default Meta adapter uses `muse-spark-1.3`, strict JSON Schema, `reasoning.effort: minimal`, `stream: false`, and `store: false`. One call returns speech, a relationship proposal and an optional permitted action proposal. `NPC_MODEL_REASONING` overrides Meta effort; there is no second interpretation call. Game logic validates and commits category effects before returning speech. Shared prompt construction and provider requests live in `src/generation.js`; generic instructions live in `src/prompts/interaction.txt`. Character criteria and category expression guidance arrive in authored profile configuration. See [US-05 configuration and boundaries](../../docs/US05Implementation.md), Meta's [Responses endpoint](https://dev.meta.ai/docs/api-reference/responses/create-response), [schemas](https://dev.meta.ai/docs/api-reference/responses/schemas), and [user proof verification](https://developers.meta.com/vr/documentation/native/ps-ownership/).
+
+### Baseten Muse Spark Open
+
+Set these values in the server's private `.env`, keeping the existing `MODEL_API_KEY` for switching back to Meta:
+
+```dotenv
+NPC_MODEL_PROVIDER=baseten
+BASETEN_API_KEY=your-baseten-key
+NPC_MODEL=meta-models/muse-spark-open-1026
+```
+
+Run `npm run smoke:baseten` to send three synthetic NPC requests without changing stored game state, then restart the Node service with `npm start`. For an existing hosted Compose installation, update its `.env` and recreate the service with `docker compose --profile hosted up -d --build service` (include the AWS override when using that installation). The AWS installer preserves an existing `.env`; first-time setup still defaults to Meta.
+
+Baseten uses `https://inference.baseten.co/v1/responses`. The current adapter includes the exact response schema in its instructions and omits `text.format` and `reasoning`. Live tests of the exact hackathon model also accepted the full strict JSON schema, `reasoning.effort: low`, and `temperature: 0`; those tuning settings are not enabled in this adapter. Baseten documentation and model metadata disagree on some capabilities, so verify against the exact model endpoint. Replies must still pass the same JSON, relationship-evidence and permitted-action validation as Meta. Malformed or invalid replies fail the turn; there is no automatic retry or provider fallback. Calls retain the service's existing cancellation and 30-second timeout. The smoke test reports response time and valid replies; it does not prove character quality or production reliability.
+
+`AUTH_MODE`, Meta Platform credentials, Unity, ASR, TTS and persistence are independent of this provider selection. No Unity rebuild is needed when the service address stays the same. To return to Meta, set `NPC_MODEL_PROVIDER=meta`, remove `NPC_MODEL` (or set it to `muse-spark-1.3`), and restart the service. When `NPC_MODEL` is unset or blank, each provider selects its own default model.
+
+Provider references: [Responses API](https://docs.baseten.co/reference/inference-api/responses), [model capabilities](https://docs.baseten.co/inference/model-apis/overview), [reasoning controls](https://docs.baseten.co/inference/model-apis/reasoning).
 
 
 ## Persistent memory contract (US-03)

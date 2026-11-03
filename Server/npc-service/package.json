@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "node --env-file=.env src/main.js",
-    "test": "node --test"
+    "test": "node --test",
+    "smoke:baseten": "node --env-file=.env scripts/smoke-baseten.js"
   },
   "dependencies": {
     "pg": "8.16.3"
