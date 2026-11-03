@@ -235,4 +235,5 @@ MonoBehaviour:
   - priority: 0
     name: neutral
     conditions: []
-    greeting: You're alive. Good. Saves me the paperwork. What do you want?
+    greeting: Halt! Who goes there? No, don't answer, I can tell by the smell. What
+      do you want?
