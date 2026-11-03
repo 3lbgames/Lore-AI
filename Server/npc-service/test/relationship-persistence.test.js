@@ -39,13 +39,22 @@ test('relationship commits survive restart, retries and isolated NPC/campaign hi
   }
 });
 
-test('HTTP commits only after successful single generation and does not reward an evaluated retry', { skip: !process.env.TEST_DATABASE_URL }, async t => {
+test('HTTP reconsideration can select a newly available action without reassessing or duplicating the input', { skip: !process.env.TEST_DATABASE_URL }, async t => {
   const store = new PostgresMemoryStore(process.env.TEST_DATABASE_URL);
   await store.migrate();
   const campaignId = randomUUID();
   let generations = 0, fail = true;
+  const contexts = [];
   const server = createService({ authMode: 'local', localToken: 'test', memoryStore: store,
-    generate: async body => { generations++; if (fail) throw new Error('provider unavailable'); return {speech:'Thanks for believing in me.',relationshipProposal:body.eligibleRules.length?{ruleId:'support',evidence:body.input}:{ruleId:null,evidence:null},actionProposal:null}; }
+    generate: async body => {
+      generations++; contexts.push(body);
+      if (fail) throw new Error('provider unavailable');
+      return {
+        speech: body.actions.length ? "I'll show you my plans." : 'Thanks for believing in me.',
+        relationshipProposal: body.eligibleRules.length ? {ruleId:'support',evidence:body.input} : {ruleId:null,evidence:null},
+        actionProposal: body.actions.length ? {actionId:body.actions[0].id,targetId:body.actions[0].targetId} : null
+      };
+    }
   });
   await new Promise(r => server.listen(0, '127.0.0.1', r));
   t.after(async () => {
@@ -71,8 +80,26 @@ test('HTTP commits only after successful single generation and does not reward a
   assert.equal(reply.statusCode, 200);
   assert.equal(reply.relationship.values[0].value, 10);
   assert.equal(generations, 2);
-  const retry = await post('responses',{...request,expectedRevision:reply.revision});
+  assert.equal(reply.actionProposal, null);
+  const actions = [{id:'show-plans',targetId:'plans',description:'Show the player my business plans.'}];
+  const retry = await post('responses',{...request,expectedRevision:reply.revision,actions});
   assert.equal(retry.statusCode,200);
+  assert.equal(retry.text,"I'll show you my plans.");
+  assert.deepEqual(retry.actionProposal,{actionId:'show-plans',targetId:'plans'});
   assert.deepEqual(retry.relationship,reply.relationship);
+  assert.equal(retry.revision,reply.revision);
   assert.equal(generations,3);
+  const reconsidered = contexts.at(-1);
+  assert.deepEqual(reconsidered.relationship,reply.relationship);
+  assert.deepEqual(reconsidered.eligibleRules,[]);
+  assert.deepEqual(reconsidered.actions,actions);
+  assert.equal(reconsidered.turnId,base.turnId);
+  assert.equal(reconsidered.history.length,1);
+  assert.equal(reconsidered.history[0].text,input);
+  const persisted = await post('memory/load');
+  assert.equal(persisted.revision,reply.revision);
+  assert.deepEqual(persisted.relationship,reply.relationship);
+  assert.equal(persisted.relationship.experiences.length,1);
+  assert.equal(persisted.relationship.ruleUsage[0].applications,1);
+  assert.equal(persisted.history.length,1);
 });
