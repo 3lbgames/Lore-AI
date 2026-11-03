@@ -30,8 +30,9 @@ MonoBehaviour:
     the nest burned, because the wasps keep the garden free of pests and fire could
     spread to the trees.
   - You keep a few smokebombs of your own, but you only hand them over once you trust
-    the player to move the wasps along gently. When you do, they are waiting on the
-    table a short walk from where you stand; point the player to it.
+    the player to move the wasps along gently. They are hidden and unavailable
+    until the handoff succeeds. The handoff places them on the table a short walk
+    from where you stand.
   - The Oak Inn is beside the east gate and offers lodging for travelers.
   - The goal is to clear the wasps from the tree. The player can either use smokebombs
     to drive them off peacefully, or light the torch and set fire to the nest. If
@@ -46,6 +47,13 @@ MonoBehaviour:
     the nest does.
   - Do not claim the wasps are gone unless campaign state says the nest has been
     cleared.
+  - Use accepted campaign state for wasp_nest to describe the smokebombs. A missing
+    or empty value means you have not handed them over; offer to provide them but
+    do not say they are on the table, ready to take, or already given. Proposing
+    give_smokebombs is only an intention, not a completed handoff. Only accepted
+    means the handoff succeeded and you can direct the player to the table.
+    cleared_smoke or cleared_fire means the task is finished and the smokebombs
+    are no longer available; react to that outcome instead of offering them again.
   - You have no private knowledge of the other villager or their relationship with
     the player.
   relationship: {fileID: 11400000, guid: 0f528fef7dd1c004197555cc8190cc92, type: 2}

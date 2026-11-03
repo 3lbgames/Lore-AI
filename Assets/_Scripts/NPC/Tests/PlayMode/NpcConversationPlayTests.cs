@@ -53,6 +53,92 @@ public class NpcConversationPlayTests
     }
 
     [UnityTest, Category("NpcRoutine")]
+    public IEnumerator WorldReactionRetriesTransientFailureWithoutLeaving()
+    {
+        var npc = GameObject.Find("ConversationNpc");
+        var director = npc.GetComponent("NpcCharacterDirector");
+        yield return WaitFor(() => Accepting(director), 5, "initial greeting completes");
+        var inbox = npc.AddComponent(Type.GetType("NpcWorldEventInbox, Assembly-CSharp", true));
+        fixture.Service.NpcFailuresRemaining = 1;
+        Invoke(inbox, "Post", "wasps-retry", "React to the completed task.", "The wasps moved along unharmed.");
+        yield return WaitFor(() => fixture.Service.NpcResponseRequests == 2 && Accepting(director), 5,
+            "transient failure retries automatically while the player stays nearby");
+        Assert.That(inbox.GetType().GetMethod("Peek").Invoke(inbox, null), Is.Null);
+        Assert.That(fixture.Service.LastNpcIntent, Is.EqualTo("React to the completed task."));
+    }
+
+    [UnityTest, Category("NpcRoutine")]
+    public IEnumerator WorldReactionDepartureCancelsPendingRetry()
+    {
+        var npc = GameObject.Find("ConversationNpc");
+        var director = npc.GetComponent("NpcCharacterDirector");
+        yield return WaitFor(() => Accepting(director), 5, "initial greeting completes");
+        var inbox = npc.AddComponent(Type.GetType("NpcWorldEventInbox, Assembly-CSharp", true));
+        var proximity = npc.GetComponent("NpcProximityTrigger");
+        proximity.GetType().GetField("departureGraceSeconds").SetValue(proximity, 0f);
+        fixture.Service.FailNpcResponses = true;
+        Invoke(inbox, "Post", "wasps-depart", "React to the completed task.", "The wasps moved along unharmed.");
+        var proxy = npc.GetComponent("NpcProxyClient");
+        yield return WaitFor(() => proxy.GetType().GetProperty("Error").GetValue(proxy) != null, 5, "failed response schedules retry");
+        GameObject.Find("Player").transform.position = new Vector3(100, 0, 0);
+        yield return WaitFor(() => !(bool)director.GetType().GetProperty("InteractionOpen").GetValue(director), 5, "player leaves");
+        yield return new WaitForSecondsRealtime(.8f);
+        Assert.That(fixture.Service.NpcResponseRequests, Is.EqualTo(1), "Departure cancels the automatic retry");
+        Assert.That(inbox.GetType().GetMethod("Peek").Invoke(inbox, null), Is.Not.Null);
+    }
+
+    [UnityTest, Category("NpcRoutine")]
+    public IEnumerator WorldReactionRetriesSpeechWithoutRegeneratingResponse()
+    {
+        var npc = GameObject.Find("ConversationNpc");
+        var director = npc.GetComponent("NpcCharacterDirector");
+        yield return WaitFor(() => Accepting(director), 5, "initial greeting completes");
+        var inbox = npc.AddComponent(Type.GetType("NpcWorldEventInbox, Assembly-CSharp", true));
+        var speech = npc.GetComponentInChildren(Type.GetType("NpcTestSpeech, Assembly-CSharp"));
+        var type = speech.GetType();
+        int starts = (int)type.GetField("Starts").GetValue(speech);
+        int cancellations = (int)type.GetField("Cancellations").GetValue(speech);
+        type.GetField("Duration").SetValue(speech, 100f);
+        type.GetField("StartPlayback").SetValue(speech, false);
+        type.GetField("speechStartTimeout").SetValue(speech, .1f);
+        Invoke(inbox, "Post", "wasps-audio", "React to the completed task.", "The wasps moved along unharmed.");
+        yield return WaitFor(() => (int)type.GetField("Cancellations").GetValue(speech) > cancellations, 5, "first speech attempt times out");
+        type.GetField("Duration").SetValue(speech, .05f);
+        type.GetField("StartPlayback").SetValue(speech, true);
+        yield return WaitFor(() => inbox.GetType().GetMethod("Peek").Invoke(inbox, null) == null && Accepting(director), 5, "speech retry succeeds");
+        Assert.That((int)type.GetField("Starts").GetValue(speech), Is.EqualTo(starts + 2));
+        Assert.That(fixture.Service.NpcResponseRequests, Is.EqualTo(1), "Audio retry must not regenerate dialogue or restart its action branch");
+    }
+
+    [UnityTest, Category("NpcRoutine")]
+    public IEnumerator FailedWorldReactionStaysQueuedWithoutRepeatingGreeting()
+    {
+        var npc = GameObject.Find("ConversationNpc");
+        var director = npc.GetComponent("NpcCharacterDirector");
+        yield return WaitFor(() => Accepting(director), 5, "initial greeting completes");
+        var inbox = npc.AddComponent(Type.GetType("NpcWorldEventInbox, Assembly-CSharp", true));
+        var speech = npc.GetComponentInChildren(Type.GetType("NpcTestSpeech, Assembly-CSharp"));
+        var lastText = speech.GetType().GetField("LastText");
+        lastText.SetValue(speech, "reaction sentinel");
+        fixture.Service.FailNpcResponses = true;
+        Invoke(inbox, "Post", "wasps-completed", "React to the completed task.", "The wasps moved along unharmed.");
+        yield return WaitFor(() => fixture.Service.NpcResponseRequests > 0, 5, "reaction requested");
+        yield return WaitFor(() => Accepting(director), 5, "failed reaction returns to listening");
+        Assert.That(inbox.GetType().GetMethod("Peek").Invoke(inbox, null), Is.Not.Null,
+            "A failed reaction must remain queued for the next encounter.");
+        Assert.That(lastText.GetValue(speech), Is.EqualTo("reaction sentinel"),
+            "A failed task reaction must not fall through to the intro greeting.");
+        Assert.That(fixture.Service.NpcResponseRequests, Is.EqualTo(2), "Stop after one automatic retry");
+        fixture.Service.FailNpcResponses = false;
+        var player = GameObject.Find("Player");
+        player.transform.position = new Vector3(100, 0, 0);
+        yield return WaitFor(() => !(bool)director.GetType().GetProperty("InteractionOpen").GetValue(director), 5, "leave interaction");
+        player.transform.position = new Vector3(2, 1.7f, 0);
+        yield return WaitFor(() => inbox.GetType().GetMethod("Peek").Invoke(inbox, null) == null && Accepting(director), 5, "reaction succeeds on return");
+        Assert.That(fixture.Service.LastNpcIntent, Is.EqualTo("React to the completed task."));
+    }
+
+    [UnityTest, Category("NpcRoutine")]
     public IEnumerator FailedReturningGreetingUsesRelationshipFallbackAndRecordsSpeech()
     {
         var npc = GameObject.Find("ConversationNpc");
