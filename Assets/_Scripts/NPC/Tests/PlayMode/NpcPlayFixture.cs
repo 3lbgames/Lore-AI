@@ -91,6 +91,9 @@ internal sealed class NpcTestService : IDisposable
     readonly Task worker;
     public volatile bool HoldPlayerResponses;
     public volatile bool FailNpcResponses;
+    public volatile int NpcFailuresRemaining;
+    public volatile int NpcResponseRequests;
+    public volatile string LastNpcIntent;
     public int Trust;
     public volatile string LastRecordedSpeech;
     public string PlayerReply = "The inn is east of here.";
@@ -143,9 +146,10 @@ internal sealed class NpcTestService : IDisposable
                 body.relationship = new Relationship { values = new[] { new RelationshipValue { category = "trust", value = Trust } } };
                 if (route == "/v1/responses")
                 {
+                    if (body.npcInitiated) { LastNpcIntent = body.intent; NpcResponseRequests++; }
                     body.text = body.npcInitiated ? "Hello, traveler." : PlayerReply;
-                    if (body.npcInitiated && FailNpcResponses)
-                    { context.Response.StatusCode = 502; body.status = "failed"; body.error = "upstream_unavailable"; }
+                    if (body.npcInitiated && (FailNpcResponses || NpcFailuresRemaining > 0))
+                    { if (NpcFailuresRemaining > 0) NpcFailuresRemaining--; context.Response.StatusCode = 502; body.status = "failed"; body.error = "upstream_unavailable"; }
                     if (!body.npcInitiated && ActionId != null)
                         body.actionProposal = new ActionProposal { actionId = ActionId, targetId = ActionTarget };
                 }
@@ -173,7 +177,7 @@ internal sealed class NpcTestService : IDisposable
     [Serializable] class Envelope
     {
         public int version = 1, revision, expectedRevision;
-        public string sessionId, interactionId, turnId, worldId, campaignId, npcId, text, error, status = "completed";
+        public string sessionId, interactionId, turnId, worldId, campaignId, npcId, text, error, intent, status = "completed";
         public bool hasSpoken, npcInitiated;
         public MemoryEvent @event;
         public MemoryEvent[] history;

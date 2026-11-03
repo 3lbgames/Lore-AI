@@ -1056,7 +1056,7 @@ MonoBehaviour:
         EventId:
           rid: 1936917339011547301
     - rid: 1936917339011547995
-      type: {class: NpcTurnScope, ns: , asm: Assembly-CSharp}
+      type: {class: NpcWorldEventTurnScope, ns: , asm: Assembly-CSharp}
       data:
         ID:
           m_Value0: 17305595434870607468
@@ -1190,7 +1190,7 @@ MonoBehaviour:
         SpeechError:
           rid: 1936917339011547279
     - rid: 1936917339011548004
-      type: {class: LoadNpcGameState, ns: , asm: Assembly-CSharp}
+      type: {class: RetryNpcGameState, ns: , asm: Assembly-CSharp}
       data:
         ID:
           m_Value0: 14672536460730349885
@@ -1270,7 +1270,7 @@ MonoBehaviour:
         - rid: 1936917339011548017
         m_RegisteredObservers: []
     - rid: 1936917339011548010
-      type: {class: RequestNpcResponse, ns: , asm: Assembly-CSharp}
+      type: {class: RetryNpcResponse, ns: , asm: Assembly-CSharp}
       data:
         ID:
           m_Value0: 13192107405539510991
@@ -1529,7 +1529,7 @@ MonoBehaviour:
         SpeechError:
           rid: 1936917339011547279
     - rid: 1936917339011548026
-      type: {class: SpeakText, ns: , asm: Assembly-CSharp}
+      type: {class: RetryNpcSpeech, ns: , asm: Assembly-CSharp}
       data:
         ID:
           m_Value0: 6202632884939635874
@@ -2530,6 +2530,21 @@ MonoBehaviour:
       Tooltip: 
     NamedChildren: []
     IsPlaceholder: 0
+  - Name: React To NPC World Event
+    Story: React to [Character] queued world event
+    RuntimeTypeString: NpcWorldEventTurnScope, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    RuntimeTypeID:
+      m_Value0: 5570021728005848277
+      m_Value1: 14669176433401595540
+    Variables:
+    - Name: Character
+      Type:
+        m_SerializableType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      Tooltip: 
+    NamedChildren: []
+    IsPlaceholder: 0
   - Name: Take NPC World Event
     Story: 'Take [Character] world event as [Intent] in [Situation]'
     RuntimeTypeString: TakeNpcWorldEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
@@ -2570,7 +2585,31 @@ MonoBehaviour:
     Variables: []
     NamedChildren: []
     IsPlaceholder: 0
-  m_Blackboards: []
+  - Name: Generate NPC Response With One Retry
+    Story: 'Generate [Response] for [Character] with [Intent] in [Situation]'
+    RuntimeTypeString: RetryNpcResponse, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    RuntimeTypeID:
+      m_Value0: 11836730597583696193
+      m_Value1: 10547562370799531649
+    Variables:
+    - Name: Speak NPC Text With One Retry
+    Story: '[Speaker] speaks [Text]'
+    RuntimeTypeString: RetryNpcSpeech, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    RuntimeTypeID:
+      m_Value0: 7875797610129271157
+      m_Value1: 10434526108775111557
+    Variables:
+    - Name: Load NPC Game State With One Retry
+    Story: Load [Character] campaign facts
+    RuntimeTypeString: RetryNpcGameState, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    RuntimeTypeID:
+      m_Value0: 15224554829593019048
+      m_Value1: 5220039703891507105
+    Variables:
+    m_Blackboards: []
   m_MainBlackboardAuthoringAsset: {fileID: 1063855464061909212}
   m_CommandBuffer:
     m_Commands: []
@@ -3449,11 +3488,11 @@ MonoBehaviour:
         - rid: 1936917339011547610
         - rid: 1936917339011547611
         NodeType:
-          m_SerializableType: NpcTurnScope, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          m_SerializableType: NpcWorldEventTurnScope, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
             PublicKeyToken=null
         NodeTypeID:
-          m_Value0: 17601956929182394497
-          m_Value1: 3515886964481892791
+          m_Value0: 5570021728005848277
+          m_Value1: 14669176433401595540
         m_FieldValues:
         - rid: 1936917339011547612
     - rid: 1936917339011547419
@@ -3468,11 +3507,11 @@ MonoBehaviour:
         - rid: 1936917339011547613
         - rid: 1936917339011547614
         NodeType:
-          m_SerializableType: LoadNpcGameState, Assembly-CSharp, Version=0.0.0.0,
+          m_SerializableType: RetryNpcGameState, Assembly-CSharp, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         NodeTypeID:
-          m_Value0: 10828079163953920675
-          m_Value1: 9080081857645822598
+          m_Value0: 15224554829593019048
+          m_Value1: 5220039703891507105
         m_FieldValues:
         - rid: 1936917339011547615
     - rid: 1936917339011547420
@@ -3487,11 +3526,11 @@ MonoBehaviour:
         - rid: 1936917339011547616
         - rid: 1936917339011547617
         NodeType:
-          m_SerializableType: RequestNpcResponse, Assembly-CSharp, Version=0.0.0.0,
+          m_SerializableType: RetryNpcResponse, Assembly-CSharp, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         NodeTypeID:
-          m_Value0: 3261625689692022694
-          m_Value1: 11441752126131676854
+          m_Value0: 11836730597583696193
+          m_Value1: 10547562370799531649
         m_FieldValues:
         - rid: 1936917339011547618
         - rid: 1936917339011547619
@@ -3572,11 +3611,11 @@ MonoBehaviour:
         - rid: 1936917339011547637
         - rid: 1936917339011547638
         NodeType:
-          m_SerializableType: SpeakText, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          m_SerializableType: RetryNpcSpeech, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
             PublicKeyToken=null
         NodeTypeID:
-          m_Value0: 7948530595892505155
-          m_Value1: 6146439100547541918
+          m_Value0: 7875797610129271157
+          m_Value1: 10434526108775111557
         m_FieldValues:
         - rid: 1936917339011547639
         - rid: 1936917339011547640

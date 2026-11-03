@@ -1831,7 +1831,7 @@ MonoBehaviour:
         EventId:
           rid: 1936917359087845393
     - rid: 1936917359087845409
-      type: {class: NpcTurnScope, ns: , asm: Assembly-CSharp}
+      type: {class: NpcWorldEventTurnScope, ns: , asm: Assembly-CSharp}
       data:
         ID:
           m_Value0: 17305595434870607468
@@ -1965,7 +1965,7 @@ MonoBehaviour:
         SpeechError:
           rid: 1936917359087845382
     - rid: 1936917359087845418
-      type: {class: LoadNpcGameState, ns: , asm: Assembly-CSharp}
+      type: {class: RetryNpcGameState, ns: , asm: Assembly-CSharp}
       data:
         ID:
           m_Value0: 14672536460730349885
@@ -2045,7 +2045,7 @@ MonoBehaviour:
         - rid: 1936917359087845431
         m_RegisteredObservers: []
     - rid: 1936917359087845424
-      type: {class: RequestNpcResponse, ns: , asm: Assembly-CSharp}
+      type: {class: RetryNpcResponse, ns: , asm: Assembly-CSharp}
       data:
         ID:
           m_Value0: 13192107405539510991
@@ -2304,7 +2304,7 @@ MonoBehaviour:
         SpeechError:
           rid: 1936917359087845382
     - rid: 1936917359087845440
-      type: {class: SpeakText, ns: , asm: Assembly-CSharp}
+      type: {class: RetryNpcSpeech, ns: , asm: Assembly-CSharp}
       data:
         ID:
           m_Value0: 6202632884939635874
