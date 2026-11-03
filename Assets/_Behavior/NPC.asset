@@ -1231,6 +1231,9 @@ MonoBehaviour:
         m_Value: The player has just approached you again and has not spoken in this
           encounter. Reflect your relationship and prior conversation naturally.
           Do not assume a new player utterance or repeat your first introduction.
+          Write a fresh, natural greeting for this encounter. Vary the wording
+          from your recent greetings while staying true to your character,
+          relationship, and what has actually happened.
     - rid: 1936917339011548145
       type: {class: BehaviorGraphModule, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
