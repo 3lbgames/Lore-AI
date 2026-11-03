@@ -8,19 +8,19 @@ using UnityEngine;
 public partial class NpcTurnScope : Modifier
 {
     [SerializeReference] public BlackboardVariable<GameObject> Character;
-    private NpcCharacterDirector director;
+    public NpcCharacterDirector Director {  get; set; }
     private int revision;
     protected override Status OnStart()
     {
-        director = Character.Value ? Character.Value.GetComponent<NpcCharacterDirector>() : null;
-        if (!director || Child == null) return Status.Failure;
-        revision = director.TurnRevision;
+        Director = Character.Value ? Character.Value.GetComponent<NpcCharacterDirector>() : null;
+        if (!Director || Child == null) return Status.Failure;
+        revision = Director.TurnRevision;
         var status = StartNode(Child);
         return status == Status.Success || status == Status.Failure ? status : Status.Running;
     }
     protected override Status OnUpdate()
     {
-        if (!director || director.TurnRevision != revision) { EndNode(Child); return Status.Failure; }
+        if (!Director || Director.TurnRevision != revision) { EndNode(Child); return Status.Failure; }
         return Child.CurrentStatus == Status.Success || Child.CurrentStatus == Status.Failure ? Child.CurrentStatus : Status.Running;
     }
 }

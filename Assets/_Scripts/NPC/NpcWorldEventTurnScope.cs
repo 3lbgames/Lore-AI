@@ -1,13 +1,11 @@
 using System;
 using Unity.Behavior;
 using Unity.Properties;
-using UnityEngine;
 
 [Serializable, GeneratePropertyBag]
 [NodeDescription(name: "React To NPC World Event", story: "React to [Character] queued world event", category: "NPC/Events", id: "d5fcfe1840b14c4d94066fdc3e6293cb")]
 public partial class NpcWorldEventTurnScope : NpcTurnScope
 {
-    NpcCharacterDirector director;
     NpcWorldEventInbox inbox;
     string eventId;
     int revision;
@@ -17,11 +15,11 @@ public partial class NpcWorldEventTurnScope : NpcTurnScope
     protected override Status OnStart()
     {
         started = false;
-        director = Character.Value ? Character.Value.GetComponent<NpcCharacterDirector>() : null;
+        Director = Character.Value ? Character.Value.GetComponent<NpcCharacterDirector>() : null;
         inbox = Character.Value ? Character.Value.GetComponent<NpcWorldEventInbox>() : null;
         eventId = inbox ? inbox.Peek()?.eventId : null;
-        if (eventId == null || !director || !director.profile || Child == null) return Status.Failure;
-        revision = director.TurnRevision;
+        if (eventId == null || !Director || !Director.profile || Child == null) return Status.Failure;
+        revision = Director.TurnRevision;
         memoryRetry.Start(LoadMemory, CheckMemory, null);
         return Advance();
     }
@@ -30,7 +28,7 @@ public partial class NpcWorldEventTurnScope : NpcTurnScope
 
     Status Advance()
     {
-        if (!director || director.TurnRevision != revision || !inbox || inbox.Peek()?.eventId != eventId)
+        if (!Director || Director.TurnRevision != revision || !inbox || inbox.Peek()?.eventId != eventId)
         {
             if (started) EndNode(Child);
             return Status.Success;
@@ -48,12 +46,12 @@ public partial class NpcWorldEventTurnScope : NpcTurnScope
 
     Status LoadMemory()
     {
-        if (!director.Memory.IsBusy && (!director.Memory.Loaded || director.Memory.Error != null)) director.Memory.Load();
+        if (!Director.Memory.IsBusy && (!Director.Memory.Loaded || Director.Memory.Error != null)) Director.Memory.Load();
         return CheckMemory();
     }
 
-    Status CheckMemory() => director.Memory.IsBusy ? Status.Running :
-        director.Memory.Loaded && director.Memory.Error == null ? Status.Success : Status.Failure;
+    Status CheckMemory() => Director.Memory.IsBusy ? Status.Running :
+        Director.Memory.Loaded && Director.Memory.Error == null ? Status.Success : Status.Failure;
 
     Status Complete(Status status)
     {
