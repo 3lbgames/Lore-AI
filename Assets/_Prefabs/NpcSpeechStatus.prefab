@@ -148,12 +148,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NpcSpeechStatusView
   input: {fileID: 0}
   panel: {fileID: 583624618843283216}
+  wrapText: 1
+  wrapAt: 6
   textUI: {fileID: 934831610097505036}
   imageUI: {fileID: 443019329679694226}
   cameraOffset: {x: 0, y: -0.18, z: 0.7}
   recordingColor: {r: 1, g: 0.35, b: 0.35, a: 1}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   failureDuration: 5
+  transcriptDuration: 8
+  transcriptPrefix: 'You: '
   recordingText: RECORDING
   releaseText: Release right trigger to send
   unavailableText: Microphone status unavailable
