@@ -15,41 +15,51 @@ MonoBehaviour:
   rules:
     categories:
     - id: trust
-      description: "Confidence that this player is dependable and sincere."
-      expression: "With more trust, speak openly and confidently about relying on the player; with less, remain cautious. Do not grant permissions through dialogue."
+      description: Confidence that this player is dependable and sincere.
+      expression: With more trust, speak openly and confidently about relying on
+        the player; with less, remain cautious. Do not grant permissions through
+        dialogue.
       initial: 0
       min: -100
       max: 100
     - id: respect
-      description: "Regard for this player's judgment, competence, and consideration."
-      expression: "With more respect, take their suggestions seriously; with less, question poor judgment without becoming abusive."
+      description: Regard for this player's judgment, competence, and consideration.
+      expression: With more respect, take their suggestions seriously; with less,
+        question poor judgment without becoming abusive.
       initial: 0
       min: -100
       max: 100
     - id: affection
-      description: "Personal warmth and fondness toward this player."
-      expression: "With more affection, be warmer and pleased to see them; with less, be more reserved."
+      description: Personal warmth and fondness toward this player.
+      expression: With more affection, be warmer and pleased to see them; with less,
+        be more reserved.
       initial: 0
       min: -100
       max: 100
     - id: fear
-      description: "Apprehension about this player and their behavior."
-      expression: "With more fear, sound guarded and avoid provoking them; low fear alone does not imply trust."
+      description: Apprehension about this player and their behavior.
+      expression: With more fear, sound guarded and avoid provoking them; low fear
+        alone does not imply trust.
       initial: 0
       min: 0
       max: 100
     - id: annoyance
-      description: "Current accumulated irritation toward this player."
-      expression: "With more annoyance, be brief and impatient; low annoyance alone does not imply affection."
+      description: Current accumulated irritation toward this player.
+      expression: With more annoyance, be brief and impatient; low annoyance alone
+        does not imply affection.
       initial: 0
       min: 0
       max: 100
     rules:
     - id: business-encouragement
       source: dialogue
-      condition: "The player sincerely supports my hopes, confidence, or efforts, including my aspiration to start a delivery business. A question alone, ambiguous remarks, sarcasm, negation, or a claim of completed work is not encouragement. Use practical-start instead when they offer a concrete constructive plan."
-      meaning: "The player offered sincere encouragement for my hopes and efforts."
-      evidenceKey: ""
+      condition: The player sincerely supports my hopes, confidence, or efforts,
+        including my aspiration to start a woodworking business. A question alone,
+        ambiguous remarks, sarcasm, negation, or a claim of completed work is not
+        encouragement. Use practical-start instead when they offer a concrete constructive
+        plan.
+      meaning: The player offered sincere encouragement for my hopes and efforts.
+      evidenceKey: 
       effects:
       - category: trust
         delta: 10
@@ -60,9 +70,11 @@ MonoBehaviour:
         cooldownSeconds: 300
     - id: practical-start
       source: dialogue
-      condition: "The player offers a concrete constructive idea for starting my delivery business small or working with local residents. Only select when the utterance goes beyond generic encouragement. Claimed completed work is not advice."
-      meaning: "The player offered constructive advice for a practical start."
-      evidenceKey: ""
+      condition: The player offers a concrete constructive idea for starting my woodworking
+        business small or working with local residents. Only select when the utterance
+        goes beyond generic encouragement. Claimed completed work is not advice.
+      meaning: The player offered constructive advice for a practical start.
+      evidenceKey: 
       effects:
       - category: trust
         delta: 10
@@ -73,9 +85,12 @@ MonoBehaviour:
         cooldownSeconds: 300
     - id: belittled-ambition
       source: dialogue
-      condition: "The player clearly belittles my ability, hopes, or efforts, including calling my delivery-business ambition worthless. Respectful caution about safety or a small start, quoted insults they reject, and sarcasm aimed at an insult are not belittling."
-      meaning: "The player belittled my hopes or efforts."
-      evidenceKey: ""
+      condition: The player clearly belittles my ability, hopes, or efforts, including
+        calling my woodworking business ambition worthless. Respectful caution about
+        safety or a small start, quoted insults they reject, and sarcasm aimed at
+        an insult are not belittling.
+      meaning: The player belittled my hopes or efforts.
+      evidenceKey: 
       effects:
       - category: trust
         delta: -10
@@ -86,9 +101,10 @@ MonoBehaviour:
         cooldownSeconds: 300
     - id: birthday-occasion-1
       source: dialogue
-      condition: "The player offers sincere birthday wishes to me in the authored birthday occasion. Reject sarcasm or negation."
-      meaning: "The player wished me well on my birthday."
-      evidenceKey: ""
+      condition: The player offers sincere birthday wishes to me in the authored
+        birthday occasion. Reject sarcasm or negation.
+      meaning: The player wished me well on my birthday.
+      evidenceKey: 
       effects:
       - category: trust
         delta: 10
@@ -100,21 +116,20 @@ MonoBehaviour:
   greetings:
   - priority: 100
     name: annoyed
-    greeting: "Oh. What is it?"
     conditions:
     - category: annoyance
       comparison: gte
       value: 10
+    greeting: Oh. What is it?
   - priority: 50
     name: wary
-    greeting: "Oh. What is it?"
     conditions:
     - category: trust
       comparison: lt
       value: 0
+    greeting: Oh. What is it?
   - priority: 40
     name: trusted
-    greeting: "My friend! I always look forward to seeing you."
     conditions:
     - category: trust
       comparison: gte
@@ -122,9 +137,9 @@ MonoBehaviour:
     - category: annoyance
       comparison: lt
       value: 10
+    greeting: My friend! I always look forward to seeing you.
   - priority: 20
     name: friendly
-    greeting: "You came back! Your encouragement means a lot."
     conditions:
     - category: trust
       comparison: gte
@@ -132,7 +147,8 @@ MonoBehaviour:
     - category: annoyance
       comparison: lt
       value: 10
+    greeting: You came back! Your encouragement means a lot.
   - priority: 0
     name: neutral
-    greeting: ""
     conditions: []
+    greeting: 

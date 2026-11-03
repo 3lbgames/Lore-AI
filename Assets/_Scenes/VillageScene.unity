@@ -18003,7 +18003,7 @@ MonoBehaviour:
   - category: trust
     comparison: gte
     value: 15
-  availableText: "Mira's first delivery \u2014 earn her trust"
+  availableText: "Mira's first sale \u2014 earn her trust"
   acceptedText: Deliver Mira's cup to the Barbarian
   completedText: "Delivery completed \u2014 the Barbarian has the cup"
   completionDescription: The player completed my first delivery by giving my cup
