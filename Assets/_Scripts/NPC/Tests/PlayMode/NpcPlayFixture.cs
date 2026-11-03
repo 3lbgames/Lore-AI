@@ -95,6 +95,10 @@ internal sealed class NpcTestService : IDisposable
     public volatile int NpcResponseRequests;
     public volatile string LastNpcIntent;
     public int Trust;
+    public int? TrustAfterPlayerResponse;
+    public volatile int PlayerResponseRequests;
+    public bool ProposeOnlyOfferedActions, FailFollowUp, HoldFollowUp;
+    public readonly List<string> PlayerRequests = new List<string>();
     public volatile string LastRecordedSpeech;
     public string PlayerReply = "The inn is east of here.";
     public string ActionId, ActionTarget;
@@ -123,6 +127,14 @@ internal sealed class NpcTestService : IDisposable
                 var context = await listener.GetContextAsync();
                 var body = JsonUtility.FromJson<Envelope>(await new StreamReader(context.Request.InputStream).ReadToEndAsync());
                 string route = context.Request.Url.AbsolutePath;
+                if (route == "/v1/responses" && !body.npcInitiated)
+                {
+                    lock (PlayerRequests) PlayerRequests.Add(JsonUtility.ToJson(body));
+                    if (PlayerResponseRequests >= 1 && HoldFollowUp)
+                    { lock (held) held.Add(context); PlayerResponseRequests++; continue; }
+                    PlayerResponseRequests++;
+                    if (TrustAfterPlayerResponse.HasValue) Trust = TrustAfterPlayerResponse.Value;
+                }
                 // Openings must complete so the graph can reach listening. Only player replies are held.
                 if (route == "/v1/responses" && !body.npcInitiated && HoldPlayerResponses)
                 { lock (held) held.Add(context); continue; }
@@ -150,7 +162,10 @@ internal sealed class NpcTestService : IDisposable
                     body.text = body.npcInitiated ? "Hello, traveler." : PlayerReply;
                     if (body.npcInitiated && (FailNpcResponses || NpcFailuresRemaining > 0))
                     { if (NpcFailuresRemaining > 0) NpcFailuresRemaining--; context.Response.StatusCode = 502; body.status = "failed"; body.error = "upstream_unavailable"; }
-                    if (!body.npcInitiated && ActionId != null)
+                    if (!body.npcInitiated && PlayerResponseRequests > 1 && FailFollowUp)
+                    { context.Response.StatusCode = 502; body.status = "failed"; body.error = "upstream_unavailable"; }
+                    if (!body.npcInitiated && ActionId != null && (!ProposeOnlyOfferedActions ||
+                        (body.actions ?? Array.Empty<ActionOption>()).Any(a => a.id == ActionId && a.targetId == ActionTarget)))
                         body.actionProposal = new ActionProposal { actionId = ActionId, targetId = ActionTarget };
                 }
                 byte[] bytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(body));
@@ -163,6 +178,21 @@ internal sealed class NpcTestService : IDisposable
         catch (HttpListenerException) when (!listener.IsListening) { }
         catch (ObjectDisposedException) { }
     }
+    public void ReleaseHeldResponse(string text, string actionId, string targetId)
+    {
+        lock (held)
+        {
+            var context = held[0]; held.RemoveAt(0);
+            Envelope body;
+            lock (PlayerRequests) body = JsonUtility.FromJson<Envelope>(PlayerRequests[PlayerRequests.Count - 1]);
+            body.text = text; body.revision = body.expectedRevision;
+            body.relationship = new Relationship { values = new[] { new RelationshipValue { category = "trust", value = Trust } } };
+            body.actionProposal = new ActionProposal { actionId = actionId, targetId = targetId };
+            byte[] bytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(body));
+            context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
+            context.Response.OutputStream.Write(bytes, 0, bytes.Length); context.Response.Close();
+        }
+    }
     public void Dispose()
     {
         listener.Stop();
@@ -173,14 +203,16 @@ internal sealed class NpcTestService : IDisposable
     [Serializable] class MemoryEvent { public string eventId, turnId, kind, text, delivery; }
     [Serializable] class RelationshipValue { public string category; public int value; }
     [Serializable] class Relationship { public RelationshipValue[] values; }
+    [Serializable] class ActionOption { public string id, targetId; }
     [Serializable] class ActionProposal { public string actionId, targetId; }
     [Serializable] class Envelope
     {
         public int version = 1, revision, expectedRevision;
-        public string sessionId, interactionId, turnId, worldId, campaignId, npcId, text, error, intent, status = "completed";
+        public string sessionId, interactionId, turnId, worldId, campaignId, npcId, input, text, error, intent, status = "completed";
         public bool hasSpoken, npcInitiated;
         public MemoryEvent @event;
         public MemoryEvent[] history;
+        public ActionOption[] actions;
         public ActionProposal actionProposal;
         public Relationship relationship;
     }
