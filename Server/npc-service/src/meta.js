@@ -60,7 +60,11 @@ export function metaGenerator(options) {
     const schema = {type:'object',properties:{speech:{type:'string'},relationshipProposal:{type:'object',properties:{ruleId:{type:['string','null'],enum:[...rules.map(r=>r.id),null]},evidence:{type:['string','null']}},required:['ruleId','evidence'],additionalProperties:false},actionProposal:actionSchema},required:['speech','relationshipProposal','actionProposal'],additionalProperties:false};
     const output = await complete(instructions,[
       {role:'developer',content:JSON.stringify({profile:dialogueProfile(request.profile),situation:request.situation,intent:request.intent,npcInitiated:request.npcInitiated===true,actions,relationship:{categories:(request.profile.relationship?.categories ?? []).map(({id,description,expression,initial,min,max})=>({id,description,expression,initial,min,max})),values:request.relationship?.values ?? [],experiences:request.relationship?.experiences ?? []},rules:rules.map(({id,condition})=>({id,condition}))})},
-      ...dialogueHistory(request)
+      ...dialogueHistory(request),
+      ...(request.npcInitiated ? [{role:'developer',content:JSON.stringify({
+        npcInitiated:true, intent:request.intent, situation:request.situation,
+        instruction:'This is the current NPC-initiated event, after the history above. There is no new player utterance. Follow the supplied intent and situation; do not answer or evaluate an earlier player remark as if it were just spoken. Use history only as background for this event.'
+      })}] : [])
     ],schema,signal);
     let reply;
     try { reply=JSON.parse(output); } catch { throw new ServiceError(502,'invalid_model_response'); }

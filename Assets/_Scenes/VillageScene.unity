@@ -7342,7 +7342,7 @@ PrefabInstance:
     - target: {fileID: 5515301713128864725, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
       propertyPath: gameState
       value: 
-      objectReference: {fileID: 1797337572}
+      objectReference: {fileID: 1706661573}
     - target: {fileID: 5515301713128864725, guid: 0c5d240e1e2316a4ab962ee2720da981, type: 3}
       propertyPath: actions.Array.size
       value: 3
@@ -9902,7 +9902,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 677876339}
-  - component: {fileID: 677876340}
   - component: {fileID: 677876341}
   m_Layer: 0
   m_Name: WaspNestDemo
@@ -9938,19 +9937,6 @@ Transform:
   - {fileID: 2128752410}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &677876340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 677876338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c9e53df716604a91a53db23061b43c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NpcGameState
-  transport: {fileID: 1716134594}
 --- !u!114 &677876341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9963,7 +9949,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a8aa3b0bed83e944b3cd665cdd9eed5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcWaspNestQuest
-  state: {fileID: 677876340}
+  state: {fileID: 1706661573}
   stateKey: wasp_nest
   requiredConditions:
   - category: trust
@@ -12236,7 +12222,7 @@ PrefabInstance:
     - target: {fileID: 7196842992394923673, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
       propertyPath: gameState
       value: 
-      objectReference: {fileID: 677876340}
+      objectReference: {fileID: 1706661573}
     - target: {fileID: 7196842992394923673, guid: 75331f2c37b3baf4db4a6a73371bace6, type: 3}
       propertyPath: actions.Array.size
       value: 3
@@ -18157,7 +18143,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1797337571}
-  - component: {fileID: 1797337572}
   - component: {fileID: 1797337573}
   m_Layer: 0
   m_Name: HouseFireDemo
@@ -18194,19 +18179,6 @@ Transform:
   - {fileID: 839215180}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1797337572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1797337570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c9e53df716604a91a53db23061b43c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NpcGameState
-  transport: {fileID: 818976693}
 --- !u!114 &1797337573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18219,7 +18191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 134d03b1f95503143b323148e5108fe4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcHouseFireQuest
-  state: {fileID: 1797337572}
+  state: {fileID: 1706661573}
   stateKey: house_fire_rescue
   requiredConditions: []
   availableText: Get Flynn off the roof

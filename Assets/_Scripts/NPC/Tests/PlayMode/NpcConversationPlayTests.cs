@@ -31,7 +31,7 @@ public class NpcConversationPlayTests
         Application.runInBackground = true;
     }
     [UnityTest, Category("NpcRoutine")]
-    public IEnumerator ArrivalUsesAuthoredGreetingWithoutModelRequest()
+    public IEnumerator ArrivalUsesAuthoredGreetingAndReturnUsesModel()
     {
         var npc = GameObject.Find("ConversationNpc");
         var director = npc.GetComponent("NpcCharacterDirector");
@@ -47,8 +47,52 @@ public class NpcConversationPlayTests
         player.transform.position = new Vector3(100, 0, 0);
         yield return WaitFor(() => !(bool)director.GetType().GetProperty("InteractionOpen").GetValue(director), 5, "leave interaction");
         player.transform.position = new Vector3(2, 1.7f, 0);
-        yield return WaitFor(() => (string)speech.GetType().GetField("LastText").GetValue(speech) == "Good to see you again. What is on your mind?" && Accepting(director), 5, "authored returning greeting");
-        Assert.That((string)proxy.GetType().GetField("textOutput").GetValue(proxy), Is.EqualTo("The inn is east of here."), "returning greeting does not request another model response");
+        yield return WaitFor(() => (string)speech.GetType().GetField("LastText").GetValue(speech) == "Hello, traveler." && Accepting(director), 5, "generated returning greeting");
+        Assert.That((string)proxy.GetType().GetField("textOutput").GetValue(proxy), Is.EqualTo("Hello, traveler."), "returning greeting requests an NPC-initiated model response");
+        Assert.That(fixture.Service.LastRecordedSpeech, Is.EqualTo("Hello, traveler."), "generated greeting is persisted");
+    }
+
+    [UnityTest, Category("NpcRoutine")]
+    public IEnumerator FailedReturningGreetingUsesRelationshipFallbackAndRecordsSpeech()
+    {
+        var npc = GameObject.Find("ConversationNpc");
+        var director = npc.GetComponent("NpcCharacterDirector");
+        yield return WaitFor(() => Accepting(director), 5, "first greeting completes");
+        var speech = npc.GetComponentInChildren(Type.GetType("NpcTestSpeech, Assembly-CSharp"));
+        Invoke(director, "SelectForConversation");
+        Invoke(director, "SubmitTranscript", "Hello there.");
+        yield return WaitFor(() => (string)speech.GetType().GetField("LastText").GetValue(speech) == "The inn is east of here." && Accepting(director), 5, "player input recorded");
+        var profileField = director.GetType().GetField("profile");
+        var original = (ScriptableObject)profileField.GetValue(director);
+        var profile = UnityEngine.Object.Instantiate(original);
+        var relationship = ScriptableObject.CreateInstance(Type.GetType("NpcRelationshipDefinition, Assembly-CSharp"));
+        JsonUtility.FromJsonOverwrite("{\"rules\":{\"categories\":[{\"id\":\"trust\"}]},\"greetings\":[{\"name\":\"friendly\",\"priority\":20,\"conditions\":[{\"category\":\"trust\",\"comparison\":\"gte\",\"value\":20}],\"greeting\":\"Welcome back, friend.\"},{\"name\":\"wary\",\"priority\":10,\"conditions\":[{\"category\":\"trust\",\"comparison\":\"lt\",\"value\":0}],\"greeting\":\"Keep your distance.\"}]}", relationship);
+        profile.GetType().GetField("relationship").SetValue(profile, relationship);
+        profileField.SetValue(director, profile);
+        fixture.Service.FailNpcResponses = true;
+        try
+        {
+            foreach (var trust in new[] { 30, -10 })
+            {
+                var player = GameObject.Find("Player");
+                player.transform.position = new Vector3(100, 0, 0);
+                yield return WaitFor(() => !(bool)director.GetType().GetProperty("InteractionOpen").GetValue(director), 5, "leave interaction");
+                fixture.Service.Trust = trust;
+                player.transform.position = new Vector3(2, 1.7f, 0);
+                string expected = trust > 0 ? "Welcome back, friend." : "Keep your distance.";
+                yield return WaitFor(() => (string)speech.GetType().GetField("LastText").GetValue(speech) == expected && Accepting(director), 5, "relationship fallback finishes");
+                var memory = npc.GetComponent("NpcMemory");
+                yield return WaitFor(() => !(bool)memory.GetType().GetProperty("IsBusy").GetValue(memory), 5, "fallback speech recorded");
+                Assert.That(memory.GetType().GetProperty("Error").GetValue(memory), Is.Null);
+                Assert.That(fixture.Service.LastRecordedSpeech, Is.EqualTo(expected), "fallback greeting is persisted");
+            }
+        }
+        finally
+        {
+            profileField.SetValue(director, original);
+            UnityEngine.Object.Destroy(profile);
+            UnityEngine.Object.Destroy(relationship);
+        }
     }
 
     [UnityTest, Category("NpcRoutine")]

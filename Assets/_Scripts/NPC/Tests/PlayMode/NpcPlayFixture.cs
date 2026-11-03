@@ -90,6 +90,9 @@ internal sealed class NpcTestService : IDisposable
     readonly Dictionary<string, List<MemoryEvent>> histories = new Dictionary<string, List<MemoryEvent>>();
     readonly Task worker;
     public volatile bool HoldPlayerResponses;
+    public volatile bool FailNpcResponses;
+    public int Trust;
+    public volatile string LastRecordedSpeech;
     public string PlayerReply = "The inn is east of here.";
     public string ActionId, ActionTarget;
     public readonly string Url;
@@ -129,13 +132,20 @@ internal sealed class NpcTestService : IDisposable
                         context.Response.StatusCode = 409;
                         body.status = "failed"; body.error = "revision_conflict";
                     }
-                    else history.Add(body.@event);
+                    else
+                    {
+                        history.Add(body.@event);
+                        if (body.@event.kind == "npc_speech") LastRecordedSpeech = body.@event.text;
+                    }
                 }
                 body.revision = history.Count; body.history = history.ToArray();
                 body.hasSpoken = history.Exists(e => e.kind == "player_input");
+                body.relationship = new Relationship { values = new[] { new RelationshipValue { category = "trust", value = Trust } } };
                 if (route == "/v1/responses")
                 {
                     body.text = body.npcInitiated ? "Hello, traveler." : PlayerReply;
+                    if (body.npcInitiated && FailNpcResponses)
+                    { context.Response.StatusCode = 502; body.status = "failed"; body.error = "upstream_unavailable"; }
                     if (!body.npcInitiated && ActionId != null)
                         body.actionProposal = new ActionProposal { actionId = ActionId, targetId = ActionTarget };
                 }
@@ -157,6 +167,8 @@ internal sealed class NpcTestService : IDisposable
         Assert.That(worker.Wait(TimeSpan.FromSeconds(2)), Is.True, "Fake service shuts down without leaking requests");
     }
     [Serializable] class MemoryEvent { public string eventId, turnId, kind, text, delivery; }
+    [Serializable] class RelationshipValue { public string category; public int value; }
+    [Serializable] class Relationship { public RelationshipValue[] values; }
     [Serializable] class ActionProposal { public string actionId, targetId; }
     [Serializable] class Envelope
     {
@@ -166,6 +178,7 @@ internal sealed class NpcTestService : IDisposable
         public MemoryEvent @event;
         public MemoryEvent[] history;
         public ActionProposal actionProposal;
+        public Relationship relationship;
     }
 }
 #endif

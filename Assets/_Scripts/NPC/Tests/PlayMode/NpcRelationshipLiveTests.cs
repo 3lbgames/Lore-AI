@@ -91,10 +91,13 @@ public class NpcRelationshipLiveTests
         TestContext.WriteLine(actor.Npc.name + " heard: " + text + " | replied: " + actor.LastSpoken + " | trust=" + Trust(actor));
     }
 
-    static string AuthoredGreeting(Actor actor)
+    static void AssertGeneratedGreeting(Actor actor)
     {
-        object[] args = { Get(actor.Memory, "Relationship"), "unexpected fallback", null };
-        return (string)Call(Get(Get(actor.Director, "profile"), "relationship"), "SelectGreeting", args);
+        var proxy = actor.Npc.GetComponent("NpcProxyClient");
+        Assert.That(Get(proxy, "Error"), Is.Null);
+        Assert.That(actor.LastSpoken, Is.Not.Null.And.Not.Empty);
+        Assert.That(actor.LastSpoken, Is.EqualTo((string)Get(proxy, "textOutput")), "returning greeting uses the live model response");
+        Assert.That(History(actor).Any(e => (string)Get(e, "kind") == "npc_speech" && (string)Get(e, "text") == actor.LastSpoken), Is.True);
     }
 
     [UnitySetUp]
@@ -141,10 +144,10 @@ public class NpcRelationshipLiveTests
         Assert.That(Get(mira.Director, "campaignId"), Is.EqualTo(testCampaign));
         yield return Approach(mira);
         Assert.That(Trust(mira), Is.EqualTo(20));
-        Assert.That(mira.LastSpoken, Is.EqualTo(AuthoredGreeting(mira)), "restored trust selects the actual friendly speech without generation");
+        AssertGeneratedGreeting(mira);
         yield return Approach(protector, mira);
         Assert.That(Trust(protector), Is.EqualTo(20));
-        Assert.That(protector.LastSpoken, Is.EqualTo(AuthoredGreeting(protector)));
+        AssertGeneratedGreeting(protector);
         Assert.That(History(mira).Any(e => (string)Get(e, "text") == Safety), Is.False);
     }
 
@@ -162,7 +165,7 @@ public class NpcRelationshipLiveTests
         mira = Create(MiraPath, new Vector3(12, 0, 0));
         yield return Approach(mira);
         Assert.That(Trust(mira), Is.EqualTo(-10));
-        Assert.That(mira.LastSpoken, Is.EqualTo(AuthoredGreeting(mira)));
+        AssertGeneratedGreeting(mira);
     }
 
     [UnityTearDown]
