@@ -138,6 +138,10 @@ PrefabInstance:
       propertyPath: profile
       value: 
       objectReference: {fileID: 11400000, guid: b93c407ff576cc84c9915b421193df8e, type: 2}
+    - target: {fileID: 6705866071541945387, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 165896111924953321}
     - target: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       propertyPath: m_Name
       value: Ranger_NPC Variant
@@ -450,6 +454,11 @@ PrefabInstance:
       addedObject: {fileID: 2889191474102480012}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93dcf3e1d678002459f1bc4d482228d5, type: 3}
+--- !u!95 &165896111924953321 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6921279407020161022, guid: 93dcf3e1d678002459f1bc4d482228d5, type: 3}
+  m_PrefabInstance: {fileID: 7079715040337491735}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7334826868013732092 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 93dcf3e1d678002459f1bc4d482228d5, type: 3}

@@ -600,6 +600,10 @@ PrefabInstance:
       propertyPath: profile
       value: 
       objectReference: {fileID: 11400000, guid: ca73ccdf2fdec904aa46a1e70e6d5a3d, type: 2}
+    - target: {fileID: 6705866071541945387, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 351683710246530379}
     - target: {fileID: 7569434421757955811, guid: f9e487420350ec547b1b4d0d989aeccb, type: 3}
       propertyPath: m_Name
       value: Druid_NPC Variant
@@ -1191,6 +1195,11 @@ PrefabInstance:
       addedObject: {fileID: 1391376221030542281}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 95bff2ae58cd81f4a8c72e949ec3ef60, type: 3}
+--- !u!95 &351683710246530379 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 7937088398246958496, guid: 95bff2ae58cd81f4a8c72e949ec3ef60, type: 3}
+  m_PrefabInstance: {fileID: 7694221430680680683}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7876202962796027648 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 95bff2ae58cd81f4a8c72e949ec3ef60, type: 3}

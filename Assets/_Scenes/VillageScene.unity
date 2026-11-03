@@ -17340,6 +17340,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 438574289388437154, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 1100274124}
     - target: {fileID: 1204977243217912918, guid: 1e63277f377854cf2ba3ed28d83d02d2, type: 3}
       propertyPath: animator
       value: 
@@ -18925,7 +18929,6 @@ MonoBehaviour:
   ladderBottom: {fileID: 818584046}
   fireLanding: {fileID: 588476367}
   facing: {fileID: 210673134}
-  animator: {fileID: 343069455}
   speedParameter: Speed
   roofWalkSpeed: 1.2
   climbSeconds: 3
