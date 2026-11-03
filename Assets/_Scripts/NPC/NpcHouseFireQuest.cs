@@ -22,6 +22,7 @@ public class NpcHouseFireQuest : NpcQuestBase
     public DOTweenAnimation ladderTween;
     public Collider ladderInteractCollider;
     public ParticleSystem houseFlames;
+    public ParticleSystem headSmoke;
     [Tooltip("Torches returned to their start, unlit, when the campaign resets.")]
     public BaseGrabObject[] torches = Array.Empty<BaseGrabObject>();
     public string litTriggerName = "FireTrigger - lit OOS", unlitTriggerName = "FireTrigger - unlit";
@@ -144,6 +145,7 @@ public class NpcHouseFireQuest : NpcQuestBase
             NpcWorldEventInbox.Notify(ranger, eventId + ":fire", fireReactionIntent, fireDescription);
         yield return new WaitForSeconds(fireScareDelay);
         yield return Jump(fireLanding);
+        headSmoke.Play();
         Completing = false;
         //// Speak once he's on the ground.
         //if (ranger && ranger.campaignId == campaign)
@@ -326,7 +328,14 @@ public class NpcHouseFireQuest : NpcQuestBase
     void SetFlames(bool burning)
     {
         if (!houseFlames) return;
-        if (burning) { if (!houseFlames.isPlaying) houseFlames.Play(true); }
-        else houseFlames.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        if (burning)
+        {
+            if (!houseFlames.isPlaying) houseFlames.Play(true);
+        }
+        else
+        {
+            houseFlames.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            headSmoke.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
     }
 }
