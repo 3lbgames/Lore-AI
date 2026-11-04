@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LORE / AI · Your living world</title><link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header><div><p class="eyebrow">YOUR LIVING WORLD / INTERACTIVE DEMO</p><h1>LORE <span>/</span> <em>AI</em></h1><p>Characters that remember what you did.</p></div><span id="connection" class="badge">Connecting…</span></header>
+  <main>
+    <section class="panel conversation" aria-labelledby="conversation-heading">
+      <div class="panel-heading"><div><p class="eyebrow">01 / CONVERSATION</p><h2 id="conversation-heading">Meet the villagers</h2></div><button id="reload" class="quiet">Reload state</button></div>
+      <div class="character-row"><div class="avatar" id="avatar">O</div><div><label for="npc">Talk to</label><select id="npc"><option value="Osric">Osric — village protector</option><option value="sorrel">Sorrel — garden druid</option></select></div><button id="greet">Greet</button></div>
+      <p class="hint" id="suggestion">Try: “What do you need?” Then give Osric a mug.</p>
+      <div id="history" class="history" role="log" aria-label="Conversation history" aria-live="polite"></div>
+      <div id="live" class="live" hidden></div>
+      <form id="chat"><label for="message">Your message</label><textarea id="message" maxlength="8000" rows="3" placeholder="Say something the village might remember…" required></textarea><div class="composer-actions"><button type="button" id="dictate" class="quiet">Dictate</button><label class="checkbox"><input type="checkbox" id="voice"> Read replies aloud</label><button type="button" id="stop" class="quiet" disabled>Stop voice</button><button type="submit" id="send" class="primary">Send message ↗</button></div></form>
+      <p class="hint">Dictation records up to 30 seconds and uses Meta transcription through the local server. Review the transcript before sending. Read-aloud uses your browser’s voices.</p>
+      <p id="status" role="status">Loading village…</p><button id="retry" hidden>Resume pending operation</button>
+    </section>
+    <aside>
+      <section class="panel"><p class="eyebrow">02 / RELATIONSHIP</p><h2>How you’re remembered</h2><div id="relationship"></div><div id="experience" class="hint"></div></section>
+      <section class="panel"><p class="eyebrow">03 / WORLD</p><h2>A little cause and effect</h2><p class="hint">Player buttons act immediately. Eligible NPC proposals run automatically on the same turn. World events trigger character reactions automatically, just as in Unity. Completed actions update the world and history.</p><div id="world"></div><p id="proposal" class="hint"></p><div id="actions" class="action-list"></div><label class="checkbox"><input type="checkbox" id="fail"> Simulate action failure</label></section>
+      <section class="panel compact"><div class="panel-heading"><h2>Campaign</h2><button id="new" class="quiet">New campaign</button></div><p id="campaign" class="mono"></p><p class="hint">Saved in PostgreSQL. Reload or switch villagers to test persistence. A new campaign keeps the old history intact.</p><p id="revisions" class="mono"></p></section>
+    </aside>
+    <section class="panel architecture"><div class="panel-heading"><div><p class="eyebrow">04 / UNDER THE HOOD</p><h2>One real round trip</h2></div><span class="badge">No Unity runtime</span></div><div class="flow"><span>Browser<br><small>authored behavior + simulation</small></span><b>→</b><span>NPC service<br><small>validation + context + rules</small></span><b>↔</b><span>Meta model / PostgreSQL<br><small>generation / accepted events</small></span></div><details><summary>Debug controls</summary><p class="hint">World-event reactions happen automatically. Use this only to request an extra response.</p><button id="react" class="quiet">Generate extra reaction</button></details><details><summary>Request log <span id="request-count">(0)</span></summary><div id="requests"></div></details><details><summary>Authored character configuration</summary><pre id="profile"></pre></details></section>
+  </main>
+  <footer>Local demo · Separate browser campaign · Real service, model, and storage · Unity-authored personalities · Simulated objects and actions</footer>
+</body>
+</html>
