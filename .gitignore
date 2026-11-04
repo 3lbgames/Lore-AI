@@ -5,6 +5,9 @@
 /*
 !/.gitignore
 !/README.md
+!/docs/
+/docs/*
+!/docs/NpcAuthoringGuide.md
 !/Server/
 /Server/**/node_modules/
 /Server/**/.env
