@@ -76,6 +76,10 @@ size; current model responses are non-streaming.
 
 ## Local Editor
 
+The server can run from this submission. Unity Editor and Quest instructions
+assume the full Unity project, including the excluded GroKit, voice adapters,
+SDKs, and project settings.
+
 ### Prerequisites: macOS
 
 - Install Node.js 22 or newer (including npm).
@@ -176,7 +180,7 @@ A successful response echoes the three correlation IDs with `version: 1`, `statu
 
 Errors have `status: "failed"` and an `error` code: invalid input (400), authentication (401), scope (403), revision/event/writer/state conflicts or uncommitted input (409), body size (413), context limit (422), busy/rate limit (429), provider failure or invalid model output (502), missing model key or unavailable storage (503), or deadline (504). Provider response bodies and credentials are never echoed in errors. The default 30-second deadline covers identity validation and request processing. Closing the client connection aborts upstream work where supported. Concurrent work on the same NPC stream (or campaign game-state stream) returns `request_in_progress`; the default service-wide limit is 16 active requests (`service_busy`).
 
-Unity must reject obsolete correlation IDs and cancel playback on departure. Generated text is not a receipt of delivered speech, and this service does not store it as history.
+Unity must reject obsolete correlation IDs and cancel playback on departure. The response-generation endpoint does not store returned text as speech history. Unity records the speech attempt separately, with its audio-delivery status; generation alone is not a receipt of delivered speech.
 
 ## Provider reference
 
@@ -198,9 +202,11 @@ alone do not count. The field name is retained for existing clients.
 `event: {eventId,turnId,kind,text,delivery,evidenceKey?}` and optional top-level
 `relationship` configuration. `kind` is `player_input`,
 `npc_speech`, or `action_outcome`; `delivery` is `completed`, `interrupted`, or `failed`.
-Player input must be completed (up to 8000 characters). Completed NPC speech is
-up to 12000 characters. Interrupted/failed speech records metadata with empty
-text, because the current speech adapter cannot confirm the spoken portion.
+Player input must be completed (up to 8000 characters). NPC speech text is up
+to 12000 characters. The Unity client retains the full NPC line for completed,
+interrupted, and failed speech attempts. The delivery status describes audio
+playback; stored text does not prove that the player heard the line or identify
+the spoken portion. The API also accepts empty text for interrupted/failed speech.
 Action outcomes retain a nonempty observed description (up to 12000 characters)
 for all three statuses. An optional `evidenceKey` (up to 128 characters) identifies
 an authored action rule; a nonempty key is permitted only on action outcomes.
@@ -220,14 +226,16 @@ Both the event and deduplication receipt commit in one transaction. Missing or
 unavailable storage fails explicitly; there is no in-memory runtime fallback.
 
 Unity graphs load memory before generating dialogue, commit finalized player input
-before replying to it, and commit speech after delivery. All responses require
+before replying to it, and commit speech when its playback attempt ends. All responses require
 the current revision. Player replies additionally require matching committed turn
 input (`input_not_committed`, 409); NPC-initiated requests require an intent and
-empty input, and never manufacture a player utterance. Node sends completed
-dialogue with user/assistant roles, including each input once. Action outcomes
-are separate context records with their actual status, including failed and
-interrupted actions. Undelivered speech text is excluded. Generation never
-commits speech. Provider context overflow returns `context_limit` (422); history
+empty input, and never manufacture a player utterance. Node sends committed
+player input and nonempty recorded NPC speech with user/assistant roles, including
+each input once. NPC speech text is included even when its audio delivery was
+interrupted or failed; those speech delivery statuses are stored but are not
+attached to the assistant-role text sent to the model. Action outcomes are
+separate context records with their actual status, including failed and
+interrupted actions. Generation never commits speech. Provider context overflow returns `context_limit` (422); history
 is never silently trimmed. A failed generation leaves committed events intact.
 Player statements remain dialogue, not witnessed facts.
 

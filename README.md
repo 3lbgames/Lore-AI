@@ -51,9 +51,6 @@ flowchart TD
     Playback -.->|Record speech delivery| Server
 ```
 
-
-
-
 World events and authored NPC triggers can start a turn without player speech.
 The Behavior Graph chooses when to react and supplies the event's intent and
 observations to the model. NPC action proposals pass through Unity's validation
@@ -68,9 +65,9 @@ configured text without a Muse Spark request.
 1. **Unity captures speech.** The player holds the talk control. `MetaStreamingSpeechToText` streams 24 kHz PCM audio directly to `wss://api.meta.ai/v1/asr/realtime`. `MetaAsrSession` requests `muse-voice-transcribe-1.0` in push-to-talk mode and receives partial and final transcripts. This audio does not pass through the NPC server.
 2. **Unity commits the accepted input.** NPC code associates the final transcript with the current interaction and stores it through the server's memory API before requesting a reply. Obsolete interactions are rejected.
 3. **The server requests dialogue.** Unity sends the character profile, permitted observations, authored intent, available action options, and current memory revision to `/v1/responses`. The server loads conversation and relationship context and calls `https://api.meta.ai/v1/responses` with `muse-spark-1.3`.
-4. **The server validates the result.** A single model call returns speech, a relationship proposal, and an optional action proposal. The server checks proposed actions against Unity's supplied options and validates relationship evidence against committed input. It applies accepted relationship effects before returning the response. Requests use a strict JSON schema, non-streaming output, and minimal reasoning by default.
+4. **The server validates the result.** Each model call returns speech, a relationship proposal, and an optional action proposal. The server checks proposed actions against Unity's supplied options and validates relationship evidence against committed input. It applies accepted relationship effects before returning the response. Requests use a strict JSON schema, non-streaming output, and minimal reasoning by default. If an accepted relationship change unlocks an action that was not offered on the first request, Unity may request one reconsideration in the same player turn.
 5. **Unity performs the response.** Behavior Graphs and authored data control the interaction. Unity executes accepted gameplay actions and sends speech text to Wit.ai TTS through the Meta Voice SDK. The headset plays the resulting audio; the Node service does not synthesize or play it.
-6. **Unity records what happened.** Completed speech and observed action outcomes are committed separately. Generated dialogue is not treated as delivered speech, and an action proposal is not treated as a completed action. PostgreSQL retains the accepted events for future turns.
+6. **Unity records what happened.** NPC speech attempts and observed action outcomes are committed separately. Speech records retain the full NPC line with a completed, interrupted, or failed audio-delivery status. Nonempty recorded lines remain available to later model requests even when audio failed; the status does not claim that the player heard them. An action proposal is not treated as a completed action. PostgreSQL retains accepted events for future turns.
 
 Graph-initiated greetings and reactions can start at the dialogue-request step without microphone input. They carry an authored intent and an empty player-input field.
 
@@ -83,13 +80,15 @@ Graph-initiated greetings and reactions can start at the dialogue-request step w
 | `Assets/_Scripts/NPC/NpcMemory.cs` and `NpcGameState.cs` | Unity clients for persistent NPC memory and campaign state |
 | `Assets/_Scripts/NPC/` | NPC selection, interaction flow, action execution, speech coordination, and Behavior Graph nodes |
 | `Assets/GenAI/MetaASR/` | Direct Unity-to-Meta speech recognition: `MetaStreamingSpeechToText.cs` and `MetaAsrSession.cs` |
-| `Assets/GenAI/MetaWitt.AI/WittTTS/Witt_TextToSpeech.cs` | Wit.ai speech synthesis and playback integration used by the NPC base prefab |
+| `Assets/GenAI/MetaWitt.AI/WittTTS/Witt_TextToSpeech.cs` | Existing Wit.ai playback adapter in the full Unity project; excluded from this submission |
 | [Server/npc-service/src/meta.js](Server/npc-service/src/meta.js) | Muse Spark requests and Meta Platform identity verification |
 | [Server/npc-service/src/prompts/interaction.txt](Server/npc-service/src/prompts/interaction.txt) | Shared model instructions; character-specific context comes from Unity |
 | [Server/npc-service/src/service.js](Server/npc-service/src/service.js) | API routing, validation, authentication, and response coordination |
 | [Server/npc-service/src/memory.js](Server/npc-service/src/memory.js) | PostgreSQL persistence, revisions, writer leases, and event receipts |
 
 ## Running the service
+
+For character profiles, graph bindings, relationships, handoffs, actions, and quest authoring, see the [NPC authoring guide](docs/NpcAuthoringGuide.md). Its Unity recipes require the full project and dependencies described under Submission scope.
 
 See the [NPC service README](Server/npc-service/README.md) for Node/PostgreSQL setup, Quest USB development, Meta authentication, AWS deployment, and API contracts.
 
@@ -99,6 +98,12 @@ The server's `MODEL_API_KEY` stays on the server. Direct ASR uses a separate Uni
 
 ## Submission scope
 
-This Git repository is a hackathon submission view of a larger Unity project managed in Plastic SCM. Its ignore rules include the server and selected Unity asset folders, while excluding the main GroKit library, `Assets/GenAI`, and other project dependencies. The direct ASR and TTS implementation paths above describe the full working project; those files are currently excluded from this Git submission.
+This Git repository contains selected files created during the hackathon, October 26, 2026 at noon through November 4, 2026 at 8 PM Central. It includes the NPC server, selected Unity assets and NPC code, the direct Meta ASR implementation, `ISpeechCaptureStatus`, and selected speech integration tests. The original project is managed in Plastic SCM.
+
+Base GroKit code, existing GenAI base classes and TTS adapters, credentials, and other pre-existing dependencies are excluded. Selected files under `Assets/GenAI` are tracked explicitly; the directory-wide ignore rule still excludes its other contents.
 
 The submission is therefore not a standalone Unity project. The Unity integration depends on GroKit, Meta Platform and Voice SDKs, Unity Behavior, and the full project's scene and package configuration.
+
+## Baseten experiment
+
+The separate `baseten-muse-spark` branch preserves the Muse Spark Open experiment from Plastic cs:108. It adds a selectable Baseten provider and a smoke test. It is not merged into `main`; the model flow above describes `main`. See that branch’s `Server/npc-service/README.md` for provider configuration and its branch-specific behavior.
