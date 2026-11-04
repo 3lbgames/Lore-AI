@@ -4,6 +4,47 @@ VillagerAI is a Unity Quest project for voice-driven interactions with NPCs in a
 
 The project combines generated dialogue with authored gameplay. Meta models interpret speech and generate character responses; Unity Behavior Graphs and game code control when characters interact and what actions they can perform. This repository contains the hackathon submission's server and selected Unity integration files.
 
+## Run the web demo (no Unity required)
+
+Talk to Flynn, Sorrel, Mira, and Osric in a browser using their Unity-authored personalities, greetings, and relationship rules. The demo uses the real Meta model and PostgreSQL memory; buttons and text simulate world objects and NPC actions. No Unity installation, headset, or art assets are needed.
+
+### One-line prompt for an LLM coding agent
+
+Copy this into an agent with terminal access to this checkout:
+
+```text
+Read README.md and Server/npc-service/demo/README.md, then set up and run the web demo from this checkout assuming no services are running: check Node 22+ and Docker/Compose, create .env from .env.example with random local token and database password while preserving any existing configuration and data, have me enter any missing MODEL_API_KEY privately in .env (never in chat or logs), install dependencies with npm ci, start PostgreSQL and this checkout's NPC service on 127.0.0.1:8787 and demo on 127.0.0.1:8788, verify both health endpoints, open the browser to http://127.0.0.1:8788, confirm a real model reply there, and report setup blockers; if ports are occupied, report the conflict instead of reusing or stopping unrelated services.
+```
+
+### Manual quick start
+
+These steps start the full stack from this checkout; no running NPC service or database is assumed. Ports `54329`, `8787`, and `8788` must be available. If another installation occupies them, resolve that conflict before proceeding.
+
+You need **Node.js 22+**, **Docker Desktop or OrbStack running**, and a **Meta Model API key**. Model requests use your API quota.
+
+1. In `Server/npc-service`, copy `.env.example` to `.env` **only if `.env` does not already exist**. Set `MODEL_API_KEY`, a random `LOCAL_ACCESS_TOKEN`, and a URL-safe `POSTGRES_PASSWORD` with the same password in `DATABASE_URL`. Keep `AUTH_MODE=local`, `HOST=127.0.0.1`, and `PORT=8787`. Keep existing credentials and database settings when reusing an installation. No Meta app ID, app secret, or Unity settings file is required for this demo.
+2. From the repository root, start the database and NPC service:
+
+   ```sh
+   cd Server/npc-service
+   docker compose up -d --wait postgres
+   npm ci
+   npm start
+   ```
+
+3. Leave that terminal running. In a second terminal, from the repository root:
+
+   ```sh
+   cd Server/npc-service
+   node --env-file=.env demo/server.js
+   ```
+
+4. Open **[http://127.0.0.1:8788](http://127.0.0.1:8788)** (use `127.0.0.1`, not `localhost`). Chat with Flynn, choose another villager, or try the available world-action buttons. Eligible NPC proposals and world-event reactions run automatically. Reloading preserves your campaign.
+
+Send a message and confirm a generated character reply to verify the model key; a healthy service or an authored greeting alone does not verify model access. Keep the demo local; its proxy is not intended for public hosting.
+
+See the [service setup guide](Server/npc-service/README.md#local-editor) for platform troubleshooting, subsequent starts, and shutdown commands. The [demo guide](Server/npc-service/demo/README.md) covers scenarios, dictation, and simulation limitations.
+
 ## Features
 
 - **Voice conversations:** push-to-talk speech recognition, generated NPC dialogue, spoken replies, and captions.
