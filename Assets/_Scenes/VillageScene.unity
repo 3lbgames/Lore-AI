@@ -18925,6 +18925,11 @@ MonoBehaviour:
   - {fileID: 912953884}
   litTriggerName: FireTrigger - lit OOS
   unlitTriggerName: FireTrigger - unlit
+  houseRoot: {fileID: 0}
+  houseObjectName: House_01
+  burnSeconds: 14
+  burnedHeightScale: 0.16
+  charredColor: {r: 0.07, g: 0.055, b: 0.045, a: 1}
   ladderTop: {fileID: 1998840091}
   ladderBottom: {fileID: 818584046}
   fireLanding: {fileID: 588476367}
@@ -26294,6 +26299,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 480923832791205846, guid: 9289d9f40c795f147aeb5346a85a0dca, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.953717
+      objectReference: {fileID: 0}
+    - target: {fileID: 480923832791205846, guid: 9289d9f40c795f147aeb5346a85a0dca, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.30070576
+      objectReference: {fileID: 0}
+    - target: {fileID: 480923832791205846, guid: 9289d9f40c795f147aeb5346a85a0dca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -35
+      objectReference: {fileID: 0}
     - target: {fileID: 517284006111961726, guid: 9289d9f40c795f147aeb5346a85a0dca, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
