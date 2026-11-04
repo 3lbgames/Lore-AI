@@ -1,6 +1,6 @@
-# VillagerAI
+# Lore-AI
 
-VillagerAI is a Unity Quest project for voice-driven interactions with NPCs in a virtual village. Players can talk to characters, build relationships, and take part in quests. Characters respond using their authored personalities, remembered conversations, and events they have observed in the game.
+Lore-AI is a Unity Quest project for voice-driven interactions with NPCs in a virtual village. Players can talk to characters, build relationships, and take part in quests. Characters respond using their authored personalities, remembered conversations, and events they have observed in the game.
 
 The project combines generated dialogue with authored gameplay. Meta models interpret speech and generate character responses; Unity Behavior Graphs and game code control when characters interact and what actions they can perform. This repository contains the hackathon submission's server and selected Unity integration files.
 
