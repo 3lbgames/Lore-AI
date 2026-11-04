@@ -58,6 +58,46 @@ See the [service setup guide](Server/npc-service/README.md#local-editor) for pla
 
 Meta's models run in the cloud. Unity captures microphone audio, controls NPC behavior, executes gameplay actions, and plays speech. A separate Node service calls Muse Spark and stores persistent state in PostgreSQL.
 
+## Hackathon submission
+
+### Meta models and tools in the running experience
+
+The Unity/Quest experience uses the following models and tools. The standalone web demo exercises the core service and memory loop with the [documented browser substitutions](Server/npc-service/demo/README.md#coverage-and-substitutions).
+
+- **Muse Spark 1.3 (Meta Model API):** generates NPC dialogue, interprets relationship rules and recorded in-game actions, and chooses among permitted NPC actions.
+- **Muse Voice Transcribe 1.0 (Meta Model API):** streaming speech recognition directly from Unity.
+- **Meta Voice SDK (Wit.ai):** text-to-speech with multiple unique character voices.
+- **Meta Platform SDK:** player identity and user-proof authentication for the server.
+- **Meta XR SDK:** Quest headset tracking, hand and controller input, and gesture recognition.
+- **Meta Quest:** the VR headset running the experience.
+
+### Meta models used to build it
+
+- **Muse Code + Muse Wonder:** animated the destruction and charring of the house in the Unity scene.
+- **Muse Image:** generated the submission logo.
+
+### Existed before the hackathon
+
+- GroKit Core.
+- Unity Behavior.
+- Third-party asset packs (village, characters, and effects), purchased and modified for previous games.
+
+### New for the hackathon
+
+- Node NPC service with PostgreSQL memory and game state.
+- Muse Spark integration with strict JSON output for speech, relationship proposals, and action proposals.
+- Live Muse Voice Transcribe integration from Unity.
+- Wit speech synthesis integration through the Meta Voice SDK.
+- Meta user-proof authentication on the server.
+- Relationship scoring: the model proposes authored rules based on what the player says; game rules apply validated changes, including rules for confirmed game actions.
+- Action validation: the model chooses from offered actions, and Unity validates and executes them.
+- Observed world events and item handoffs feeding the Behavior Graph.
+- Memory of actual outcomes: NPC speech records include delivery status, and action outcomes are recorded when the game confirms them.
+- One extra model call in the same turn when a relationship change unlocks a new action.
+- House destruction and charring animation created with Muse Code and Muse Wonder.
+- Submission logo generated with Muse Image.
+- Standalone web demo that exercises the core loop without requiring Unity.
+
 ## Where each model runs
 
 | Stage | Model or service | Caller | Where processing happens |
