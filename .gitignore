@@ -5,6 +5,21 @@
 /*
 !/.gitignore
 !/README.md
+!/Server/
+/Server/**/node_modules/
+/Server/**/.env
+/Server/**/.env.*
+!/Server/**/.env.example
+/Server/**/scopes.local.json
+/UserSettings/
+
+# Generated code walkthroughs
+/docs/debriefs/
+
+# Python bytecode caches
+__pycache__/
+*.pyc
+*.pyo
 
 !/Assets/
 /Assets/*
