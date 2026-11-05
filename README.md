@@ -1,4 +1,6 @@
-![Lore-AI logo](muse-generated-lore-ai-logo.png)
+[![Watch the Lore-AI video on YouTube](https://img.youtube.com/vi/9uTMEmZDMQs/hqdefault.jpg)](https://www.youtube.com/watch?v=9uTMEmZDMQs)
+
+[▶ Watch the video on YouTube](https://www.youtube.com/watch?v=9uTMEmZDMQs)
 
 # Lore-AI
 
