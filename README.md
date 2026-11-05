@@ -1,3 +1,5 @@
+![Lore-AI logo](muse-generated-lore-ai-logo.png)
+
 # Lore-AI
 
 Lore-AI is a Unity Quest project for voice-driven interactions with NPCs in a virtual village. Players can talk to characters, build relationships, and take part in quests. Characters respond using their authored personalities, remembered conversations, and events they have observed in the game.
