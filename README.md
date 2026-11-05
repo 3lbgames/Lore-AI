@@ -192,3 +192,8 @@ The submission is therefore not a standalone Unity project. The Unity integratio
 ## Baseten experiment
 
 The separate `baseten-muse-spark` branch preserves the Muse Spark Open experiment from Plastic cs:108. It adds a selectable Baseten provider and a smoke test. It is not merged into `main`; the model flow above describes `main`. See that branch’s `Server/npc-service/README.md` for provider configuration and its branch-specific behavior.
+
+## Team
+
+- [Robin Moulder](https://github.com/rmoulder)
+- [Patrick O'Shaughnessey](https://github.com/patrickoshaughnessey)
